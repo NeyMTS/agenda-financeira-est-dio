@@ -103,7 +103,16 @@
   --slateblue-soft: oklch(0.965 0.018 350);
 
   --gold: oklch(0.72 0.09 78);
+
+  /* Identidade do negócio (sobrescrita em runtime pelo NuvieTheme) */
+  --nuvie-primary: #b7838e;
+  --nuvie-primary-soft: color-mix(in srgb, #b7838e 14%, white);
+  --nuvie-primary-medium: color-mix(in srgb, #b7838e 32%, white);
+  --nuvie-primary-strong: color-mix(in srgb, #b7838e 82%, black);
+  --nuvie-primary-deep: color-mix(in srgb, #b7838e 72%, black);
+  --nuvie-primary-foreground: #ffffff;
 }
+
 
 @layer base {
   * {
