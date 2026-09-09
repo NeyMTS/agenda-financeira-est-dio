@@ -26,7 +26,7 @@ export function AppShell({
         <header className="mb-6 flex items-center justify-between gap-4">
           <div className="min-w-0">
             <p className="mb-1 text-[9px] font-medium uppercase tracking-[0.24em] text-[#aaa5a6]">
-              STUDIO DA LARY
+              NUVIE
             </p>
 
             <h1 className="truncate text-[25px] font-semibold leading-tight tracking-[-0.02em] text-[#211f20]">
