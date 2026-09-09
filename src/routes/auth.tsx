@@ -142,7 +142,7 @@ function AuthPage() {
                 onChange={(event) => setName(event.target.value)}
                 placeholder="Seu nome"
                 required
-                className="h-11 rounded-xl border-black/[0.08] bg-[#faf9f8] text-sm focus-visible:ring-[#b7838e]"
+                className="h-11 rounded-xl border-black/[0.08] bg-[#faf9f8] text-sm focus-visible:ring-[var(--nuvie-primary)]"
               />
             </div>
           )}
@@ -166,7 +166,7 @@ function AuthPage() {
               onChange={(event) => setEmail(event.target.value)}
               placeholder="voce@email.com"
               required
-              className="h-11 rounded-xl border-black/[0.08] bg-[#faf9f8] text-sm focus-visible:ring-[#b7838e]"
+              className="h-11 rounded-xl border-black/[0.08] bg-[#faf9f8] text-sm focus-visible:ring-[var(--nuvie-primary)]"
             />
           </div>
 
@@ -186,14 +186,14 @@ function AuthPage() {
               minLength={6}
               required
               placeholder="••••••••"
-              className="h-11 rounded-xl border-black/[0.08] bg-[#faf9f8] text-sm focus-visible:ring-[#b7838e]"
+              className="h-11 rounded-xl border-black/[0.08] bg-[#faf9f8] text-sm focus-visible:ring-[var(--nuvie-primary)]"
             />
           </div>
 
           <Button
             type="submit"
             disabled={loading}
-            className="mt-5 h-11 w-full rounded-xl bg-[#b7838e] text-sm font-semibold text-white hover:bg-[#a97480]"
+            className="mt-5 h-11 w-full rounded-xl bg-[var(--nuvie-primary)] text-sm font-semibold text-white hover:bg-[#a97480]"
           >
             {loading
               ? "Aguarde..."
@@ -214,14 +214,14 @@ function AuthPage() {
           {mode === "login" ? (
             <>
               Ainda não possui conta?{" "}
-              <span className="font-medium text-[#9d6875]">
+              <span className="font-medium text-[var(--nuvie-primary-strong)]">
                 Criar conta
               </span>
             </>
           ) : (
             <>
               Já possui uma conta?{" "}
-              <span className="font-medium text-[#9d6875]">
+              <span className="font-medium text-[var(--nuvie-primary-strong)]">
                 Entrar
               </span>
             </>

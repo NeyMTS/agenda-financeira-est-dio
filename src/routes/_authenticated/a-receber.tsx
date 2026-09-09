@@ -265,7 +265,7 @@ function ClientesPage() {
           type="button"
           onClick={openNewClient}
           aria-label="Nova cliente"
-          className="flex size-10 items-center justify-center rounded-full bg-[#b7838e] text-white shadow-sm transition-transform active:scale-95"
+          className="flex size-10 items-center justify-center rounded-full bg-[var(--nuvie-primary)] text-white shadow-sm transition-transform active:scale-95"
         >
           <Plus className="size-4.5" strokeWidth={1.9} />
         </button>
@@ -282,7 +282,7 @@ function ClientesPage() {
           value={search}
           onChange={(event) => setSearch(event.target.value)}
           placeholder="Buscar cliente..."
-          className="h-11 w-full rounded-2xl border border-black/[0.06] bg-white pl-11 pr-4 text-sm text-[#211f20] outline-none placeholder:text-[#aaa5a6] focus:border-[#b7838e]/50"
+          className="h-11 w-full rounded-2xl border border-black/[0.06] bg-white pl-11 pr-4 text-sm text-[#211f20] outline-none placeholder:text-[#aaa5a6] focus:border-[var(--nuvie-primary)]/50"
         />
       </div>
 
@@ -311,7 +311,7 @@ function ClientesPage() {
                 className="rounded-2xl border border-black/[0.05] bg-white p-4 shadow-sm"
               >
                 <div className="flex items-center gap-3">
-                  <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#f3e5e8] text-[#a76f7d]">
+                  <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[var(--nuvie-primary-soft)] text-[#a76f7d]">
                     <UserRound
                       className="size-5"
                       strokeWidth={1.5}
@@ -350,7 +350,7 @@ function ClientesPage() {
                   <button
                     type="button"
                     onClick={() => openWhatsApp(client)}
-                    className="flex h-9 items-center justify-center gap-1.5 rounded-xl bg-[#f3e5e8] text-xs font-medium text-[#9d6875]"
+                    className="flex h-9 items-center justify-center gap-1.5 rounded-xl bg-[var(--nuvie-primary-soft)] text-xs font-medium text-[var(--nuvie-primary-strong)]"
                   >
                     <MessageCircle
                       className="size-3.5"
@@ -390,7 +390,7 @@ function ClientesPage() {
                     onClick={() =>
                       openBirthdayWhatsApp(client)
                     }
-                    className="mt-2 flex h-9 w-full items-center justify-center gap-1.5 rounded-xl bg-[#f8eef0] text-xs font-medium text-[#9d6875]"
+                    className="mt-2 flex h-9 w-full items-center justify-center gap-1.5 rounded-xl bg-[#f8eef0] text-xs font-medium text-[var(--nuvie-primary-strong)]"
                   >
                     <Cake
                       className="size-3.5"
@@ -442,7 +442,7 @@ function ClientesPage() {
                 }
                 placeholder="Nome da cliente"
                 autoFocus
-                className="h-11 w-full rounded-xl border border-black/[0.07] bg-[#faf9f8] px-4 text-sm outline-none focus:border-[#b7838e]/50"
+                className="h-11 w-full rounded-xl border border-black/[0.07] bg-[#faf9f8] px-4 text-sm outline-none focus:border-[var(--nuvie-primary)]/50"
               />
 
               <input
@@ -452,7 +452,7 @@ function ClientesPage() {
                 }
                 placeholder="WhatsApp / telefone"
                 inputMode="tel"
-                className="h-11 w-full rounded-xl border border-black/[0.07] bg-[#faf9f8] px-4 text-sm outline-none focus:border-[#b7838e]/50"
+                className="h-11 w-full rounded-xl border border-black/[0.07] bg-[#faf9f8] px-4 text-sm outline-none focus:border-[var(--nuvie-primary)]/50"
               />
 
               <label className="block">
@@ -466,7 +466,7 @@ function ClientesPage() {
                   onChange={(event) =>
                     setBirthDate(event.target.value)
                   }
-                  className="h-11 w-full rounded-xl border border-black/[0.07] bg-[#faf9f8] px-4 text-sm outline-none focus:border-[#b7838e]/50"
+                  className="h-11 w-full rounded-xl border border-black/[0.07] bg-[#faf9f8] px-4 text-sm outline-none focus:border-[var(--nuvie-primary)]/50"
                 />
               </label>
 
@@ -477,7 +477,7 @@ function ClientesPage() {
                   !name.trim()
                 }
                 onClick={saveClient}
-                className="h-11 w-full rounded-xl bg-[#b7838e] text-sm font-semibold text-white disabled:opacity-50"
+                className="h-11 w-full rounded-xl bg-[var(--nuvie-primary)] text-sm font-semibold text-white disabled:opacity-50"
               >
                 {saving
                   ? "Salvando..."

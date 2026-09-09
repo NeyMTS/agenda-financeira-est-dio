@@ -555,7 +555,7 @@ function ServicosPage() {
         <button
           type="button"
           onClick={openNew}
-          className="flex size-10 items-center justify-center rounded-full bg-[#b7838e] text-white shadow-sm active:scale-95"
+          className="flex size-10 items-center justify-center rounded-full bg-[var(--nuvie-primary)] text-white shadow-sm active:scale-95"
           aria-label="Novo serviço"
         >
           <Plus
@@ -581,7 +581,7 @@ function ServicosPage() {
             <button
               type="button"
               onClick={openCategoryForm}
-              className="flex items-center gap-1.5 rounded-xl bg-[#f3e5e8] px-3 py-2 text-xs font-medium text-[#9d6875]"
+              className="flex items-center gap-1.5 rounded-xl bg-[var(--nuvie-primary-soft)] px-3 py-2 text-xs font-medium text-[var(--nuvie-primary-strong)]"
             >
               <Plus
                 className="size-3.5"
@@ -607,7 +607,7 @@ function ServicosPage() {
             <button
               type="button"
               onClick={openNew}
-              className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#b7838e] py-3 text-sm font-semibold text-white"
+              className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-[var(--nuvie-primary)] py-3 text-sm font-semibold text-white"
             >
               <Plus
                 className="size-4"
@@ -633,7 +633,7 @@ function ServicosPage() {
                     <div className="mb-2 flex items-center gap-2">
                       <div className="h-px flex-1 bg-black/[0.06]" />
 
-                      <h3 className="px-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#9d6875]">
+                      <h3 className="px-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--nuvie-primary-strong)]">
                         {categoryName}
                       </h3>
 
@@ -644,7 +644,7 @@ function ServicosPage() {
                             categoryName
                           )
                         }
-                        className="flex size-5 items-center justify-center rounded-full text-[#aaa5a6] hover:bg-[#f3e5e8] hover:text-[#9d6875]"
+                        className="flex size-5 items-center justify-center rounded-full text-[#aaa5a6] hover:bg-[var(--nuvie-primary-soft)] hover:text-[var(--nuvie-primary-strong)]"
                         aria-label={`Excluir categoria ${categoryName}`}
                       >
                         <X
@@ -677,7 +677,7 @@ function ServicosPage() {
                               className="rounded-2xl border border-black/[0.05] bg-white p-4 shadow-sm"
                             >
                               <div className="flex items-center gap-3">
-                                <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-[#f3e5e8] text-[#9d6875]">
+                                <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-[var(--nuvie-primary-soft)] text-[var(--nuvie-primary-strong)]">
                                   <Icon
                                     className="size-5"
                                     strokeWidth={
@@ -816,13 +816,13 @@ function ServicosPage() {
                 }
               }}
               placeholder="Ex.: Depilação"
-              className="mt-5 h-11 w-full rounded-xl border border-black/[0.07] bg-[#faf9f8] px-4 text-sm outline-none focus:border-[#b7838e]"
+              className="mt-5 h-11 w-full rounded-xl border border-black/[0.07] bg-[#faf9f8] px-4 text-sm outline-none focus:border-[var(--nuvie-primary)]"
             />
 
             <button
               type="button"
               onClick={createCategory}
-              className="mt-3 h-11 w-full rounded-xl bg-[#b7838e] text-sm font-semibold text-white"
+              className="mt-3 h-11 w-full rounded-xl bg-[var(--nuvie-primary)] text-sm font-semibold text-white"
             >
               Criar categoria
             </button>
@@ -850,7 +850,7 @@ function ServicosPage() {
                             item
                           )
                         }
-                        className="flex size-7 items-center justify-center rounded-lg text-[#aaa5a6] hover:bg-[#f3e5e8] hover:text-[#9d6875]"
+                        className="flex size-7 items-center justify-center rounded-lg text-[#aaa5a6] hover:bg-[var(--nuvie-primary-soft)] hover:text-[var(--nuvie-primary-strong)]"
                         aria-label={`Excluir ${item}`}
                       >
                         <Trash2
@@ -918,7 +918,7 @@ function ServicosPage() {
                   }
                   placeholder="Ex.: Alongamento de cílios"
                   autoFocus
-                  className="h-11 w-full rounded-xl border border-black/[0.07] bg-[#faf9f8] px-4 text-sm text-[#211f20] outline-none focus:border-[#b7838e]/50"
+                  className="h-11 w-full rounded-xl border border-black/[0.07] bg-[#faf9f8] px-4 text-sm text-[#211f20] outline-none focus:border-[var(--nuvie-primary)]/50"
                 />
               </div>
 
@@ -932,7 +932,7 @@ function ServicosPage() {
                   <button
                     type="button"
                     onClick={openCategoryForm}
-                    className="flex items-center gap-1 text-[10px] font-medium text-[#9d6875]"
+                    className="flex items-center gap-1 text-[10px] font-medium text-[var(--nuvie-primary-strong)]"
                   >
                     <Plus
                       className="size-3"
@@ -949,7 +949,7 @@ function ServicosPage() {
                       event.target.value
                     )
                   }
-                  className="h-11 w-full rounded-xl border border-black/[0.07] bg-[#faf9f8] px-4 text-sm text-[#211f20] outline-none focus:border-[#b7838e]/50"
+                  className="h-11 w-full rounded-xl border border-black/[0.07] bg-[#faf9f8] px-4 text-sm text-[#211f20] outline-none focus:border-[var(--nuvie-primary)]/50"
                 >
                   {categories.length === 0 ? (
                     <option value="">
@@ -990,7 +990,7 @@ function ServicosPage() {
                     }
                     placeholder="0,00"
                     inputMode="decimal"
-                    className="h-11 w-full rounded-xl border border-black/[0.07] bg-[#faf9f8] pl-9 pr-4 text-sm text-[#211f20] outline-none focus:border-[#b7838e]/50"
+                    className="h-11 w-full rounded-xl border border-black/[0.07] bg-[#faf9f8] pl-9 pr-4 text-sm text-[#211f20] outline-none focus:border-[var(--nuvie-primary)]/50"
                   />
                 </div>
               </div>
@@ -1042,7 +1042,7 @@ function ServicosPage() {
                         className={`h-10 rounded-xl border text-xs font-medium transition-colors ${
                           duration ===
                           item.value
-                            ? "border-[#b7838e] bg-[#f3e5e8] text-[#9d6875]"
+                            ? "border-[var(--nuvie-primary)] bg-[var(--nuvie-primary-soft)] text-[var(--nuvie-primary-strong)]"
                             : "border-black/[0.06] bg-[#faf9f8] text-[#817b7d]"
                         }`}
                       >
@@ -1068,7 +1068,7 @@ function ServicosPage() {
                       )
                     }
                     inputMode="numeric"
-                    className="h-9 w-20 rounded-lg border border-black/[0.07] bg-[#faf9f8] px-2 text-center text-xs text-[#211f20] outline-none focus:border-[#b7838e]/50"
+                    className="h-9 w-20 rounded-lg border border-black/[0.07] bg-[#faf9f8] px-2 text-center text-xs text-[#211f20] outline-none focus:border-[var(--nuvie-primary)]/50"
                   />
 
                   <span className="text-[10px] text-[#aaa5a6]">
@@ -1097,7 +1097,7 @@ function ServicosPage() {
                         aria-label={`Ícone ${key}`}
                         className={`flex aspect-square items-center justify-center rounded-xl border transition-colors ${
                           icon === key
-                            ? "border-[#b7838e] bg-[#f3e5e8] text-[#9d6875]"
+                            ? "border-[var(--nuvie-primary)] bg-[var(--nuvie-primary-soft)] text-[var(--nuvie-primary-strong)]"
                             : "border-black/[0.06] bg-[#faf9f8] text-[#817b7d]"
                         }`}
                       >
@@ -1114,13 +1114,13 @@ function ServicosPage() {
               </div>
 
               {/* RESUMO */}
-              <div className="rounded-2xl bg-[#f3e5e8] p-4">
+              <div className="rounded-2xl bg-[var(--nuvie-primary-soft)] p-4">
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-[#817b7d]">
                     Categoria
                   </span>
 
-                  <strong className="text-xs text-[#9d6875]">
+                  <strong className="text-xs text-[var(--nuvie-primary-strong)]">
                     {category ||
                       "Sem categoria"}
                   </strong>
@@ -1131,7 +1131,7 @@ function ServicosPage() {
                     Duração
                   </span>
 
-                  <strong className="text-xs text-[#9d6875]">
+                  <strong className="text-xs text-[var(--nuvie-primary-strong)]">
                     {formatDuration(
                       Number(duration)
                     )}
@@ -1139,7 +1139,7 @@ function ServicosPage() {
                 </div>
 
                 {price && (
-                  <div className="mt-2 flex items-center justify-between border-t border-[#b7838e]/20 pt-2">
+                  <div className="mt-2 flex items-center justify-between border-t border-[var(--nuvie-primary)]/20 pt-2">
                     <span className="text-xs text-[#817b7d]">
                       Valor
                     </span>
@@ -1162,7 +1162,7 @@ function ServicosPage() {
                   !duration
                 }
                 onClick={saveService}
-                className="h-11 w-full rounded-xl bg-[#b7838e] text-sm font-semibold text-white disabled:opacity-50"
+                className="h-11 w-full rounded-xl bg-[var(--nuvie-primary)] text-sm font-semibold text-white disabled:opacity-50"
               >
                 {saving
                   ? "Salvando..."

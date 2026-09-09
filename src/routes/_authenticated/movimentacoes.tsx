@@ -463,7 +463,7 @@ function MovimentacoesPage() {
         <button
           type="button"
           onClick={openNew}
-          className="flex size-10 items-center justify-center rounded-full bg-[#b7838e] text-white shadow-sm active:scale-95"
+          className="flex size-10 items-center justify-center rounded-full bg-[var(--nuvie-primary)] text-white shadow-sm active:scale-95"
           aria-label="Nova movimentação"
         >
           <Plus
@@ -501,8 +501,8 @@ function MovimentacoesPage() {
       {/* RESUMO */}
       <div className="mt-5 space-y-2">
         <div className="grid grid-cols-2 gap-2">
-          <div className="rounded-2xl bg-[#f3e5e8] p-4">
-            <p className="text-xs text-[#8d6871]">
+          <div className="rounded-2xl bg-[var(--nuvie-primary-soft)] p-4">
+            <p className="text-xs text-[var(--nuvie-primary-deep)]">
               Entradas recebidas
             </p>
 
@@ -538,7 +538,7 @@ function MovimentacoesPage() {
             }
             className="rounded-2xl bg-[#f8eef0] p-4 text-left"
           >
-            <p className="text-xs text-[#8d6871]">
+            <p className="text-xs text-[var(--nuvie-primary-deep)]">
               Entradas pendentes
             </p>
 
@@ -549,7 +549,7 @@ function MovimentacoesPage() {
               )}
             </p>
 
-            <p className="mt-1 text-[10px] text-[#9d6875]">
+            <p className="mt-1 text-[10px] text-[var(--nuvie-primary-strong)]">
               A receber
             </p>
           </button>
@@ -625,7 +625,7 @@ function MovimentacoesPage() {
               }
               className={`shrink-0 rounded-full px-4 py-2 text-xs font-medium ${
                 filter === value
-                  ? "bg-[#b7838e] text-white"
+                  ? "bg-[var(--nuvie-primary)] text-white"
                   : "bg-white text-[#817b7d] ring-1 ring-black/[0.05]"
               }`}
             >
@@ -677,7 +677,7 @@ function MovimentacoesPage() {
                       <div
                         className={`flex size-10 shrink-0 items-center justify-center rounded-xl ${
                           isIncome
-                            ? "bg-[#f3e5e8] text-[#9d6875]"
+                            ? "bg-[var(--nuvie-primary-soft)] text-[var(--nuvie-primary-strong)]"
                             : "bg-[#f5f3f2] text-[#625d5f]"
                         }`}
                       >
@@ -721,7 +721,7 @@ function MovimentacoesPage() {
                       <p
                         className={`shrink-0 text-sm font-semibold ${
                           isIncome
-                            ? "text-[#9d6875]"
+                            ? "text-[var(--nuvie-primary-strong)]"
                             : "text-[#211f20]"
                         }`}
                       >
@@ -742,7 +742,7 @@ function MovimentacoesPage() {
                         className={`rounded-full px-2.5 py-1 text-[10px] font-medium ${
                           isPending
                             ? isIncome
-                              ? "bg-[#f8eef0] text-[#9d6875]"
+                              ? "bg-[#f8eef0] text-[var(--nuvie-primary-strong)]"
                               : "bg-[#f5f3f2] text-[#625d5f]"
                             : "bg-[#edf5ef] text-[#64816b]"
                         }`}
@@ -878,7 +878,7 @@ function MovimentacoesPage() {
                   className={`h-10 rounded-xl text-sm font-medium ${
                     type ===
                     "income"
-                      ? "bg-[#f3e5e8] text-[#9d6875]"
+                      ? "bg-[var(--nuvie-primary-soft)] text-[var(--nuvie-primary-strong)]"
                       : "bg-[#faf9f8] text-[#817b7d]"
                   }`}
                 >
@@ -926,7 +926,7 @@ function MovimentacoesPage() {
                 }
                 placeholder="Descrição"
                 autoFocus
-                className="h-11 w-full rounded-xl border border-black/[0.07] bg-[#faf9f8] px-4 text-sm outline-none focus:border-[#b7838e]/50"
+                className="h-11 w-full rounded-xl border border-black/[0.07] bg-[#faf9f8] px-4 text-sm outline-none focus:border-[var(--nuvie-primary)]/50"
               />
 
               <input
@@ -941,7 +941,7 @@ function MovimentacoesPage() {
                 }
                 placeholder="Valor"
                 inputMode="decimal"
-                className="h-11 w-full rounded-xl border border-black/[0.07] bg-[#faf9f8] px-4 text-sm outline-none focus:border-[#b7838e]/50"
+                className="h-11 w-full rounded-xl border border-black/[0.07] bg-[#faf9f8] px-4 text-sm outline-none focus:border-[var(--nuvie-primary)]/50"
               />
 
               <input
@@ -955,7 +955,7 @@ function MovimentacoesPage() {
                       .value
                   )
                 }
-                className="h-11 w-full rounded-xl border border-black/[0.07] bg-[#faf9f8] px-4 text-sm outline-none focus:border-[#b7838e]/50"
+                className="h-11 w-full rounded-xl border border-black/[0.07] bg-[#faf9f8] px-4 text-sm outline-none focus:border-[var(--nuvie-primary)]/50"
               />
 
               {/* STATUS */}
@@ -969,7 +969,7 @@ function MovimentacoesPage() {
                       .value
                   )
                 }
-                className="h-11 w-full rounded-xl border border-black/[0.07] bg-[#faf9f8] px-4 text-sm outline-none focus:border-[#b7838e]/50"
+                className="h-11 w-full rounded-xl border border-black/[0.07] bg-[#faf9f8] px-4 text-sm outline-none focus:border-[var(--nuvie-primary)]/50"
               >
                 <option value="paid">
                   {type ===
@@ -997,7 +997,7 @@ function MovimentacoesPage() {
                 onClick={
                   saveTransaction
                 }
-                className="h-11 w-full rounded-xl bg-[#b7838e] text-sm font-semibold text-white disabled:opacity-50"
+                className="h-11 w-full rounded-xl bg-[var(--nuvie-primary)] text-sm font-semibold text-white disabled:opacity-50"
               >
                 {saving
                   ? "Salvando..."
