@@ -12,10 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AuthenticatedConfiguracoesRouteImport } from './routes/_authenticated/Configuracoes'
 import { Route as AuthenticatedAReceberRouteImport } from './routes/_authenticated/a-receber'
 import { Route as AuthenticatedAgendaRouteImport } from './routes/_authenticated/agenda'
 import { Route as AuthenticatedClientesRouteImport } from './routes/_authenticated/clientes'
+import { Route as AuthenticatedConfiguracoesRouteImport } from './routes/_authenticated/configuracoes'
 import { Route as AuthenticatedContasRouteImport } from './routes/_authenticated/contas'
 import { Route as AuthenticatedInicioRouteImport } from './routes/_authenticated/inicio'
 import { Route as AuthenticatedMetasRouteImport } from './routes/_authenticated/metas'
@@ -36,12 +36,6 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedConfiguracoesRoute =
-  AuthenticatedConfiguracoesRouteImport.update({
-    id: '/Configuracoes',
-    path: '/Configuracoes',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
 const AuthenticatedAReceberRoute = AuthenticatedAReceberRouteImport.update({
   id: '/a-receber',
   path: '/a-receber',
@@ -57,6 +51,12 @@ const AuthenticatedClientesRoute = AuthenticatedClientesRouteImport.update({
   path: '/clientes',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedConfiguracoesRoute =
+  AuthenticatedConfiguracoesRouteImport.update({
+    id: '/configuracoes',
+    path: '/configuracoes',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedContasRoute = AuthenticatedContasRouteImport.update({
   id: '/contas',
   path: '/contas',
@@ -87,10 +87,10 @@ const AuthenticatedServicosRoute = AuthenticatedServicosRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/Configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/a-receber': typeof AuthenticatedAReceberRoute
   '/agenda': typeof AuthenticatedAgendaRoute
   '/clientes': typeof AuthenticatedClientesRoute
+  '/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/contas': typeof AuthenticatedContasRoute
   '/inicio': typeof AuthenticatedInicioRoute
   '/metas': typeof AuthenticatedMetasRoute
@@ -100,10 +100,10 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/Configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/a-receber': typeof AuthenticatedAReceberRoute
   '/agenda': typeof AuthenticatedAgendaRoute
   '/clientes': typeof AuthenticatedClientesRoute
+  '/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/contas': typeof AuthenticatedContasRoute
   '/inicio': typeof AuthenticatedInicioRoute
   '/metas': typeof AuthenticatedMetasRoute
@@ -115,10 +115,10 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
-  '/_authenticated/Configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/_authenticated/a-receber': typeof AuthenticatedAReceberRoute
   '/_authenticated/agenda': typeof AuthenticatedAgendaRoute
   '/_authenticated/clientes': typeof AuthenticatedClientesRoute
+  '/_authenticated/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/_authenticated/contas': typeof AuthenticatedContasRoute
   '/_authenticated/inicio': typeof AuthenticatedInicioRoute
   '/_authenticated/metas': typeof AuthenticatedMetasRoute
@@ -130,10 +130,10 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
-    | '/Configuracoes'
     | '/a-receber'
     | '/agenda'
     | '/clientes'
+    | '/configuracoes'
     | '/contas'
     | '/inicio'
     | '/metas'
@@ -143,10 +143,10 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
-    | '/Configuracoes'
     | '/a-receber'
     | '/agenda'
     | '/clientes'
+    | '/configuracoes'
     | '/contas'
     | '/inicio'
     | '/metas'
@@ -157,10 +157,10 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
-    | '/_authenticated/Configuracoes'
     | '/_authenticated/a-receber'
     | '/_authenticated/agenda'
     | '/_authenticated/clientes'
+    | '/_authenticated/configuracoes'
     | '/_authenticated/contas'
     | '/_authenticated/inicio'
     | '/_authenticated/metas'
@@ -197,13 +197,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/Configuracoes': {
-      id: '/_authenticated/Configuracoes'
-      path: '/Configuracoes'
-      fullPath: '/Configuracoes'
-      preLoaderRoute: typeof AuthenticatedConfiguracoesRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/a-receber': {
       id: '/_authenticated/a-receber'
       path: '/a-receber'
@@ -223,6 +216,13 @@ declare module '@tanstack/react-router' {
       path: '/clientes'
       fullPath: '/clientes'
       preLoaderRoute: typeof AuthenticatedClientesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/configuracoes': {
+      id: '/_authenticated/configuracoes'
+      path: '/configuracoes'
+      fullPath: '/configuracoes'
+      preLoaderRoute: typeof AuthenticatedConfiguracoesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/contas': {
@@ -264,10 +264,10 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedConfiguracoesRoute: typeof AuthenticatedConfiguracoesRoute
   AuthenticatedAReceberRoute: typeof AuthenticatedAReceberRoute
   AuthenticatedAgendaRoute: typeof AuthenticatedAgendaRoute
   AuthenticatedClientesRoute: typeof AuthenticatedClientesRoute
+  AuthenticatedConfiguracoesRoute: typeof AuthenticatedConfiguracoesRoute
   AuthenticatedContasRoute: typeof AuthenticatedContasRoute
   AuthenticatedInicioRoute: typeof AuthenticatedInicioRoute
   AuthenticatedMetasRoute: typeof AuthenticatedMetasRoute
@@ -276,10 +276,10 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedConfiguracoesRoute: AuthenticatedConfiguracoesRoute,
   AuthenticatedAReceberRoute: AuthenticatedAReceberRoute,
   AuthenticatedAgendaRoute: AuthenticatedAgendaRoute,
   AuthenticatedClientesRoute: AuthenticatedClientesRoute,
+  AuthenticatedConfiguracoesRoute: AuthenticatedConfiguracoesRoute,
   AuthenticatedContasRoute: AuthenticatedContasRoute,
   AuthenticatedInicioRoute: AuthenticatedInicioRoute,
   AuthenticatedMetasRoute: AuthenticatedMetasRoute,
