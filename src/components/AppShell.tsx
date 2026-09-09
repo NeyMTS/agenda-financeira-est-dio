@@ -1,6 +1,9 @@
 import type { ReactNode } from "react";
 import { BottomNav } from "./BottomNav";
+import { BrandMark } from "./BrandMark";
+import { NuvieTheme } from "./NuvieTheme";
 import { useBusinessSettings } from "@/hooks/use-business-settings";
+
 
 export function AppShell({
   title,
