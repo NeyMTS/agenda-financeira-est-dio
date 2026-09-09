@@ -52,6 +52,42 @@ export type Database = {
           },
         ]
       }
+      business_settings: {
+        Row: {
+          business_name: string
+          created_at: string
+          instagram: string
+          logo: string
+          primary_color: string
+          professional_name: string
+          updated_at: string
+          user_id: string
+          whatsapp: string
+        }
+        Insert: {
+          business_name?: string
+          created_at?: string
+          instagram?: string
+          logo?: string
+          primary_color?: string
+          professional_name?: string
+          updated_at?: string
+          user_id: string
+          whatsapp?: string
+        }
+        Update: {
+          business_name?: string
+          created_at?: string
+          instagram?: string
+          logo?: string
+          primary_color?: string
+          professional_name?: string
+          updated_at?: string
+          user_id?: string
+          whatsapp?: string
+        }
+        Relationships: []
+      }
       goals: {
         Row: {
           created_at: string
