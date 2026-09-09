@@ -5,19 +5,20 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { BrandMark } from "@/components/BrandMark";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Studio Lary Andrade" },
+      { title: "Nuvie — Gestão para profissionais da beleza" },
       {
         name: "description",
         content:
-          "Gestão de clientes, agenda, serviços e financeiro do Studio Lary Andrade.",
+          "Gestão de clientes, agenda, serviços e financeiro em um só lugar.",
       },
       {
         property: "og:title",
-        content: "Studio Lary Andrade",
+        content: "Nuvie — Gestão para profissionais da beleza",
       },
       {
         property: "og:description",
@@ -72,11 +73,10 @@ function AuthPage() {
 
         navigate({ to: "/inicio" });
       } else {
-        const { error } =
-          await supabase.auth.signInWithPassword({
-            email,
-            password,
-          });
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
 
         if (error) throw error;
 
@@ -97,31 +97,28 @@ function AuthPage() {
     <main className="flex min-h-screen items-center justify-center bg-[#faf9f8] px-5 py-10">
       <div className="w-full max-w-sm">
         {/* MARCA */}
-        <div className="text-center">
-          <p className="text-[22px] font-light tracking-[0.18em] text-[#211f20]">
-            STUDIO{" "}
-            <span className="text-[#b7838e]">DA LARY</span>
-          </p>
+        <div className="flex flex-col items-center text-center">
+          <BrandMark className="size-16" />
 
-          <div className="mx-auto mt-4 h-px w-10 bg-[#b7838e]" />
+          <h1 className="mt-4 text-[26px] font-semibold tracking-[-0.03em] text-[#211f20]">
+            Nuvie
+          </h1>
 
-          <p className="mt-5 text-[11px] uppercase tracking-[0.22em] text-[#aaa5a6]">
-            Gestão do seu Studio
+          <p className="mt-2 text-[10px] uppercase tracking-[0.22em] text-[#aaa5a6]">
+            Gestão para profissionais da beleza
           </p>
         </div>
 
         {/* TÍTULO */}
         <div className="mt-10 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight text-[#211f20]">
-            {mode === "login"
-              ? "Bem-vinda de volta"
-              : "Crie sua conta"}
-          </h1>
+          <h2 className="text-2xl font-semibold tracking-tight text-[#211f20]">
+            {mode === "login" ? "Bem-vinda de volta" : "Crie sua conta"}
+          </h2>
 
           <p className="mx-auto mt-2 max-w-xs text-sm leading-6 text-[#817b7d]">
             {mode === "login"
               ? "Acesse sua agenda, clientes e financeiro."
-              : "Tenha tudo do seu Studio organizado em um só lugar."}
+              : "Tenha sua agenda, clientes e financeiro organizados em um só lugar."}
           </p>
         </div>
 
@@ -142,10 +139,8 @@ function AuthPage() {
               <Input
                 id="name"
                 value={name}
-                onChange={(event) =>
-                  setName(event.target.value)
-                }
-                placeholder="Lary"
+                onChange={(event) => setName(event.target.value)}
+                placeholder="Seu nome"
                 required
                 className="h-11 rounded-xl border-black/[0.08] bg-[#faf9f8] text-sm focus-visible:ring-[#b7838e]"
               />
@@ -154,9 +149,7 @@ function AuthPage() {
 
           <div
             className={
-              mode === "signup"
-                ? "mt-4 space-y-2"
-                : "space-y-2"
+              mode === "signup" ? "mt-4 space-y-2" : "space-y-2"
             }
           >
             <Label
@@ -170,9 +163,7 @@ function AuthPage() {
               id="email"
               type="email"
               value={email}
-              onChange={(event) =>
-                setEmail(event.target.value)
-              }
+              onChange={(event) => setEmail(event.target.value)}
               placeholder="voce@email.com"
               required
               className="h-11 rounded-xl border-black/[0.08] bg-[#faf9f8] text-sm focus-visible:ring-[#b7838e]"
@@ -191,9 +182,7 @@ function AuthPage() {
               id="password"
               type="password"
               value={password}
-              onChange={(event) =>
-                setPassword(event.target.value)
-              }
+              onChange={(event) => setPassword(event.target.value)}
               minLength={6}
               required
               placeholder="••••••••"
@@ -209,7 +198,7 @@ function AuthPage() {
             {loading
               ? "Aguarde..."
               : mode === "login"
-                ? "Entrar no Studio"
+                ? "Entrar"
                 : "Criar minha conta"}
           </Button>
         </form>
@@ -218,9 +207,7 @@ function AuthPage() {
         <button
           type="button"
           onClick={() =>
-            setMode(
-              mode === "login" ? "signup" : "login"
-            )
+            setMode(mode === "login" ? "signup" : "login")
           }
           className="mt-5 w-full text-center text-sm text-[#817b7d]"
         >
@@ -242,7 +229,7 @@ function AuthPage() {
         </button>
 
         <p className="mt-8 text-center text-[10px] uppercase tracking-[0.16em] text-[#aaa5a6]">
-          Studio Lary Andrade
+          Organização para grandes resultados
         </p>
       </div>
     </main>
