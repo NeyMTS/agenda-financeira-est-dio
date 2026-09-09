@@ -39,13 +39,16 @@ export function AppShell({
 
         <header className="mb-6 flex items-center justify-between gap-4">
           <div className="flex min-w-0 items-center gap-3">
-            {settings.logo ? (
+            {settings.logoUrl ? (
               <img
-                src={settings.logo}
+                src={settings.logoUrl}
                 alt={`Logo de ${displayName}`}
-                className="size-10 shrink-0 rounded-xl object-cover"
+                className="size-10 shrink-0 rounded-xl bg-white object-contain"
               />
-            ) : null}
+            ) : (
+              <BrandMark className="size-10 shrink-0 rounded-xl" />
+            )}
+
 
             <div className="min-w-0">
               <p
