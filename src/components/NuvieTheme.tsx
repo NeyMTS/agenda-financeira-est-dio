@@ -6,21 +6,31 @@ export function NuvieTheme() {
 
   useEffect(() => {
     const root = document.documentElement;
+    const color = settings.primaryColor;
 
-    root.style.setProperty(
-      "--nuvie-primary",
-      settings.primaryColor
-    );
+    root.style.setProperty("--nuvie-primary", color);
 
     root.style.setProperty(
       "--nuvie-primary-soft",
-      `${settings.primaryColor}18`
+      `color-mix(in srgb, ${color} 14%, white)`
     );
 
     root.style.setProperty(
       "--nuvie-primary-medium",
-      `${settings.primaryColor}33`
+      `color-mix(in srgb, ${color} 32%, white)`
     );
+
+    root.style.setProperty(
+      "--nuvie-primary-strong",
+      `color-mix(in srgb, ${color} 82%, black)`
+    );
+
+    root.style.setProperty(
+      "--nuvie-primary-deep",
+      `color-mix(in srgb, ${color} 72%, black)`
+    );
+
+    root.style.setProperty("--nuvie-primary-foreground", "#ffffff");
   }, [settings.primaryColor]);
 
   return null;

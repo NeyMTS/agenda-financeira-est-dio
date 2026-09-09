@@ -336,7 +336,7 @@ function InicioPage() {
           key={client.id}
           to="/clientes"
           hash={`cliente-${client.id}`}
-          className="mb-3 flex items-center gap-3 rounded-2xl bg-[#f3e5e8] p-4 text-[#9d6875]"
+          className="mb-3 flex items-center gap-3 rounded-2xl bg-[var(--nuvie-primary-soft)] p-4 text-[var(--nuvie-primary-strong)]"
         >
           <Cake
             className="size-5 shrink-0"
@@ -349,7 +349,7 @@ function InicioPage() {
               {client.name}! 🎂
             </p>
 
-            <p className="mt-1 text-xs text-[#8d6871]">
+            <p className="mt-1 text-xs text-[var(--nuvie-primary-deep)]">
               Toque para abrir o cadastro da cliente
             </p>
           </div>
@@ -362,7 +362,7 @@ function InicioPage() {
 
       {upcomingBirthdays.length > 0 && (
         <section className="mb-5 rounded-2xl border border-black/[0.05] bg-white p-4 shadow-sm">
-          <div className="flex items-center gap-2 text-[#9d6875]">
+          <div className="flex items-center gap-2 text-[var(--nuvie-primary-strong)]">
             <Cake
               className="size-4"
               strokeWidth={1.7}
@@ -403,7 +403,7 @@ function InicioPage() {
       )}
 
       {/* RESUMO PRINCIPAL */}
-      <section className="rounded-[26px] bg-[#b7838e] p-5 text-white shadow-sm">
+      <section className="rounded-[26px] bg-[var(--nuvie-primary)] p-5 text-white shadow-sm">
         <p className="text-xs font-medium uppercase tracking-[0.15em] text-white/70">
           Saldo do mês
         </p>
@@ -453,7 +453,7 @@ function InicioPage() {
           to="/agenda"
           className="rounded-2xl border border-black/[0.05] bg-white p-4 shadow-sm"
         >
-          <div className="flex items-center gap-2 text-[#9d6875]">
+          <div className="flex items-center gap-2 text-[var(--nuvie-primary-strong)]">
             <CalendarDays
               className="size-4"
               strokeWidth={1.7}
@@ -479,7 +479,7 @@ function InicioPage() {
           to="/agenda"
           className="rounded-2xl border border-black/[0.05] bg-white p-4 shadow-sm"
         >
-          <div className="flex items-center gap-2 text-[#9d6875]">
+          <div className="flex items-center gap-2 text-[var(--nuvie-primary-strong)]">
             <CalendarDays
               className="size-4"
               strokeWidth={1.7}
@@ -513,7 +513,7 @@ function InicioPage() {
         <div className="grid grid-cols-2 gap-3">
           <Link
             to="/agenda"
-            className="flex items-center gap-3 rounded-2xl bg-[#f3e5e8] p-4 text-[#9d6875]"
+            className="flex items-center gap-3 rounded-2xl bg-[var(--nuvie-primary-soft)] p-4 text-[var(--nuvie-primary-strong)]"
           >
             <CalendarDays
               className="size-5"
@@ -525,7 +525,7 @@ function InicioPage() {
                 Agenda
               </p>
 
-              <p className="mt-0.5 text-[10px] text-[#8d6871]">
+              <p className="mt-0.5 text-[10px] text-[var(--nuvie-primary-deep)]">
                 Ver atendimentos
               </p>
             </div>
@@ -533,7 +533,7 @@ function InicioPage() {
 
           <Link
             to="/servicos"
-            className="flex items-center gap-3 rounded-2xl bg-white p-4 text-[#9d6875] shadow-sm ring-1 ring-black/[0.04]"
+            className="flex items-center gap-3 rounded-2xl bg-white p-4 text-[var(--nuvie-primary-strong)] shadow-sm ring-1 ring-black/[0.04]"
           >
             <Sparkles
               className="size-5"
@@ -568,7 +568,7 @@ function InicioPage() {
 
           <Link
             to="/agenda"
-            className="flex items-center gap-1 text-xs font-medium text-[#9d6875]"
+            className="flex items-center gap-1 text-xs font-medium text-[var(--nuvie-primary-strong)]"
           >
             Ver agenda
 
@@ -591,7 +591,7 @@ function InicioPage() {
                   className="rounded-2xl border border-black/[0.05] bg-white p-4 shadow-sm"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="flex size-10 shrink-0 flex-col items-center justify-center rounded-xl bg-[#f3e5e8] text-[#9d6875]">
+                    <div className="flex size-10 shrink-0 flex-col items-center justify-center rounded-xl bg-[var(--nuvie-primary-soft)] text-[var(--nuvie-primary-strong)]">
                       <span className="text-[9px] uppercase">
                         {new Date(
                           `${appointment.scheduled_date}T12:00:00`
@@ -639,7 +639,7 @@ function InicioPage() {
                         )}
                       </p>
 
-                      <p className="mt-1 text-[10px] text-[#9d6875]">
+                      <p className="mt-1 text-[10px] text-[var(--nuvie-primary-strong)]">
                         A receber R${" "}
                         {money(
                           Math.max(

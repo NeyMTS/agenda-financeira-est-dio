@@ -8,10 +8,13 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import {
   defaultSettings,
+  resolveLogoUrl,
+  uploadBusinessLogo,
   useBusinessSettingsQuery,
   useSaveBusinessSettings,
   type BusinessSettings,
 } from "@/hooks/use-business-settings";
+
 
 const colorOptions = [
   { name: "Rosé", value: "#B7838E" },
@@ -49,15 +52,19 @@ function ConfiguracoesPage() {
     }));
   }
 
-  function handleLogoChange(
+  const [uploading, setUploading] = useState(false);
+
+  async function handleLogoChange(
     event: React.ChangeEvent<HTMLInputElement>
   ) {
     const file = event.target.files?.[0];
 
     if (!file) return;
 
-    if (!file.type.startsWith("image/")) {
-      toast.error("Selecione uma imagem válida.");
+    if (
+      !["image/png", "image/jpeg", "image/webp"].includes(file.type)
+    ) {
+      toast.error("Envie uma imagem PNG, JPG ou WEBP.");
       return;
     }
 
@@ -66,16 +73,27 @@ function ConfiguracoesPage() {
       return;
     }
 
-    const reader = new FileReader();
+    setUploading(true);
 
-    reader.onload = () => {
-      if (typeof reader.result === "string") {
-        updateField("logo", reader.result);
-      }
-    };
+    try {
+      const path = await uploadBusinessLogo(file);
+      const url = await resolveLogoUrl(path);
 
-    reader.readAsDataURL(file);
+      setSettings((current) => ({
+        ...current,
+        logo: path,
+        logoUrl: url,
+      }));
+
+      toast.success("Logo enviada. Salve para confirmar.");
+    } catch {
+      toast.error("Não foi possível enviar a logo.");
+    } finally {
+      setUploading(false);
+      event.target.value = "";
+    }
   }
+
 
   async function handleSave() {
     try {
@@ -121,17 +139,17 @@ function ConfiguracoesPage() {
                 htmlFor="logo-upload"
                 className="group relative flex size-24 cursor-pointer items-center justify-center overflow-hidden rounded-3xl border border-dashed border-black/10 bg-[#faf9f8]"
               >
-                {settings.logo ? (
+                {settings.logoUrl ? (
                   <img
-                    src={settings.logo}
+                    src={settings.logoUrl}
                     alt="Logo do negócio"
-                    className="size-full object-cover"
+                    className="size-full bg-white object-contain p-1"
                   />
                 ) : (
                   <div className="flex flex-col items-center gap-1 text-[#aaa5a6]">
                     <ImagePlus className="size-7" />
                     <span className="text-[10px]">
-                      Adicionar logo
+                      {uploading ? "Enviando..." : "Adicionar logo"}
                     </span>
                   </div>
                 )}
@@ -139,15 +157,16 @@ function ConfiguracoesPage() {
                 <input
                   id="logo-upload"
                   type="file"
-                  accept="image/*"
+                  accept="image/png,image/jpeg,image/webp"
                   className="hidden"
                   onChange={handleLogoChange}
                 />
               </label>
 
               <p className="mt-2 text-[10px] text-[#aaa5a6]">
-                PNG ou JPG • até 2 MB
+                PNG, JPG ou WEBP • até 2 MB
               </p>
+
             </div>
 
             <div className="space-y-2">

@@ -2338,7 +2338,7 @@ function AgendaPage() {
           onClick={() =>
             openNew()
           }
-          className="flex size-10 items-center justify-center rounded-full bg-[#b7838e] text-white shadow-sm active:scale-95"
+          className="flex size-10 items-center justify-center rounded-full bg-[var(--nuvie-primary)] text-white shadow-sm active:scale-95"
           aria-label="Novo agendamento"
         >
           <Plus
@@ -2407,7 +2407,7 @@ function AgendaPage() {
           </button>
         </div>
 
-        <div className="mt-3 flex rounded-xl bg-[#f3e5e8] p-1">
+        <div className="mt-3 flex rounded-xl bg-[var(--nuvie-primary-soft)] p-1">
           <button
             type="button"
             onClick={() =>
@@ -2418,7 +2418,7 @@ function AgendaPage() {
             className={`flex-1 rounded-lg py-2 text-xs font-medium transition ${
               viewMode ===
               "dia"
-                ? "bg-white text-[#9d6875] shadow-sm"
+                ? "bg-white text-[var(--nuvie-primary-strong)] shadow-sm"
                 : "text-[#817b7d]"
             }`}
           >
@@ -2435,7 +2435,7 @@ function AgendaPage() {
             className={`flex-1 rounded-lg py-2 text-xs font-medium transition ${
               viewMode ===
               "mes"
-                ? "bg-white text-[#9d6875] shadow-sm"
+                ? "bg-white text-[var(--nuvie-primary-strong)] shadow-sm"
                 : "text-[#817b7d]"
             }`}
           >
@@ -2584,7 +2584,7 @@ function AgendaPage() {
                           .value
                       )
                     }
-                    className="h-11 w-full appearance-none rounded-xl border border-black/[0.08] bg-white pl-10 pr-3 text-sm text-[#211f20] outline-none focus:border-[#b7838e]"
+                    className="h-11 w-full appearance-none rounded-xl border border-black/[0.08] bg-white pl-10 pr-3 text-sm text-[#211f20] outline-none focus:border-[var(--nuvie-primary)]"
                   >
                     <option value="">
                       Selecione a cliente
@@ -2628,7 +2628,7 @@ function AgendaPage() {
                           key={
                             service.id
                           }
-                          className="flex items-center gap-3 rounded-xl border border-[#b7838e]/15 bg-[#f3e5e8] px-3 py-2.5"
+                          className="flex items-center gap-3 rounded-xl border border-[var(--nuvie-primary)]/15 bg-[var(--nuvie-primary-soft)] px-3 py-2.5"
                         >
                           <div className="min-w-0 flex-1">
                             <p className="truncate text-xs font-semibold text-[#211f20]">
@@ -2644,7 +2644,7 @@ function AgendaPage() {
                                 )}
                               </span>
 
-                              <span className="text-[10px] text-[#9d6875]">
+                              <span className="text-[10px] text-[var(--nuvie-primary-strong)]">
                                 R${" "}
                                 {formatMoney(
                                   service.price
@@ -2660,7 +2660,7 @@ function AgendaPage() {
                                 service.id
                               )
                             }
-                            className="flex size-7 shrink-0 items-center justify-center rounded-full bg-white text-[#9d6875]"
+                            className="flex size-7 shrink-0 items-center justify-center rounded-full bg-white text-[var(--nuvie-primary-strong)]"
                             aria-label={`Remover ${service.name}`}
                           >
                             <X
@@ -2690,7 +2690,7 @@ function AgendaPage() {
                           .value
                       )
                     }
-                    className="h-11 min-w-0 flex-1 rounded-xl border border-black/[0.08] bg-white px-3 text-sm text-[#211f20] outline-none focus:border-[#b7838e]"
+                    className="h-11 min-w-0 flex-1 rounded-xl border border-black/[0.08] bg-white px-3 text-sm text-[#211f20] outline-none focus:border-[var(--nuvie-primary)]"
                   >
                     <option value="">
                       {selectedServices.length >
@@ -2752,7 +2752,7 @@ function AgendaPage() {
                     disabled={
                       !serviceToAdd
                     }
-                    className="flex h-11 shrink-0 items-center gap-1.5 rounded-xl bg-[#b7838e] px-4 text-xs font-semibold text-white disabled:opacity-40"
+                    className="flex h-11 shrink-0 items-center gap-1.5 rounded-xl bg-[var(--nuvie-primary)] px-4 text-xs font-semibold text-white disabled:opacity-40"
                   >
                     <Plus
                       className="size-4"
@@ -2774,13 +2774,13 @@ function AgendaPage() {
 
               {selectedServices.length >
                 0 && (
-                <div className="rounded-2xl bg-[#f3e5e8] p-4">
+                <div className="rounded-2xl bg-[var(--nuvie-primary-soft)] p-4">
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-[#817b7d]">
                       Serviços
                     </span>
 
-                    <strong className="text-xs text-[#9d6875]">
+                    <strong className="text-xs text-[var(--nuvie-primary-strong)]">
                       {
                         selectedServices.length
                       }
@@ -2792,14 +2792,14 @@ function AgendaPage() {
                       Tempo total
                     </span>
 
-                    <strong className="text-xs text-[#9d6875]">
+                    <strong className="text-xs text-[var(--nuvie-primary-strong)]">
                       {formatDuration(
                         getSelectedDuration()
                       )}
                     </strong>
                   </div>
 
-                  <div className="mt-2 flex items-center justify-between border-t border-[#b7838e]/20 pt-2">
+                  <div className="mt-2 flex items-center justify-between border-t border-[var(--nuvie-primary)]/20 pt-2">
                     <span className="text-xs font-medium text-[#625d5f]">
                       Valor total
                     </span>
@@ -2851,7 +2851,7 @@ function AgendaPage() {
                           }
                           inputMode="decimal"
                           placeholder="0,00"
-                          className="h-11 w-full rounded-xl border border-black/[0.08] bg-white px-3 text-sm text-[#211f20] outline-none focus:border-[#b7838e]"
+                          className="h-11 w-full rounded-xl border border-black/[0.08] bg-white px-3 text-sm text-[#211f20] outline-none focus:border-[var(--nuvie-primary)]"
                         />
 
                         <input
@@ -2871,7 +2871,7 @@ function AgendaPage() {
                               }
                             )
                           }
-                          className="h-11 w-full rounded-xl border border-black/[0.08] bg-white px-3 text-sm text-[#211f20] outline-none focus:border-[#b7838e]"
+                          className="h-11 w-full rounded-xl border border-black/[0.08] bg-white px-3 text-sm text-[#211f20] outline-none focus:border-[var(--nuvie-primary)]"
                         />
 
                         <button
@@ -2882,7 +2882,7 @@ function AgendaPage() {
                             )
                           }
                           aria-label="Remover sinal"
-                          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-black/[0.08] bg-white text-[#9d6875]"
+                          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-black/[0.08] bg-white text-[var(--nuvie-primary-strong)]"
                         >
                           <X className="h-4 w-4" />
                         </button>
@@ -2895,7 +2895,7 @@ function AgendaPage() {
                     onClick={
                       addDepositEntry
                     }
-                    className="flex h-11 w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-[#b7838e]/50 bg-white text-sm font-medium text-[#9d6875]"
+                    className="flex h-11 w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-[var(--nuvie-primary)]/50 bg-white text-sm font-medium text-[var(--nuvie-primary-strong)]"
                   >
                     <Plus className="h-4 w-4" />
                     Adicionar sinal
@@ -2924,7 +2924,7 @@ function AgendaPage() {
                           .value
                       )
                     }
-                    className="h-11 w-full rounded-xl border border-black/[0.08] bg-white px-3 text-sm text-[#211f20] outline-none focus:border-[#b7838e]"
+                    className="h-11 w-full rounded-xl border border-black/[0.08] bg-white px-3 text-sm text-[#211f20] outline-none focus:border-[var(--nuvie-primary)]"
                   />
                 </div>
 
@@ -2947,14 +2947,14 @@ function AgendaPage() {
                           .value
                       )
                     }
-                    className="h-11 w-full rounded-xl border border-black/[0.08] bg-white px-3 text-sm text-[#211f20] outline-none focus:border-[#b7838e]"
+                    className="h-11 w-full rounded-xl border border-black/[0.08] bg-white px-3 text-sm text-[#211f20] outline-none focus:border-[var(--nuvie-primary)]"
                   />
                 </div>
               </div>
 
               {selectedServices.length >
                 0 && (
-                <div className="rounded-2xl bg-[#f3e5e8] p-4">
+                <div className="rounded-2xl bg-[var(--nuvie-primary-soft)] p-4">
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-[#817b7d]">
                       Total
@@ -2973,7 +2973,7 @@ function AgendaPage() {
                       Recebido
                     </span>
 
-                    <strong className="text-sm text-[#9d6875]">
+                    <strong className="text-sm text-[var(--nuvie-primary-strong)]">
                       R${" "}
                       {formatMoney(
                         depositTotal
@@ -2981,12 +2981,12 @@ function AgendaPage() {
                     </strong>
                   </div>
 
-                  <div className="mt-2 flex items-center justify-between border-t border-[#b7838e]/20 pt-2">
+                  <div className="mt-2 flex items-center justify-between border-t border-[var(--nuvie-primary)]/20 pt-2">
                     <span className="text-xs font-medium text-[#625d5f]">
                       A receber
                     </span>
 
-                    <strong className="text-sm text-[#9d6875]">
+                    <strong className="text-sm text-[var(--nuvie-primary-strong)]">
                       R${" "}
                       {formatMoney(
                         Math.max(
@@ -3003,7 +3003,7 @@ function AgendaPage() {
                       Tempo ocupado
                     </span>
 
-                    <strong className="text-xs text-[#9d6875]">
+                    <strong className="text-xs text-[var(--nuvie-primary-strong)]">
                       {formatDuration(
                         getSelectedDuration()
                       )}
@@ -3023,7 +3023,7 @@ function AgendaPage() {
                 selectedServices.length ===
                   0
               }
-              className="mt-4 flex h-11 w-full items-center justify-center rounded-xl bg-[#b7838e] text-sm font-semibold text-white shadow-sm disabled:opacity-60"
+              className="mt-4 flex h-11 w-full items-center justify-center rounded-xl bg-[var(--nuvie-primary)] text-sm font-semibold text-white shadow-sm disabled:opacity-60"
             >
               {saving
                 ? "Salvando..."
@@ -3090,7 +3090,7 @@ function AgendaPage() {
                     )
                   }
                   placeholder="Ex.: Médico, compromisso pessoal, folga..."
-                  className="h-11 w-full rounded-xl border border-black/[0.08] bg-white px-3 text-sm text-[#211f20] outline-none focus:border-[#b7838e]"
+                  className="h-11 w-full rounded-xl border border-black/[0.08] bg-white px-3 text-sm text-[#211f20] outline-none focus:border-[var(--nuvie-primary)]"
                 />
               </div>
 
@@ -3113,7 +3113,7 @@ function AgendaPage() {
                         .value
                     )
                   }
-                  className="h-11 w-full rounded-xl border border-black/[0.08] bg-white px-3 text-sm text-[#211f20] outline-none focus:border-[#b7838e]"
+                  className="h-11 w-full rounded-xl border border-black/[0.08] bg-white px-3 text-sm text-[#211f20] outline-none focus:border-[var(--nuvie-primary)]"
                 />
               </div>
 
@@ -3132,7 +3132,7 @@ function AgendaPage() {
                         .checked
                     )
                   }
-                  className="size-4 accent-[#b7838e]"
+                  className="size-4 accent-[var(--nuvie-primary)]"
                 />
 
                 <div>
@@ -3167,7 +3167,7 @@ function AgendaPage() {
                             .value
                         )
                       }
-                      className="h-11 w-full rounded-xl border border-black/[0.08] bg-white px-3 text-sm text-[#211f20] outline-none focus:border-[#b7838e]"
+                      className="h-11 w-full rounded-xl border border-black/[0.08] bg-white px-3 text-sm text-[#211f20] outline-none focus:border-[var(--nuvie-primary)]"
                     />
                   </div>
 
@@ -3201,7 +3201,7 @@ function AgendaPage() {
                             className={`rounded-xl border py-2.5 text-xs font-medium ${
                               blockDuration ===
                               value
-                                ? "border-[#b7838e] bg-[#f3e5e8] text-[#9d6875]"
+                                ? "border-[var(--nuvie-primary)] bg-[var(--nuvie-primary-soft)] text-[var(--nuvie-primary-strong)]"
                                 : "border-black/[0.06] bg-white text-[#817b7d]"
                             }`}
                           >
@@ -3236,7 +3236,7 @@ function AgendaPage() {
                             ) || 0
                           )
                         }
-                        className="h-9 w-24 rounded-lg border border-black/[0.07] bg-white px-2 text-center text-xs text-[#211f20] outline-none focus:border-[#b7838e]"
+                        className="h-9 w-24 rounded-lg border border-black/[0.07] bg-white px-2 text-center text-xs text-[#211f20] outline-none focus:border-[var(--nuvie-primary)]"
                       />
 
                       <span className="text-[10px] text-[#aaa5a6]">
@@ -3247,13 +3247,13 @@ function AgendaPage() {
                 </>
               )}
 
-              <div className="rounded-2xl bg-[#f3e5e8] p-4">
+              <div className="rounded-2xl bg-[var(--nuvie-primary-soft)] p-4">
                 <div className="flex items-center justify-between gap-3">
                   <span className="text-xs text-[#817b7d]">
                     Bloqueio
                   </span>
 
-                  <strong className="text-right text-xs text-[#9d6875]">
+                  <strong className="text-right text-xs text-[var(--nuvie-primary-strong)]">
                     {blockAllDay
                       ? "Dia inteiro"
                       : `${blockTime || "--:--"} • ${formatDuration(blockDuration)}`}
@@ -3273,7 +3273,7 @@ function AgendaPage() {
                 onClick={
                   saveCalendarBlock
                 }
-                className="h-11 w-full rounded-xl bg-[#b7838e] text-sm font-semibold text-white shadow-sm disabled:opacity-60"
+                className="h-11 w-full rounded-xl bg-[var(--nuvie-primary)] text-sm font-semibold text-white shadow-sm disabled:opacity-60"
               >
                 {savingBlock
                   ? "Salvando..."
@@ -3784,9 +3784,9 @@ function DaySchedule({
 
   return (
     <div>
-      <div className="mb-4 flex items-center justify-between rounded-2xl bg-[#f3e5e8] px-4 py-3">
+      <div className="mb-4 flex items-center justify-between rounded-2xl bg-[var(--nuvie-primary-soft)] px-4 py-3">
         <div>
-          <p className="text-[10px] uppercase tracking-[0.15em] text-[#9d6875]">
+          <p className="text-[10px] uppercase tracking-[0.15em] text-[var(--nuvie-primary-strong)]">
             Agenda do dia
           </p>
 
@@ -3803,7 +3803,7 @@ function DaySchedule({
                 "09:00"
               )
             }
-            className="flex items-center gap-1.5 rounded-xl border border-[#b7838e]/20 bg-white px-3 py-2 text-xs font-semibold text-[#817b7d]"
+            className="flex items-center gap-1.5 rounded-xl border border-[var(--nuvie-primary)]/20 bg-white px-3 py-2 text-xs font-semibold text-[#817b7d]"
           >
             <CalendarDays
               className="size-3.5"
@@ -3821,7 +3821,7 @@ function DaySchedule({
                 "09:00"
               )
             }
-            className="flex items-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-semibold text-[#9d6875]"
+            className="flex items-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-semibold text-[var(--nuvie-primary-strong)]"
           >
             <Plus
               className="size-3.5"
@@ -3835,17 +3835,17 @@ function DaySchedule({
       </div>
 
       {draggingAppointment && (
-        <div className="mb-3 rounded-xl bg-[#b7838e] px-3 py-2 text-center text-[10px] font-medium text-white shadow-sm">
+        <div className="mb-3 rounded-xl bg-[var(--nuvie-primary)] px-3 py-2 text-center text-[10px] font-medium text-white shadow-sm">
           Arraste até um horário livre e solte
         </div>
       )}
 
       {blocks.length >
         0 && (
-        <div className="mb-3 rounded-2xl border border-[#b7838e]/10 bg-white px-3 py-2.5">
+        <div className="mb-3 rounded-2xl border border-[var(--nuvie-primary)]/10 bg-white px-3 py-2.5">
           <div className="flex items-center gap-2">
             <CalendarDays
-              className="size-3.5 text-[#9d6875]"
+              className="size-3.5 text-[var(--nuvie-primary-strong)]"
               strokeWidth={
                 1.7
               }
@@ -3955,7 +3955,7 @@ function DaySchedule({
                         onPointerCancel={
                           handleAppointmentPointerUp
                         }
-                        className={`select-none touch-none rounded-xl border border-[#b7838e]/20 bg-[#f3e5e8] p-3 transition ${
+                        className={`select-none touch-none rounded-xl border border-[var(--nuvie-primary)]/20 bg-[var(--nuvie-primary-soft)] p-3 transition ${
                           isDragging
                             ? "scale-[0.98] opacity-60 shadow-lg"
                             : "active:scale-[0.99]"
@@ -4001,7 +4001,7 @@ function DaySchedule({
                                 )}
                               </span>
 
-                              <span className="text-[10px] text-[#9d6875]">
+                              <span className="text-[10px] text-[var(--nuvie-primary-strong)]">
                                 R${" "}
                                 {Number(
                                   appointment.total_amount
@@ -4017,7 +4017,7 @@ function DaySchedule({
 
                           {appointment.status ===
                           "concluido" ? (
-                            <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-[#b7838e] text-white">
+                            <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-[var(--nuvie-primary)] text-white">
                               <Check
                                 className="size-4"
                                 strokeWidth={
@@ -4038,7 +4038,7 @@ function DaySchedule({
                                   appointment
                                 )
                               }
-                              className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white text-[#9d6875] shadow-sm"
+                              className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white text-[var(--nuvie-primary-strong)] shadow-sm"
                               aria-label="Finalizar atendimento"
                             >
                               <Check
@@ -4064,7 +4064,7 @@ function DaySchedule({
                           </div>
                         )}
 
-                        <div className="mt-3 grid grid-cols-3 gap-1.5 border-t border-[#b7838e]/15 pt-2">
+                        <div className="mt-3 grid grid-cols-3 gap-1.5 border-t border-[var(--nuvie-primary)]/15 pt-2">
                           <button
                             type="button"
                             onPointerDown={(
@@ -4077,7 +4077,7 @@ function DaySchedule({
                                 appointment
                               )
                             }
-                            className="flex items-center justify-center gap-1 rounded-lg bg-white py-2 text-[10px] font-medium text-[#9d6875]"
+                            className="flex items-center justify-center gap-1 rounded-lg bg-white py-2 text-[10px] font-medium text-[var(--nuvie-primary-strong)]"
                           >
                             <MessageCircle
                               className="size-3"
@@ -4139,7 +4139,7 @@ function DaySchedule({
                           0 &&
                           appointment.status !==
                             "concluido" && (
-                            <p className="mt-2 text-[9px] text-[#9d6875]">
+                            <p className="mt-2 text-[9px] text-[var(--nuvie-primary-strong)]">
                               A receber: R${" "}
                               {remaining.toLocaleString(
                                 "pt-BR",
@@ -4151,7 +4151,7 @@ function DaySchedule({
                           )}
 
                         {isDragging && (
-                          <p className="mt-2 text-center text-[9px] font-medium text-[#9d6875]">
+                          <p className="mt-2 text-center text-[9px] font-medium text-[var(--nuvie-primary-strong)]">
                             Segure e arraste para mover
                           </p>
                         )}
@@ -4161,7 +4161,7 @@ function DaySchedule({
 
                   {duration >
                     SLOT_MINUTES && (
-                    <div className="flex min-h-[35px] border-t border-[#b7838e]/10 bg-[#faf7f7]">
+                    <div className="flex min-h-[35px] border-t border-[var(--nuvie-primary)]/10 bg-[#faf7f7]">
                       <div className="w-[62px] shrink-0 border-r border-black/[0.05] px-2 py-2 text-center text-[9px] text-[#aaa5a6]">
                         até
                       </div>
@@ -4255,7 +4255,7 @@ function DaySchedule({
                   {duration >
                     SLOT_MINUTES &&
                     !block.all_day && (
-                      <div className="flex min-h-[35px] border-t border-[#b7838e]/10 bg-[#faf7f7]">
+                      <div className="flex min-h-[35px] border-t border-[var(--nuvie-primary)]/10 bg-[#faf7f7]">
                         <div className="w-[62px] shrink-0 border-r border-black/[0.05] px-2 py-2 text-center text-[9px] text-[#aaa5a6]">
                           até
                         </div>
@@ -4406,7 +4406,7 @@ function DaySchedule({
                 }
                 className={`flex min-h-[54px] border-b border-black/[0.04] transition ${
                   isDropTarget
-                    ? "bg-[#f3e5e8] ring-2 ring-inset ring-[#b7838e]/30"
+                    ? "bg-[var(--nuvie-primary-soft)] ring-2 ring-inset ring-[var(--nuvie-primary)]/30"
                     : ""
                 }`}
               >
@@ -4433,7 +4433,7 @@ function DaySchedule({
                     <span
                       className={`text-[10px] ${
                         isDropTarget
-                          ? "font-semibold text-[#9d6875]"
+                          ? "font-semibold text-[var(--nuvie-primary-strong)]"
                           : "text-[#c1bbbc]"
                       }`}
                     >
@@ -4656,7 +4656,7 @@ function MonthCalendar({
                   <span
                     className={`flex size-7 items-center justify-center rounded-full text-xs ${
                       isToday
-                        ? "bg-[#b7838e] font-semibold text-white"
+                        ? "bg-[var(--nuvie-primary)] font-semibold text-white"
                         : "text-[#211f20]"
                     }`}
                   >
@@ -4715,7 +4715,7 @@ function MonthCalendar({
                               appointment.status ===
                               "concluido"
                                 ? "bg-[#e9e1e3] text-[#817b7d]"
-                                : "bg-[#f3e5e8] text-[#9d6875]"
+                                : "bg-[var(--nuvie-primary-soft)] text-[var(--nuvie-primary-strong)]"
                             }`}
                           >
                             {
