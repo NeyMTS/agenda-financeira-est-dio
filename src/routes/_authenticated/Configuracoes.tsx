@@ -6,26 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-
-type BusinessSettings = {
-  businessName: string;
-  professionalName: string;
-  whatsapp: string;
-  instagram: string;
-  logo: string;
-  primaryColor: string;
-};
-
-const STORAGE_KEY = "nuvie-business-settings";
-
-const defaultSettings: BusinessSettings = {
-  businessName: "Meu negócio",
-  professionalName: "",
-  whatsapp: "",
-  instagram: "",
-  logo: "",
-  primaryColor: "#B7838E",
-};
+import {
+  defaultSettings,
+  useBusinessSettingsQuery,
+  useSaveBusinessSettings,
+  type BusinessSettings,
+} from "@/hooks/use-business-settings";
 
 const colorOptions = [
   { name: "Rosé", value: "#B7838E" },
