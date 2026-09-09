@@ -77,13 +77,9 @@ function ConfiguracoesPage() {
     reader.readAsDataURL(file);
   }
 
-  function handleSave() {
+  async function handleSave() {
     try {
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(settings)
-      );
-
+      await saveSettings.mutateAsync(settings);
       toast.success("Configurações salvas.");
     } catch {
       toast.error(
