@@ -22,7 +22,7 @@ const colorOptions = [
   { name: "Caramelo", value: "#B08A68" },
 ];
 
-export const Route = createFileRoute("/_authenticated/configuracoes")({
+export const Route = createFileRoute("/_authenticated/Configuracoes")({
   component: ConfiguracoesPage,
 });
 
