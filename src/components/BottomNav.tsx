@@ -8,6 +8,7 @@ import {
   UsersRound,
   WalletCards,
   X,
+  Crown,
 } from "lucide-react";
 import { useState } from "react";
 import { useBusinessSettings } from "@/hooks/use-business-settings";
@@ -93,6 +94,28 @@ export function BottomNav() {
                 onClick={() => setOpen(false)}
               />
             </div>
+
+            <Link
+              to="/planos"
+              onClick={() => setOpen(false)}
+              className="mt-2 flex items-center gap-3 rounded-2xl p-4"
+              style={{
+                backgroundColor: `${primaryColor}12`,
+                color: primaryColor,
+              }}
+            >
+              <Crown className="size-5" strokeWidth={1.7} />
+
+              <div>
+                <p className="text-sm font-semibold text-[#211f20]">
+                  Planos
+                </p>
+
+                <p className="mt-0.5 text-[10px] text-[#817b7d]">
+                  Conheça nossos planos
+                </p>
+              </div>
+            </Link>
 
             <Link
               to="/configuracoes"
