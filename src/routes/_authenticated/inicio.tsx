@@ -315,7 +315,7 @@ function InicioPage() {
 
   return (
     <AppShell
-      title="Olá, Lary 💕"
+      title="Olá! 👋"
       subtitle={`Resumo de ${monthLabel}`}
       action={
         <button
