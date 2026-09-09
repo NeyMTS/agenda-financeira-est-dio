@@ -10,6 +10,7 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
+import { useBusinessSettings } from "@/hooks/use-business-settings";
 
 const items = [
   { to: "/inicio", label: "Início", icon: Home },
@@ -20,6 +21,8 @@ const items = [
 
 export function BottomNav() {
   const [open, setOpen] = useState(false);
+  const settings = useBusinessSettings();
+  const primaryColor = settings.primaryColor;
 
   return (
     <>
@@ -37,6 +40,7 @@ export function BottomNav() {
                 <p className="text-sm font-semibold text-[#211f20]">
                   Ação rápida
                 </p>
+
                 <p className="mt-1 text-xs text-[#817b7d]">
                   O que você deseja adicionar?
                 </p>
@@ -53,79 +57,56 @@ export function BottomNav() {
             </div>
 
             <div className="grid grid-cols-2 gap-2">
-              <Link
+              <QuickAction
                 to="/agenda"
+                icon={CalendarDays}
+                title="Agendamento"
+                subtitle="Novo atendimento"
+                color={primaryColor}
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-3 rounded-2xl bg-[#f3e5e8] p-4 text-[#9d6875]"
-              >
-                <CalendarDays className="size-5" strokeWidth={1.6} />
-                <div>
-                  <p className="text-sm font-semibold">Agendamento</p>
-                  <p className="mt-0.5 text-[10px] text-[#8d6871]">
-                    Novo atendimento
-                  </p>
-                </div>
-              </Link>
+              />
 
-              <Link
+              <QuickAction
                 to="/clientes"
+                icon={UsersRound}
+                title="Cliente"
+                subtitle="Nova cliente"
+                color={primaryColor}
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-3 rounded-2xl bg-[#faf9f8] p-4 text-[#9d6875]"
-              >
-                <UsersRound className="size-5" strokeWidth={1.6} />
-                <div>
-                  <p className="text-sm font-semibold text-[#211f20]">
-                    Cliente
-                  </p>
-                  <p className="mt-0.5 text-[10px] text-[#817b7d]">
-                    Nova cliente
-                  </p>
-                </div>
-              </Link>
+              />
 
-              <Link
+              <QuickAction
                 to="/servicos"
+                icon={Sparkles}
+                title="Serviço"
+                subtitle="Novo procedimento"
+                color={primaryColor}
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-3 rounded-2xl bg-[#faf9f8] p-4 text-[#9d6875]"
-              >
-                <Sparkles className="size-5" strokeWidth={1.6} />
-                <div>
-                  <p className="text-sm font-semibold text-[#211f20]">
-                    Serviço
-                  </p>
-                  <p className="mt-0.5 text-[10px] text-[#817b7d]">
-                    Novo procedimento
-                  </p>
-                </div>
-              </Link>
+              />
 
-              <Link
+              <QuickAction
                 to="/movimentacoes"
+                icon={WalletCards}
+                title="Financeiro"
+                subtitle="Novo lançamento"
+                color={primaryColor}
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-3 rounded-2xl bg-[#faf9f8] p-4 text-[#9d6875]"
-              >
-                <WalletCards className="size-5" strokeWidth={1.6} />
-                <div>
-                  <p className="text-sm font-semibold text-[#211f20]">
-                    Financeiro
-                  </p>
-                  <p className="mt-0.5 text-[10px] text-[#817b7d]">
-                    Novo lançamento
-                  </p>
-                </div>
-              </Link>
+              />
             </div>
 
             <Link
               to="/configuracoes"
               onClick={() => setOpen(false)}
-              className="mt-2 flex items-center gap-3 rounded-2xl bg-[#faf9f8] p-4 text-[#9d6875]"
+              className="mt-2 flex items-center gap-3 rounded-2xl bg-[#faf9f8] p-4"
+              style={{ color: primaryColor }}
             >
               <Settings className="size-5" strokeWidth={1.6} />
+
               <div>
                 <p className="text-sm font-semibold text-[#211f20]">
                   Configurações
                 </p>
+
                 <p className="mt-0.5 text-[10px] text-[#817b7d]">
                   Personalizar meu negócio
                 </p>
@@ -144,6 +125,7 @@ export function BottomNav() {
                 to={to}
                 label={label}
                 icon={Icon}
+                color={primaryColor}
               />
             ))}
 
@@ -152,9 +134,12 @@ export function BottomNav() {
                 type="button"
                 onClick={() => setOpen((value) => !value)}
                 aria-label={open ? "Fechar ações" : "Nova ação"}
-                className={`-mt-5 flex size-12 items-center justify-center rounded-full bg-[#b7838e] text-white shadow-lg shadow-[#b7838e]/20 ring-4 ring-white transition-transform ${
-                  open ? "rotate-45" : ""
-                }`}
+                className="flex size-12 items-center justify-center rounded-full text-white shadow-lg ring-4 ring-white transition-transform"
+                style={{
+                  backgroundColor: primaryColor,
+                  boxShadow: `0 10px 25px ${primaryColor}33`,
+                  transform: open ? "rotate(45deg)" : "rotate(0deg)",
+                }}
               >
                 <Plus className="size-5" strokeWidth={1.8} />
               </button>
@@ -166,6 +151,7 @@ export function BottomNav() {
                 to={to}
                 label={label}
                 icon={Icon}
+                color={primaryColor}
               />
             ))}
           </div>
@@ -175,22 +161,60 @@ export function BottomNav() {
   );
 }
 
+function QuickAction({
+  to,
+  icon: Icon,
+  title,
+  subtitle,
+  color,
+  onClick,
+}: {
+  to: string;
+  icon: typeof Home;
+  title: string;
+  subtitle: string;
+  color: string;
+  onClick: () => void;
+}) {
+  return (
+    <Link
+      to={to}
+      onClick={onClick}
+      className="flex items-center gap-3 rounded-2xl bg-[#faf9f8] p-4"
+      style={{ color }}
+    >
+      <Icon className="size-5" strokeWidth={1.6} />
+
+      <div>
+        <p className="text-sm font-semibold text-[#211f20]">
+          {title}
+        </p>
+
+        <p className="mt-0.5 text-[10px] text-[#817b7d]">
+          {subtitle}
+        </p>
+      </div>
+    </Link>
+  );
+}
+
 function NavItem({
   to,
   label,
   icon: Icon,
+  color,
 }: {
   to: string;
   label: string;
   icon: typeof Home;
+  color: string;
 }) {
   return (
     <Link
       to={to}
       className="flex min-w-0 flex-col items-center gap-1 px-1 py-3 text-[10px] font-medium text-[#8a8587]"
       activeProps={{
-        className:
-          "flex min-w-0 flex-col items-center gap-1 px-1 py-3 text-[10px] font-semibold text-[#9d6875]",
+        style: { color },
       }}
     >
       <Icon className="size-[18px]" strokeWidth={1.7} />
