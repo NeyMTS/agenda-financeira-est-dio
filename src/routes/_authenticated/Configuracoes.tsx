@@ -29,23 +29,15 @@ export const Route = createFileRoute("/_authenticated/Configuracoes")({
 function ConfiguracoesPage() {
   const navigate = useNavigate();
 
+  const { data } = useBusinessSettingsQuery();
+  const saveSettings = useSaveBusinessSettings();
+
   const [settings, setSettings] =
     useState<BusinessSettings>(defaultSettings);
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-
-      if (saved) {
-        setSettings({
-          ...defaultSettings,
-          ...JSON.parse(saved),
-        });
-      }
-    } catch {
-      // Mantém os valores padrão caso o armazenamento local esteja inválido.
-    }
-  }, []);
+    if (data) setSettings(data);
+  }, [data]);
 
   function updateField<K extends keyof BusinessSettings>(
     field: K,
