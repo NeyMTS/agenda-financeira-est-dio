@@ -3,6 +3,7 @@ import {
   CalendarDays,
   Home,
   Plus,
+  Settings,
   Sparkles,
   UsersRound,
   WalletCards,
@@ -36,7 +37,6 @@ export function BottomNav() {
                 <p className="text-sm font-semibold text-[#211f20]">
                   Ação rápida
                 </p>
-
                 <p className="mt-1 text-xs text-[#817b7d]">
                   O que você deseja adicionar?
                 </p>
@@ -58,15 +58,9 @@ export function BottomNav() {
                 onClick={() => setOpen(false)}
                 className="flex items-center gap-3 rounded-2xl bg-[#f3e5e8] p-4 text-[#9d6875]"
               >
-                <CalendarDays
-                  className="size-5"
-                  strokeWidth={1.6}
-                />
-
+                <CalendarDays className="size-5" strokeWidth={1.6} />
                 <div>
-                  <p className="text-sm font-semibold">
-                    Agendamento
-                  </p>
+                  <p className="text-sm font-semibold">Agendamento</p>
                   <p className="mt-0.5 text-[10px] text-[#8d6871]">
                     Novo atendimento
                   </p>
@@ -78,11 +72,7 @@ export function BottomNav() {
                 onClick={() => setOpen(false)}
                 className="flex items-center gap-3 rounded-2xl bg-[#faf9f8] p-4 text-[#9d6875]"
               >
-                <UsersRound
-                  className="size-5"
-                  strokeWidth={1.6}
-                />
-
+                <UsersRound className="size-5" strokeWidth={1.6} />
                 <div>
                   <p className="text-sm font-semibold text-[#211f20]">
                     Cliente
@@ -98,11 +88,7 @@ export function BottomNav() {
                 onClick={() => setOpen(false)}
                 className="flex items-center gap-3 rounded-2xl bg-[#faf9f8] p-4 text-[#9d6875]"
               >
-                <Sparkles
-                  className="size-5"
-                  strokeWidth={1.6}
-                />
-
+                <Sparkles className="size-5" strokeWidth={1.6} />
                 <div>
                   <p className="text-sm font-semibold text-[#211f20]">
                     Serviço
@@ -118,11 +104,7 @@ export function BottomNav() {
                 onClick={() => setOpen(false)}
                 className="flex items-center gap-3 rounded-2xl bg-[#faf9f8] p-4 text-[#9d6875]"
               >
-                <WalletCards
-                  className="size-5"
-                  strokeWidth={1.6}
-                />
-
+                <WalletCards className="size-5" strokeWidth={1.6} />
                 <div>
                   <p className="text-sm font-semibold text-[#211f20]">
                     Financeiro
@@ -133,6 +115,22 @@ export function BottomNav() {
                 </div>
               </Link>
             </div>
+
+            <Link
+              to="/configuracoes"
+              onClick={() => setOpen(false)}
+              className="mt-2 flex items-center gap-3 rounded-2xl bg-[#faf9f8] p-4 text-[#9d6875]"
+            >
+              <Settings className="size-5" strokeWidth={1.6} />
+              <div>
+                <p className="text-sm font-semibold text-[#211f20]">
+                  Configurações
+                </p>
+                <p className="mt-0.5 text-[10px] text-[#817b7d]">
+                  Personalizar meu negócio
+                </p>
+              </div>
+            </Link>
           </div>
         </div>
       )}
@@ -153,17 +151,12 @@ export function BottomNav() {
               <button
                 type="button"
                 onClick={() => setOpen((value) => !value)}
-                aria-label={
-                  open ? "Fechar ações" : "Nova ação"
-                }
+                aria-label={open ? "Fechar ações" : "Nova ação"}
                 className={`-mt-5 flex size-12 items-center justify-center rounded-full bg-[#b7838e] text-white shadow-lg shadow-[#b7838e]/20 ring-4 ring-white transition-transform ${
                   open ? "rotate-45" : ""
                 }`}
               >
-                <Plus
-                  className="size-5"
-                  strokeWidth={1.8}
-                />
+                <Plus className="size-5" strokeWidth={1.8} />
               </button>
             </div>
 
