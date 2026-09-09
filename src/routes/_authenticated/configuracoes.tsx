@@ -8,10 +8,13 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import {
   defaultSettings,
+  resolveLogoUrl,
+  uploadBusinessLogo,
   useBusinessSettingsQuery,
   useSaveBusinessSettings,
   type BusinessSettings,
 } from "@/hooks/use-business-settings";
+
 
 const colorOptions = [
   { name: "Rosé", value: "#B7838E" },
