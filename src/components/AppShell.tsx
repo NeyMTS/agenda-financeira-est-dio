@@ -26,16 +26,25 @@ export function AppShell({
       ? settings.businessName
       : "Nuvie";
 
+  const primary = settings.primaryColor;
+
   return (
     <div
       className="min-h-screen bg-[#faf9f8] text-[#211f20]"
       style={
         {
-          "--nuvie-primary": settings.primaryColor,
+          "--nuvie-primary": primary,
+          "--nuvie-primary-soft": `color-mix(in srgb, ${primary} 14%, white)`,
+          "--nuvie-primary-medium": `color-mix(in srgb, ${primary} 32%, white)`,
+          "--nuvie-primary-strong": `color-mix(in srgb, ${primary} 82%, black)`,
+          "--nuvie-primary-deep": `color-mix(in srgb, ${primary} 72%, black)`,
         } as React.CSSProperties
       }
     >
+      <NuvieTheme />
+
       <div className="mx-auto min-h-screen w-full max-w-md px-5 pb-32 pt-5">
+
         {topContent ? (
           <div className="mb-5">{topContent}</div>
         ) : null}
