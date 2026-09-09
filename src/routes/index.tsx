@@ -6,16 +6,17 @@ export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "Duo Finanças — Entrar na conta do casal" },
+      { title: "Nuvie — Gestão para profissionais da beleza" },
       {
         name: "description",
         content:
-          "Acesse o Duo Finanças para acompanhar contas, movimentações e metas compartilhadas do casal.",
+          "Agenda, clientes e controle financeiro em um só lugar.",
       },
-      { property: "og:title", content: "Duo Finanças — Entrar" },
+      { property: "og:title", content: "Nuvie — Gestão para profissionais da beleza" },
       {
         property: "og:description",
-        content: "Controle financeiro compartilhado para casais.",
+        content:
+          "Organize sua agenda, seus clientes e seu financeiro em um só lugar.",
       },
     ],
   }),
@@ -29,7 +30,10 @@ function Index() {
 
     supabase.auth.getUser().then(({ data, error }) => {
       if (!active) return;
-      navigate({ to: !error && data.user ? "/inicio" : "/auth", replace: true });
+      navigate({
+        to: !error && data.user ? "/inicio" : "/auth",
+        replace: true,
+      });
     });
 
     return () => {
