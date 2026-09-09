@@ -49,15 +49,19 @@ function ConfiguracoesPage() {
     }));
   }
 
-  function handleLogoChange(
+  const [uploading, setUploading] = useState(false);
+
+  async function handleLogoChange(
     event: React.ChangeEvent<HTMLInputElement>
   ) {
     const file = event.target.files?.[0];
 
     if (!file) return;
 
-    if (!file.type.startsWith("image/")) {
-      toast.error("Selecione uma imagem válida.");
+    if (
+      !["image/png", "image/jpeg", "image/webp"].includes(file.type)
+    ) {
+      toast.error("Envie uma imagem PNG, JPG ou WEBP.");
       return;
     }
 
@@ -66,16 +70,27 @@ function ConfiguracoesPage() {
       return;
     }
 
-    const reader = new FileReader();
+    setUploading(true);
 
-    reader.onload = () => {
-      if (typeof reader.result === "string") {
-        updateField("logo", reader.result);
-      }
-    };
+    try {
+      const path = await uploadBusinessLogo(file);
+      const url = await resolveLogoUrl(path);
 
-    reader.readAsDataURL(file);
+      setSettings((current) => ({
+        ...current,
+        logo: path,
+        logoUrl: url,
+      }));
+
+      toast.success("Logo enviada. Salve para confirmar.");
+    } catch {
+      toast.error("Não foi possível enviar a logo.");
+    } finally {
+      setUploading(false);
+      event.target.value = "";
+    }
   }
+
 
   async function handleSave() {
     try {
