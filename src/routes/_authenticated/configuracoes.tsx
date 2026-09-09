@@ -6,26 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-
-type BusinessSettings = {
-  businessName: string;
-  professionalName: string;
-  whatsapp: string;
-  instagram: string;
-  logo: string;
-  primaryColor: string;
-};
-
-const STORAGE_KEY = "nuvie-business-settings";
-
-const defaultSettings: BusinessSettings = {
-  businessName: "Meu negócio",
-  professionalName: "",
-  whatsapp: "",
-  instagram: "",
-  logo: "",
-  primaryColor: "#B7838E",
-};
+import {
+  defaultSettings,
+  useBusinessSettingsQuery,
+  useSaveBusinessSettings,
+  type BusinessSettings,
+} from "@/hooks/use-business-settings";
 
 const colorOptions = [
   { name: "Rosé", value: "#B7838E" },
@@ -43,23 +29,15 @@ export const Route = createFileRoute("/_authenticated/configuracoes")({
 function ConfiguracoesPage() {
   const navigate = useNavigate();
 
+  const { data } = useBusinessSettingsQuery();
+  const saveSettings = useSaveBusinessSettings();
+
   const [settings, setSettings] =
     useState<BusinessSettings>(defaultSettings);
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-
-      if (saved) {
-        setSettings({
-          ...defaultSettings,
-          ...JSON.parse(saved),
-        });
-      }
-    } catch {
-      // Mantém os valores padrão caso o armazenamento local esteja inválido.
-    }
-  }, []);
+    if (data) setSettings(data);
+  }, [data]);
 
   function updateField<K extends keyof BusinessSettings>(
     field: K,
@@ -99,13 +77,9 @@ function ConfiguracoesPage() {
     reader.readAsDataURL(file);
   }
 
-  function handleSave() {
+  async function handleSave() {
     try {
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(settings)
-      );
-
+      await saveSettings.mutateAsync(settings);
       toast.success("Configurações salvas.");
     } catch {
       toast.error(
