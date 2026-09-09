@@ -139,17 +139,17 @@ function ConfiguracoesPage() {
                 htmlFor="logo-upload"
                 className="group relative flex size-24 cursor-pointer items-center justify-center overflow-hidden rounded-3xl border border-dashed border-black/10 bg-[#faf9f8]"
               >
-                {settings.logo ? (
+                {settings.logoUrl ? (
                   <img
-                    src={settings.logo}
+                    src={settings.logoUrl}
                     alt="Logo do negócio"
-                    className="size-full object-cover"
+                    className="size-full bg-white object-contain p-1"
                   />
                 ) : (
                   <div className="flex flex-col items-center gap-1 text-[#aaa5a6]">
                     <ImagePlus className="size-7" />
                     <span className="text-[10px]">
-                      Adicionar logo
+                      {uploading ? "Enviando..." : "Adicionar logo"}
                     </span>
                   </div>
                 )}
@@ -157,15 +157,16 @@ function ConfiguracoesPage() {
                 <input
                   id="logo-upload"
                   type="file"
-                  accept="image/*"
+                  accept="image/png,image/jpeg,image/webp"
                   className="hidden"
                   onChange={handleLogoChange}
                 />
               </label>
 
               <p className="mt-2 text-[10px] text-[#aaa5a6]">
-                PNG ou JPG • até 2 MB
+                PNG, JPG ou WEBP • até 2 MB
               </p>
+
             </div>
 
             <div className="space-y-2">
