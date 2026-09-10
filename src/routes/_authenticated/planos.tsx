@@ -326,6 +326,19 @@ function PlanCard({
         >
           {loading ? "Aguarde..." : buttonText}
         </button>
+
+        <button
+          type="button"
+          onClick={onSelectPix}
+          disabled={loadingPix}
+          className="mt-3 h-12 w-full rounded-2xl border border-black/[0.08] bg-white text-sm font-semibold text-[#625d5f] transition disabled:opacity-60"
+        >
+          {loadingPix ? "Aguarde..." : "Pagar com PIX"}
+        </button>
+
+        <p className="mt-2 text-center text-[11px] text-[#aaa5a6]">
+          {pixNote} • sem renovação automática
+        </p>
       </div>
     </section>
   );
