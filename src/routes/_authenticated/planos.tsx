@@ -45,6 +45,39 @@ const benefits = [
 
 function PlanosPage() {
   const navigate = useNavigate();
+  const checkout = useServerFn(createAsaasCheckout);
+  const { data: subscription } = useSubscription();
+  const [loadingPlan, setLoadingPlan] = useState<SubscriptionPlan | null>(null);
+
+  const status = effectiveStatus(subscription);
+  const daysLeft = trialDaysLeft(subscription);
+
+  const statusLabel =
+    status === "trialing"
+      ? `Teste grátis • ${daysLeft} ${daysLeft === 1 ? "dia restante" : "dias restantes"}`
+      : status === "active"
+        ? "Assinatura ativa"
+        : status === "past_due"
+          ? "Pagamento pendente"
+          : status === "canceled"
+            ? "Assinatura cancelada"
+            : "Teste grátis encerrado";
+
+  async function handleSubscribe(plan: SubscriptionPlan) {
+    setLoadingPlan(plan);
+    try {
+      const result = await checkout({ data: { plan } });
+      if (!result.configured) {
+        toast.info(result.message);
+        return;
+      }
+      window.location.href = result.checkoutUrl;
+    } catch {
+      toast.error("Não foi possível iniciar o pagamento. Tente novamente.");
+    } finally {
+      setLoadingPlan(null);
+    }
+  }
 
   return (
     <AppShell
