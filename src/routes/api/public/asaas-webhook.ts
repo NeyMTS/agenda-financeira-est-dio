@@ -110,18 +110,31 @@ export const Route = createFileRoute("/api/public/asaas-webhook")({
           subscription_start?: string;
           subscription_end?: string;
           asaas_subscription_id?: string;
+          asaas_customer_id?: string;
         };
         const update: SubUpdate = {};
+        const rowPlan = typeof row["plan"] === "string" ? row["plan"] : null;
+        const rowStart =
+          typeof row["subscription_start"] === "string" ? row["subscription_start"] : null;
+
+        const activate = () => {
+          update.status = "active";
+          update.subscription_start = rowStart ?? new Date().toISOString();
+          update.subscription_end = addCycle(rowPlan === "yearly" ? "YEARLY" : "MONTHLY");
+          if (asaasSubscriptionId) update.asaas_subscription_id = asaasSubscriptionId;
+          if (asaasCustomerId) update.asaas_customer_id = asaasCustomerId;
+        };
 
         switch (event) {
           case "PAYMENT_CONFIRMED":
           case "PAYMENT_RECEIVED":
-            update.status = "active";
-            update.subscription_start = row.subscription_start ?? new Date().toISOString();
-            update.subscription_end = addCycle(
-              row.plan === "yearly" ? "YEARLY" : "MONTHLY",
-            );
+          case "CHECKOUT_PAID":
+            activate();
             break;
+          case "CHECKOUT_CANCELED":
+          case "CHECKOUT_EXPIRED":
+            // O checkout não virou pagamento; nada muda no acesso.
+            return new Response("ok");
           case "PAYMENT_OVERDUE":
             update.status = "past_due";
             break;
