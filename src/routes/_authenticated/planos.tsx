@@ -140,7 +140,7 @@ function PlanosPage() {
             featured
             buttonText="Escolher anual"
             loading={loadingPlan === "yearly"}
-            onSelect={() => setPendingPlan("yearly")}
+            onSelect={() => void handleSubscribe("yearly")}
           />
         </div>
 
