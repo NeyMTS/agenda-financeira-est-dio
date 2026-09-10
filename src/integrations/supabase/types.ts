@@ -179,6 +179,48 @@ export type Database = {
         }
         Relationships: []
       }
+      kiwify_webhook_events: {
+        Row: {
+          created_at: string
+          event: string | null
+          handled: boolean
+          id: string
+          note: string | null
+          order_id: string | null
+          order_status: string | null
+          payload: Json | null
+          payment_method: string | null
+          product_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event?: string | null
+          handled?: boolean
+          id?: string
+          note?: string | null
+          order_id?: string | null
+          order_status?: string | null
+          payload?: Json | null
+          payment_method?: string | null
+          product_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event?: string | null
+          handled?: boolean
+          id?: string
+          note?: string | null
+          order_id?: string | null
+          order_status?: string | null
+          payload?: Json | null
+          payment_method?: string | null
+          product_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -412,12 +454,10 @@ export type Database = {
       subscriptions: {
         Row: {
           access_expires_at: string | null
-          asaas_checkout_id: string | null
-          asaas_customer_id: string | null
-          asaas_payment_id: string | null
-          asaas_subscription_id: string | null
           created_at: string
           id: string
+          kiwify_order_id: string | null
+          kiwify_product_id: string | null
           payment_method: string | null
           plan: string | null
           status: string
@@ -430,12 +470,10 @@ export type Database = {
         }
         Insert: {
           access_expires_at?: string | null
-          asaas_checkout_id?: string | null
-          asaas_customer_id?: string | null
-          asaas_payment_id?: string | null
-          asaas_subscription_id?: string | null
           created_at?: string
           id?: string
+          kiwify_order_id?: string | null
+          kiwify_product_id?: string | null
           payment_method?: string | null
           plan?: string | null
           status?: string
@@ -448,12 +486,10 @@ export type Database = {
         }
         Update: {
           access_expires_at?: string | null
-          asaas_checkout_id?: string | null
-          asaas_customer_id?: string | null
-          asaas_payment_id?: string | null
-          asaas_subscription_id?: string | null
           created_at?: string
           id?: string
+          kiwify_order_id?: string | null
+          kiwify_product_id?: string | null
           payment_method?: string | null
           plan?: string | null
           status?: string
@@ -574,12 +610,10 @@ export type Database = {
         Args: never
         Returns: {
           access_expires_at: string | null
-          asaas_checkout_id: string | null
-          asaas_customer_id: string | null
-          asaas_payment_id: string | null
-          asaas_subscription_id: string | null
           created_at: string
           id: string
+          kiwify_order_id: string | null
+          kiwify_product_id: string | null
           payment_method: string | null
           plan: string | null
           status: string
