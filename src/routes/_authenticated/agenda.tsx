@@ -3342,6 +3342,8 @@ function DaySchedule({
     newTime: string
   ) => void;
 }) {
+  const dayMoneyHidden = useMoneyHidden();
+
   const [
     draggingAppointment,
     setDraggingAppointment,
