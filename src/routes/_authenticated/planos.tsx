@@ -140,6 +140,52 @@ function PlanosPage() {
           <p className="mt-3 text-xs font-medium text-[#9d6875]">{statusLabel}</p>
         </section>
 
+        <section className="rounded-3xl border border-black/[0.06] bg-white px-5 py-4 text-left shadow-sm">
+          {isPro ? (
+            <>
+              <p className="text-base font-semibold text-[#211f20]">
+                Plano Pro ativo
+              </p>
+
+              <p className="mt-1 text-xs text-[#817b7d]">
+                {planLabel ? `Plano ${planLabel}` : "Plano contratado"}
+                {formatDay(proExpiresAt)
+                  ? ` • vence em ${formatDay(proExpiresAt)}`
+                  : ""}
+              </p>
+
+              <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-[#f8eef0] px-3 py-1 text-[11px] font-medium text-[#9d6875]">
+                <Check className="size-3.5" strokeWidth={2.5} />
+                Pagamento confirmado
+              </p>
+            </>
+          ) : status === "trialing" ? (
+            <>
+              <p className="text-base font-semibold text-[#211f20]">
+                Teste gratuito ativo
+              </p>
+
+              <p className="mt-1 text-xs text-[#817b7d]">
+                {daysLeft} {daysLeft === 1 ? "dia restante" : "dias restantes"}
+                {formatDay(subscription?.trial_end ?? null)
+                  ? ` • vence em ${formatDay(subscription?.trial_end ?? null)}`
+                  : ""}
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="text-base font-semibold text-[#211f20]">
+                {statusLabel}
+              </p>
+
+              <p className="mt-1 text-xs text-[#817b7d]">
+                Escolha um plano abaixo para continuar usando o Nuvie.
+              </p>
+            </>
+          )}
+        </section>
+
+
         <div className="grid gap-4">
           <PlanCard
             title="Mensal"
