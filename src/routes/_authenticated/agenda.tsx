@@ -21,6 +21,7 @@ import {
 } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useHousehold } from "@/hooks/use-household";
+import { MONEY_MASK, useMoneyHidden } from "@/lib/money-privacy";
 import {
   AppShell,
 } from "@/components/AppShell";
@@ -365,6 +366,8 @@ function getClient(
 }
 
 function AgendaPage() {
+  const moneyHidden = useMoneyHidden();
+
   const {
     data: household,
   } = useHousehold();
@@ -808,6 +811,8 @@ function AgendaPage() {
   function formatMoney(
     value: number
   ) {
+    if (moneyHidden) return MONEY_MASK;
+
     return value.toLocaleString(
       "pt-BR",
       {
@@ -3337,6 +3342,8 @@ function DaySchedule({
     newTime: string
   ) => void;
 }) {
+  const dayMoneyHidden = useMoneyHidden();
+
   const [
     draggingAppointment,
     setDraggingAppointment,
@@ -4003,14 +4010,16 @@ function DaySchedule({
 
                               <span className="text-[10px] text-[var(--nuvie-primary-strong)]">
                                 R${" "}
-                                {Number(
-                                  appointment.total_amount
-                                ).toLocaleString(
-                                  "pt-BR",
-                                  {
-                                    minimumFractionDigits: 2,
-                                  }
-                                )}
+                                {dayMoneyHidden
+                                  ? MONEY_MASK
+                                  : Number(
+                                      appointment.total_amount
+                                    ).toLocaleString(
+                                      "pt-BR",
+                                      {
+                                        minimumFractionDigits: 2,
+                                      }
+                                    )}
                               </span>
                             </div>
                           </div>
@@ -4141,12 +4150,14 @@ function DaySchedule({
                             "concluido" && (
                             <p className="mt-2 text-[9px] text-[var(--nuvie-primary-strong)]">
                               A receber: R${" "}
-                              {remaining.toLocaleString(
-                                "pt-BR",
-                                {
-                                  minimumFractionDigits: 2,
-                                }
-                              )}
+                              {dayMoneyHidden
+                                ? MONEY_MASK
+                                : remaining.toLocaleString(
+                                    "pt-BR",
+                                    {
+                                      minimumFractionDigits: 2,
+                                    }
+                                  )}
                             </p>
                           )}
 

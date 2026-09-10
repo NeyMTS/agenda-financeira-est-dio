@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,6 +38,7 @@ function AuthPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(event: React.FormEvent) {
@@ -178,16 +180,31 @@ function AuthPage() {
               Senha
             </Label>
 
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              minLength={6}
-              required
-              placeholder="••••••••"
-              className="h-11 rounded-xl border-black/[0.08] bg-[#faf9f8] text-sm focus-visible:ring-[var(--nuvie-primary)]"
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                minLength={6}
+                required
+                placeholder="••••••••"
+                className="h-11 rounded-xl border-black/[0.08] bg-[#faf9f8] pr-11 text-sm focus-visible:ring-[var(--nuvie-primary)]"
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword((value) => !value)}
+                aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-[#817b7d]"
+              >
+                {showPassword ? (
+                  <EyeOff className="size-4" strokeWidth={1.7} />
+                ) : (
+                  <Eye className="size-4" strokeWidth={1.7} />
+                )}
+              </button>
+            </div>
           </div>
 
           <Button

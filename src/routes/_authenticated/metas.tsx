@@ -16,11 +16,12 @@ import { AppShell } from "@/components/AppShell";
 import { resolveHouseholdId, useHousehold } from "@/hooks/use-household";
 import {
   currencyInputValue,
-  formatCurrency,
+  formatCurrency as formatCurrencyRaw,
   formatDate,
   parseCurrencyInput,
 } from "@/lib/format";
 import { CurrencyInput } from "@/components/CurrencyInput";
+import { MONEY_MASK, useMoneyHidden } from "@/lib/money-privacy";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -141,6 +142,11 @@ function getNextGoalStep(steps: GoalPlanStep[]) {
 }
 
 function MetasPage() {
+  const moneyHidden = useMoneyHidden();
+
+  const formatCurrency = (value: number) =>
+    moneyHidden ? MONEY_MASK : formatCurrencyRaw(value);
+
   const queryClient = useQueryClient();
   const { data: household } = useHousehold();
 

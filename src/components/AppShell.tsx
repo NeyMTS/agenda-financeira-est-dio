@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { BottomNav } from "./BottomNav";
 import { BrandMark } from "./BrandMark";
 import { NuvieTheme } from "./NuvieTheme";
+import { MoneyToggle } from "./MoneyToggle";
 import { useBusinessSettings } from "@/hooks/use-business-settings";
 
 
@@ -82,9 +83,11 @@ export function AppShell({
             </div>
           </div>
 
-          {action ? (
-            <div className="shrink-0">{action}</div>
-          ) : null}
+          <div className="flex shrink-0 items-center gap-2">
+            <MoneyToggle />
+
+            {action}
+          </div>
         </header>
 
         <main className="pb-4">{children}</main>

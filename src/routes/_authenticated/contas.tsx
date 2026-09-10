@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AppShell, EmptyState } from "@/components/AppShell";
 import { resolveHouseholdId, useHousehold, useMembersCount } from "@/hooks/use-household";
 import { currencyInputValue, formatCurrency, parseCurrencyInput } from "@/lib/format";
+import { MONEY_MASK, useMoneyHidden } from "@/lib/money-privacy";
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -57,6 +58,7 @@ export const Route = createFileRoute("/_authenticated/contas")({
 });
 
 function ContasPage() {
+  const moneyHidden = useMoneyHidden();
   const queryClient = useQueryClient();
   const { data: household } = useHousehold();
   const { data: membersCount } = useMembersCount(household?.id);
@@ -283,7 +285,7 @@ const { error } = await supabase.from("accounts").insert({
                 </div>
                 <div className="flex shrink-0 items-center gap-2">
                   <span className="text-sm font-semibold">
-                    {formatCurrency(Number(a.initial_balance))}
+                    {moneyHidden ? MONEY_MASK : formatCurrency(Number(a.initial_balance))}
                   </span>
                   <button
                     type="button"

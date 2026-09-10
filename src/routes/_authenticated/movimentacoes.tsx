@@ -13,6 +13,7 @@ import { useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useHousehold } from "@/hooks/use-household";
 import { AppShell, EmptyState } from "@/components/AppShell";
+import { MONEY_MASK, useMoneyHidden } from "@/lib/money-privacy";
 
 export const Route = createFileRoute(
   "/_authenticated/movimentacoes"
@@ -31,6 +32,7 @@ type Transaction = {
 };
 
 function MovimentacoesPage() {
+  const moneyHidden = useMoneyHidden();
   const { data: household } = useHousehold();
   const queryClient = useQueryClient();
 
@@ -204,6 +206,8 @@ function MovimentacoesPage() {
   }, [transactions, filter]);
 
   function formatMoney(value: number) {
+    if (moneyHidden) return MONEY_MASK;
+
     return value.toLocaleString("pt-BR", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,

@@ -51,16 +51,36 @@ function PlanosPage() {
 
   const status = effectiveStatus(subscription);
   const daysLeft = trialDaysLeft(subscription);
+  const isPro = status === "active";
+
+  const planLabel =
+    subscription?.plan === "yearly"
+      ? "Anual"
+      : subscription?.plan === "monthly"
+        ? "Mensal"
+        : null;
+
+  const proExpiresAt =
+    subscription?.access_expires_at ?? subscription?.subscription_end ?? null;
+
+  const formatDay = (value: string | null) =>
+    value
+      ? new Date(value).toLocaleDateString("pt-BR", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        })
+      : null;
 
   const statusLabel =
     status === "trialing"
       ? `Teste grátis • ${daysLeft} ${daysLeft === 1 ? "dia restante" : "dias restantes"}`
-      : status === "active"
-        ? "Assinatura ativa"
+      : isPro
+        ? "Plano Pro ativo"
         : status === "past_due"
           ? "Pagamento pendente"
           : status === "canceled"
-            ? "Assinatura cancelada"
+            ? "Plano cancelado"
             : "Teste grátis encerrado";
 
   async function handleSubscribe(plan: SubscriptionPlan) {
@@ -120,6 +140,52 @@ function PlanosPage() {
           <p className="mt-3 text-xs font-medium text-[#9d6875]">{statusLabel}</p>
         </section>
 
+        <section className="rounded-3xl border border-black/[0.06] bg-white px-5 py-4 text-left shadow-sm">
+          {isPro ? (
+            <>
+              <p className="text-base font-semibold text-[#211f20]">
+                Plano Pro ativo
+              </p>
+
+              <p className="mt-1 text-xs text-[#817b7d]">
+                {planLabel ? `Plano ${planLabel}` : "Plano contratado"}
+                {formatDay(proExpiresAt)
+                  ? ` • vence em ${formatDay(proExpiresAt)}`
+                  : ""}
+              </p>
+
+              <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-[#f8eef0] px-3 py-1 text-[11px] font-medium text-[#9d6875]">
+                <Check className="size-3.5" strokeWidth={2.5} />
+                Pagamento confirmado
+              </p>
+            </>
+          ) : status === "trialing" ? (
+            <>
+              <p className="text-base font-semibold text-[#211f20]">
+                Teste gratuito ativo
+              </p>
+
+              <p className="mt-1 text-xs text-[#817b7d]">
+                {daysLeft} {daysLeft === 1 ? "dia restante" : "dias restantes"}
+                {formatDay(subscription?.trial_end ?? null)
+                  ? ` • vence em ${formatDay(subscription?.trial_end ?? null)}`
+                  : ""}
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="text-base font-semibold text-[#211f20]">
+                {statusLabel}
+              </p>
+
+              <p className="mt-1 text-xs text-[#817b7d]">
+                Escolha um plano abaixo para continuar usando o Nuvie.
+              </p>
+            </>
+          )}
+        </section>
+
+
         <div className="grid gap-4">
           <PlanCard
             title="Mensal"
@@ -146,23 +212,26 @@ function PlanosPage() {
           />
         </div>
 
-        <section className="rounded-3xl bg-[#faf4f5] px-5 py-4">
-          <div className="flex items-center gap-4">
-            <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-white text-[#9d6875]">
-              <Check className="size-5" strokeWidth={2} />
-            </div>
+        {!isPro && (
+          <section className="rounded-3xl bg-[#faf4f5] px-5 py-4">
+            <div className="flex items-center gap-4">
+              <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-white text-[#9d6875]">
+                <Check className="size-5" strokeWidth={2} />
+              </div>
 
-            <div>
-              <p className="text-base font-semibold text-[#211f20]">
-                14 dias grátis
-              </p>
+              <div>
+                <p className="text-base font-semibold text-[#211f20]">
+                  14 dias grátis
+                </p>
 
-              <p className="mt-0.5 text-xs leading-5 text-[#817b7d]">
-                Experimente todos os recursos sem compromisso.
-              </p>
+                <p className="mt-0.5 text-xs leading-5 text-[#817b7d]">
+                  Experimente todos os recursos sem compromisso.
+                </p>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
+
 
         <section className="grid grid-cols-2 gap-3">
           {benefits.map((benefit) => {
