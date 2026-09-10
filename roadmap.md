@@ -6,3 +6,4 @@
 - [ ] Fix iPhone PWA zoom behavior and form input sizing
 - [ ] Verify database CRUD/select persistence, build, and main browser flows
 - [ ] Switch billing to single one-off Asaas DETACHED checkout (PIX + card), 30/365 days via webhook
+- [x] Migrar pagamento do Asaas para a Kiwify (pagamento único 30/365 dias via webhook)
