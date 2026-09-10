@@ -7,26 +7,20 @@ type CheckoutResult =
   | { configured: true; checkoutUrl: string };
 
 const ASAAS_BASE_URL = "https://api.asaas.com/v3";
+const APP_URL = "https://nuvieagenda.lovable.app";
 
 /**
- * Cria (ou reaproveita) o cliente e a assinatura no Asaas.
+ * Cria um Checkout hospedado pelo Asaas (POST /v3/checkouts).
+ * A cliente preenche os próprios dados na página oficial do Asaas.
  * A API Key nunca sai do servidor.
  */
 export const createAsaasCheckout = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { plan: SubscriptionPlan; name: string; cpfCnpj: string }) => {
+  .inputValidator((input: { plan: SubscriptionPlan }) => {
     if (input?.plan !== "monthly" && input?.plan !== "yearly") {
       throw new Error("Plano inválido.");
     }
-    const name = (input.name ?? "").trim();
-    if (name.length < 3) {
-      throw new Error("Informe seu nome completo.");
-    }
-    const cpfCnpj = (input.cpfCnpj ?? "").replace(/\D/g, "");
-    if (cpfCnpj.length !== 11 && cpfCnpj.length !== 14) {
-      throw new Error("Informe um CPF (11 dígitos) ou CNPJ (14 dígitos) válido.");
-    }
-    return { plan: input.plan, name, cpfCnpj };
+    return { plan: input.plan };
   })
   .handler(async ({ data, context }): Promise<CheckoutResult> => {
     const apiKey = process.env["ASAAS_API_KEY"];
@@ -38,99 +32,74 @@ export const createAsaasCheckout = createServerFn({ method: "POST" })
       };
     }
 
-    const { supabase, userId, claims } = context;
+    const { supabase, userId } = context;
     const plan = PLANS[data.plan];
 
-    const { data: sub, error: subError } = await supabase
-      .from("subscriptions")
-      .select("*")
-      .eq("user_id", userId)
-      .maybeSingle();
-    if (subError) throw subError;
+    const nextDueDate = new Date(Date.now() + 86_400_000).toISOString().slice(0, 10);
 
-    const asaas = async (path: string, init?: RequestInit) => {
-      const res = await fetch(`${ASAAS_BASE_URL}${path}`, {
-        ...init,
-        headers: {
-          "content-type": "application/json",
-          accept: "application/json",
-          // O Asaas exige User-Agent em todas as requisições.
-          "User-Agent": "Nuvie/1.0 (https://nuvieagenda.lovable.app)",
-          access_token: apiKey,
-          ...(init?.headers ?? {}),
-        },
-      });
-      const body = await res.json().catch(() => null);
-      if (!res.ok) {
-        console.error("[Asaas] request failed", path, res.status, JSON.stringify(body));
-        const description = (
-          body as { errors?: Array<{ description?: string }> } | null
-        )?.errors?.[0]?.description;
-        throw new Error(description ?? "Não foi possível iniciar o pagamento agora.");
-      }
-      return body as Record<string, unknown>;
-    };
-
-    let customerId = sub?.asaas_customer_id ?? null;
-    const email = typeof claims?.email === "string" ? claims.email : undefined;
-    const customerPayload = {
-      name: data.name,
-      email,
-      cpfCnpj: data.cpfCnpj,
+    const payload = {
+      billingTypes: ["CREDIT_CARD"],
+      chargeTypes: ["RECURRENT"],
+      minutesToExpire: 60,
       externalReference: userId,
+      callback: {
+        successUrl: `${APP_URL}/planos`,
+        cancelUrl: `${APP_URL}/planos`,
+        expiredUrl: `${APP_URL}/planos`,
+      },
+      items: [
+        {
+          name: plan.description,
+          description: plan.description,
+          quantity: 1,
+          value: plan.value,
+        },
+      ],
+      subscription: {
+        cycle: plan.cycle,
+        nextDueDate,
+      },
     };
 
-    if (customerId) {
-      // Garante que o cadastro tenha CPF/CNPJ (exigido pelo Asaas para cobrar).
-      await asaas(`/customers/${customerId}`, {
-        method: "POST",
-        body: JSON.stringify(customerPayload),
-      });
-    } else {
-      const created = await asaas("/customers", {
-        method: "POST",
-        body: JSON.stringify(customerPayload),
-      });
-      customerId = String(created["id"]);
-    }
-
-    const nextDueDate = new Date().toISOString().slice(0, 10);
-
-    const subscription = await asaas("/subscriptions", {
+    const res = await fetch(`${ASAAS_BASE_URL}/checkouts`, {
       method: "POST",
-      body: JSON.stringify({
-        customer: customerId,
-        billingType: "UNDEFINED",
-        value: plan.value,
-        nextDueDate,
-        cycle: plan.cycle,
-        description: plan.description,
-        externalReference: userId,
-      }),
+      headers: {
+        "content-type": "application/json",
+        accept: "application/json",
+        // O Asaas exige User-Agent em todas as requisições.
+        "User-Agent": "Nuvie/1.0 (https://nuvieagenda.lovable.app)",
+        access_token: apiKey,
+      },
+      body: JSON.stringify(payload),
     });
 
-    const subscriptionId = String(subscription["id"]);
+    const body = (await res.json().catch(() => null)) as Record<string, unknown> | null;
+
+    if (!res.ok) {
+      console.error(
+        "[Asaas] POST /checkouts falhou",
+        res.status,
+        JSON.stringify(body),
+      );
+      const description = (
+        body as { errors?: Array<{ description?: string }> } | null
+      )?.errors?.[0]?.description;
+      throw new Error(description ?? `Asaas retornou o status ${res.status}.`);
+    }
+
+    const checkoutId = body?.["id"] ? String(body["id"]) : null;
+    const checkoutUrl = typeof body?.["link"] === "string" ? body["link"] : null;
+
+    if (!checkoutId || !checkoutUrl) {
+      console.error("[Asaas] resposta sem link de checkout", JSON.stringify(body));
+      throw new Error("O Asaas não retornou o link do checkout.");
+    }
 
     const { error: updateError } = await supabase
       .from("subscriptions")
-      .update({
-        plan: data.plan,
-        asaas_customer_id: customerId,
-        asaas_subscription_id: subscriptionId,
-      })
+      .update({ plan: data.plan, asaas_checkout_id: checkoutId })
       .eq("user_id", userId);
     if (updateError) throw updateError;
-
-    // Primeira cobrança gerada pela assinatura -> link de pagamento.
-    const payments = await asaas(`/subscriptions/${subscriptionId}/payments`);
-    const first = (payments["data"] as Array<Record<string, unknown>> | undefined)?.[0];
-    const checkoutUrl =
-      (first?.["invoiceUrl"] as string | undefined) ??
-      (first?.["bankSlipUrl"] as string | undefined);
-
-    if (!checkoutUrl) {
-      throw new Error("Não foi possível gerar o link de pagamento.");
-    }
 
     return { configured: true, checkoutUrl };
   });
