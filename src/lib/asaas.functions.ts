@@ -14,11 +14,19 @@ const ASAAS_BASE_URL = "https://api.asaas.com/v3";
  */
 export const createAsaasCheckout = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { plan: SubscriptionPlan }) => {
+  .inputValidator((input: { plan: SubscriptionPlan; name: string; cpfCnpj: string }) => {
     if (input?.plan !== "monthly" && input?.plan !== "yearly") {
       throw new Error("Plano inválido.");
     }
-    return { plan: input.plan };
+    const name = (input.name ?? "").trim();
+    if (name.length < 3) {
+      throw new Error("Informe seu nome completo.");
+    }
+    const cpfCnpj = (input.cpfCnpj ?? "").replace(/\D/g, "");
+    if (cpfCnpj.length !== 11 && cpfCnpj.length !== 14) {
+      throw new Error("Informe um CPF (11 dígitos) ou CNPJ (14 dígitos) válido.");
+    }
+    return { plan: input.plan, name, cpfCnpj };
   })
   .handler(async ({ data, context }): Promise<CheckoutResult> => {
     const apiKey = process.env["ASAAS_API_KEY"];
