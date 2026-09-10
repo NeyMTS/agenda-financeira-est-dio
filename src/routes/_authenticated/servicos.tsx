@@ -17,6 +17,7 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useHousehold } from "@/hooks/use-household";
 import { AppShell, EmptyState } from "@/components/AppShell";
+import { MONEY_MASK, useMoneyHidden } from "@/lib/money-privacy";
 
 export const Route = createFileRoute("/_authenticated/servicos")({
   component: ServicosPage,
@@ -150,6 +151,7 @@ function formatDuration(minutes: number) {
 }
 
 function ServicosPage() {
+  const moneyHidden = useMoneyHidden();
   const { data: household } = useHousehold();
   const queryClient = useQueryClient();
 
@@ -214,6 +216,8 @@ function ServicosPage() {
   }
 
   function formatMoney(value: number) {
+    if (moneyHidden) return MONEY_MASK;
+
     return value.toLocaleString("pt-BR", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
