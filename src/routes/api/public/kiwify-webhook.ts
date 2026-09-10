@@ -11,10 +11,31 @@ type KiwifyEvent = {
   Subscription?: { plan?: { id?: string } };
   Customer?: { email?: string };
   TrackingParameters?: Record<string, string | null>;
+  Commissions?: {
+    charge_amount?: string | number;
+    product_base_price?: string | number;
+  };
   [key: string]: unknown;
 };
 
 const APPROVED_EVENTS = new Set(["order_approved", "pix_created"]);
+
+/** Valor pago em centavos, aceitando string/número em centavos ou reais. */
+function toCents(value: string | number | null | undefined): number | null {
+  if (value === null || value === undefined) return null;
+  const raw = typeof value === "number" ? value : Number(String(value).replace(",", "."));
+  if (!Number.isFinite(raw) || raw <= 0) return null;
+  // Valores com casas decimais chegam em reais; inteiros chegam em centavos.
+  return Number.isInteger(raw) ? raw : Math.round(raw * 100);
+}
+
+/** Mapeia a oferta comprada: 29,90 → 30 dias | 299,90 → 365 dias. */
+function planFromAmount(cents: number | null): "monthly" | "yearly" | null {
+  if (cents === null) return null;
+  if (cents >= 2900 && cents <= 3100) return "monthly";
+  if (cents >= 29000 && cents <= 31000) return "yearly";
+  return null;
+}
 
 function timingSafeEqualHex(a: string, b: string): boolean {
   if (a.length !== b.length) return false;
@@ -28,8 +49,7 @@ export const Route = createFileRoute("/api/public/kiwify-webhook")({
     handlers: {
       POST: async ({ request }) => {
         const token = process.env["KIWIFY_WEBHOOK_TOKEN"];
-        const monthlyProduct = process.env["KIWIFY_MONTHLY_PRODUCT_ID"];
-        const yearlyProduct = process.env["KIWIFY_YEARLY_PRODUCT_ID"];
+
 
         if (!token) {
           console.error("[Kiwify] KIWIFY_WEBHOOK_TOKEN não configurado");
@@ -89,12 +109,25 @@ export const Route = createFileRoute("/api/public/kiwify-webhook")({
           return new Response("ok");
         }
 
-        let plan: "monthly" | "yearly" | null = null;
-        if (productId && monthlyProduct && productId === monthlyProduct) plan = "monthly";
-        else if (productId && yearlyProduct && productId === yearlyProduct) plan = "yearly";
+        // O produto é o mesmo nas duas ofertas: a diferenciação vem do parâmetro
+        // de rastreio enviado no link (s2) e, como reserva, do valor pago.
+        const trackedPlan =
+          tracking["s2"] === "monthly" || tracking["s2"] === "yearly"
+            ? (tracking["s2"] as "monthly" | "yearly")
+            : null;
+
+        const paidCents =
+          toCents(body.Commissions?.charge_amount) ??
+          toCents(body.Commissions?.product_base_price);
+
+        const plan = trackedPlan ?? planFromAmount(paidCents);
 
         if (!plan) {
-          await log(null, false, "Produto desconhecido — acesso não liberado.");
+          await log(
+            null,
+            false,
+            `Oferta não identificada (valor: ${paidCents ?? "desconhecido"}) — acesso não liberado.`,
+          );
           return new Response("ok");
         }
 

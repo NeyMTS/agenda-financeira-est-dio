@@ -51,6 +51,8 @@ export const getKiwifyCheckoutUrl = createServerFn({ method: "POST" })
 
     // Identificação da compradora para o webhook conseguir ligar ao usuário.
     url.searchParams.set("s1", userId);
+    // Identifica a oferta comprada no webhook (mesmo produto, dois links).
+    url.searchParams.set("s2", data.plan);
     const email = (claims as { email?: string } | null)?.email;
     if (email) url.searchParams.set("email", email);
 
