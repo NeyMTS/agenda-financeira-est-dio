@@ -69,14 +69,20 @@ function PlanosPage() {
   async function handleSubscribe(plan: SubscriptionPlan) {
     setLoadingPlan(plan);
     try {
-      const result = await checkout({ data: { plan } });
+      const result = await checkout({
+        data: { plan, name: fullName, cpfCnpj: document },
+      });
       if (!result.configured) {
         toast.info(result.message);
         return;
       }
       window.location.href = result.checkoutUrl;
-    } catch {
-      toast.error("Não foi possível iniciar o pagamento. Tente novamente.");
+    } catch (error) {
+      toast.error(
+        error instanceof Error && error.message
+          ? error.message
+          : "Não foi possível iniciar o pagamento. Tente novamente.",
+      );
     } finally {
       setLoadingPlan(null);
     }
