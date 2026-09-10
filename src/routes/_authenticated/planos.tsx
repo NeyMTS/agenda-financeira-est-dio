@@ -206,6 +206,58 @@ function PlanosPage() {
           </p>
         </div>
       </div>
+
+      {pendingPlan && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/30 px-4 pb-6 sm:items-center">
+          <div className="w-full max-w-[380px] rounded-3xl bg-white p-5 shadow-lg">
+            <h3 className="text-lg font-semibold text-[#211f20]">Dados de cobrança</h3>
+            <p className="mt-1 text-xs leading-5 text-[#817b7d]">
+              Plano {pendingPlan === "monthly" ? "Mensal" : "Anual"}. Precisamos desses
+              dados para emitir a cobrança.
+            </p>
+
+            <label className="mt-4 block text-xs font-medium text-[#625d5f]">
+              Nome completo
+              <input
+                value={fullName}
+                onChange={(event) => setFullName(event.target.value)}
+                className="mt-1 h-12 w-full rounded-2xl border border-black/[0.08] px-4 text-sm text-[#211f20] outline-none focus:border-[#b7838e]"
+                placeholder="Seu nome completo"
+              />
+            </label>
+
+            <label className="mt-3 block text-xs font-medium text-[#625d5f]">
+              CPF ou CNPJ
+              <input
+                value={document}
+                onChange={(event) => setDocument(event.target.value)}
+                inputMode="numeric"
+                className="mt-1 h-12 w-full rounded-2xl border border-black/[0.08] px-4 text-sm text-[#211f20] outline-none focus:border-[#b7838e]"
+                placeholder="Somente números"
+              />
+            </label>
+
+            <div className="mt-5 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setPendingPlan(null)}
+                className="h-12 flex-1 rounded-2xl border border-black/[0.08] text-sm font-semibold text-[#625d5f]"
+              >
+                Cancelar
+              </button>
+
+              <button
+                type="button"
+                disabled={loadingPlan !== null}
+                onClick={() => handleSubscribe(pendingPlan)}
+                className="h-12 flex-1 rounded-2xl bg-[#b7838e] text-sm font-semibold text-white disabled:opacity-60"
+              >
+                {loadingPlan ? "Aguarde..." : "Continuar"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </AppShell>
   );
 }
