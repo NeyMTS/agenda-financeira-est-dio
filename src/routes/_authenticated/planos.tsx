@@ -129,7 +129,7 @@ function PlanosPage() {
             buttonText="Começar agora"
             featured={false}
             loading={loadingPlan === "monthly"}
-            onSelect={() => setPendingPlan("monthly")}
+            onSelect={() => void handleSubscribe("monthly")}
           />
 
           <PlanCard
