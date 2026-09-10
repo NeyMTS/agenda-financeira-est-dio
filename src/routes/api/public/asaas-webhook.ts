@@ -116,27 +116,26 @@ export const Route = createFileRoute("/api/public/asaas-webhook")({
           subscription_start?: string;
           subscription_end?: string;
           access_expires_at?: string;
+          payment_method?: string;
+          asaas_payment_id?: string;
           asaas_subscription_id?: string;
           asaas_customer_id?: string;
         };
         const update: SubUpdate = {};
         const rowPlan = typeof row["plan"] === "string" ? row["plan"] : null;
-        const rowMethod = typeof row["payment_method"] === "string" ? row["payment_method"] : null;
-        const rowStart =
-          typeof row["subscription_start"] === "string" ? row["subscription_start"] : null;
+        const billingType = body.payment?.billingType ?? body.checkout?.billingType ?? null;
+        const asaasPaymentId = body.payment?.id ?? null;
 
+        // Pagamento único: cada confirmação inicia um novo período de acesso.
         const activate = () => {
-          const isPix = rowMethod === "pix";
-          const end = isPix
-            ? addDays(rowPlan === "yearly" ? 365 : 30)
-            : addCycle(rowPlan === "yearly" ? "YEARLY" : "MONTHLY");
+          const end = addDays(rowPlan === "yearly" ? 365 : 30);
           update.status = "active";
-          // No PIX cada pagamento inicia um novo período de acesso.
-          update.subscription_start = isPix
-            ? new Date().toISOString()
-            : (rowStart ?? new Date().toISOString());
+          update.subscription_start = new Date().toISOString();
           update.subscription_end = end;
           update.access_expires_at = end;
+          if (billingType === "PIX") update.payment_method = "pix";
+          else if (billingType === "CREDIT_CARD") update.payment_method = "credit_card";
+          if (asaasPaymentId) update.asaas_payment_id = asaasPaymentId;
           if (asaasSubscriptionId) update.asaas_subscription_id = asaasSubscriptionId;
           if (asaasCustomerId) update.asaas_customer_id = asaasCustomerId;
         };
