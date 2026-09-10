@@ -295,13 +295,15 @@ function PlanCard({
 
         <button
           type="button"
-          className={`mt-6 h-12 w-full rounded-2xl text-sm font-semibold transition ${
+          onClick={onSelect}
+          disabled={loading}
+          className={`mt-6 h-12 w-full rounded-2xl text-sm font-semibold transition disabled:opacity-60 ${
             featured
               ? "bg-[#b7838e] text-white"
               : "border border-[#b7838e] bg-white text-[#9d6875]"
           }`}
         >
-          {buttonText}
+          {loading ? "Aguarde..." : buttonText}
         </button>
       </div>
     </section>
