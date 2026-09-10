@@ -66,9 +66,7 @@ function PlanosPage() {
   async function handleSubscribe(plan: SubscriptionPlan) {
     setLoadingPlan(plan);
     try {
-      const result = await checkout({
-        data: { plan, name: fullName, cpfCnpj: document },
-      });
+      const result = await checkout({ data: { plan } });
       if (!result.configured) {
         toast.info(result.message);
         return;
