@@ -48,9 +48,6 @@ function PlanosPage() {
   const checkout = useServerFn(createAsaasCheckout);
   const { data: subscription } = useSubscription();
   const [loadingPlan, setLoadingPlan] = useState<SubscriptionPlan | null>(null);
-  const [pendingPlan, setPendingPlan] = useState<SubscriptionPlan | null>(null);
-  const [fullName, setFullName] = useState("");
-  const [document, setDocument] = useState("");
 
   const status = effectiveStatus(subscription);
   const daysLeft = trialDaysLeft(subscription);
