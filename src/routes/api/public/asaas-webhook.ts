@@ -2,7 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 
 type AsaasEvent = {
   event?: string;
-  payment?: { subscription?: string; customer?: string; externalReference?: string };
+  payment?: {
+    id?: string;
+    subscription?: string;
+    customer?: string;
+    billingType?: string;
+    externalReference?: string;
+  };
   subscription?: {
     id?: string;
     customer?: string;
@@ -14,6 +20,7 @@ type AsaasEvent = {
     id?: string;
     customer?: string;
     subscription?: string | { id?: string };
+    billingType?: string;
     externalReference?: string;
   };
 };
@@ -21,13 +28,6 @@ type AsaasEvent = {
 function addDays(days: number): string {
   const d = new Date();
   d.setDate(d.getDate() + days);
-  return d.toISOString();
-}
-
-function addCycle(cycle: string | null | undefined): string {
-  const d = new Date();
-  if (cycle === "YEARLY") d.setFullYear(d.getFullYear() + 1);
-  else d.setMonth(d.getMonth() + 1);
   return d.toISOString();
 }
 
