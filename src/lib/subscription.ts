@@ -18,25 +18,36 @@ export type Subscription = {
   subscription_end: string | null;
   asaas_customer_id: string | null;
   asaas_subscription_id: string | null;
+  payment_method?: string | null;
+  access_expires_at?: string | null;
   created_at: string;
   updated_at: string;
 };
 
 export const PLANS: Record<
   SubscriptionPlan,
-  { label: string; value: number; cycle: "MONTHLY" | "YEARLY"; description: string }
+  {
+    label: string;
+    value: number;
+    cycle: "MONTHLY" | "YEARLY";
+    description: string;
+    /** Dias liberados quando o pagamento é avulso (PIX). */
+    days: number;
+  }
 > = {
   monthly: {
     label: "Mensal",
     value: 29.9,
     cycle: "MONTHLY",
     description: "Nuvie - Plano Mensal",
+    days: 30,
   },
   yearly: {
     label: "Anual",
     value: 299,
     cycle: "YEARLY",
     description: "Nuvie - Plano Anual",
+    days: 365,
   },
 };
 
