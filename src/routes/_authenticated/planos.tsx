@@ -113,6 +113,7 @@ function PlanosPage() {
             <br />
             Simples para cuidar do seu negócio.
           </p>
+          <p className="mt-3 text-xs font-medium text-[#9d6875]">{statusLabel}</p>
         </section>
 
         <div className="grid gap-4">
@@ -123,6 +124,8 @@ function PlanosPage() {
             description="Acesso completo"
             buttonText="Começar agora"
             featured={false}
+            loading={loadingPlan === "monthly"}
+            onSelect={() => handleSubscribe("monthly")}
           />
 
           <PlanCard
@@ -132,6 +135,8 @@ function PlanosPage() {
             description="Tudo incluso"
             featured
             buttonText="Escolher anual"
+            loading={loadingPlan === "yearly"}
+            onSelect={() => handleSubscribe("yearly")}
           />
         </div>
 
