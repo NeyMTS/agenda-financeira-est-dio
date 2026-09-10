@@ -12,7 +12,7 @@ import {
   WalletCards,
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
-import { createAsaasCheckout, createAsaasPixCheckout } from "@/lib/asaas.functions";
+import { createAsaasCheckout } from "@/lib/asaas.functions";
 import { useSubscription } from "@/hooks/use-subscription";
 import { effectiveStatus, trialDaysLeft, type SubscriptionPlan } from "@/lib/subscription";
 
@@ -46,7 +46,6 @@ const benefits = [
 function PlanosPage() {
   const navigate = useNavigate();
   const checkout = useServerFn(createAsaasCheckout);
-  const pixCheckout = useServerFn(createAsaasPixCheckout);
   const { data: subscription } = useSubscription();
   const [loadingKey, setLoadingKey] = useState<string | null>(null);
 
@@ -64,13 +63,10 @@ function PlanosPage() {
             ? "Assinatura cancelada"
             : "Teste grátis encerrado";
 
-  async function handleSubscribe(plan: SubscriptionPlan, method: "card" | "pix") {
-    setLoadingKey(`${plan}-${method}`);
+  async function handleSubscribe(plan: SubscriptionPlan) {
+    setLoadingKey(plan);
     try {
-      const result =
-        method === "pix"
-          ? await pixCheckout({ data: { plan } })
-          : await checkout({ data: { plan } });
+      const result = await checkout({ data: { plan } });
       if (!result.configured) {
         toast.info(result.message);
         return;
@@ -132,11 +128,9 @@ function PlanosPage() {
             description="Acesso completo"
             buttonText="Começar agora"
             featured={false}
-            pixNote="Libera 30 dias de acesso"
-            loading={loadingKey === "monthly-card"}
-            loadingPix={loadingKey === "monthly-pix"}
-            onSelect={() => void handleSubscribe("monthly", "card")}
-            onSelectPix={() => void handleSubscribe("monthly", "pix")}
+            pixNote="PIX ou cartão • libera 30 dias"
+            loading={loadingKey === "monthly"}
+            onSelect={() => void handleSubscribe("monthly")}
           />
 
           <PlanCard
@@ -146,11 +140,9 @@ function PlanosPage() {
             description="Tudo incluso"
             featured
             buttonText="Escolher anual"
-            pixNote="Libera 365 dias de acesso"
-            loading={loadingKey === "yearly-card"}
-            loadingPix={loadingKey === "yearly-pix"}
-            onSelect={() => void handleSubscribe("yearly", "card")}
-            onSelectPix={() => void handleSubscribe("yearly", "pix")}
+            pixNote="PIX ou cartão • libera 365 dias"
+            loading={loadingKey === "yearly"}
+            onSelect={() => void handleSubscribe("yearly")}
           />
         </div>
 
@@ -224,10 +216,8 @@ function PlanCard({
   buttonText,
   featured,
   loading,
-  loadingPix,
   pixNote,
   onSelect,
-  onSelectPix,
 }: {
   title: string;
   price: string;
@@ -236,10 +226,8 @@ function PlanCard({
   buttonText: string;
   featured: boolean;
   loading: boolean;
-  loadingPix: boolean;
   pixNote: string;
   onSelect: () => void;
-  onSelectPix: () => void;
 }) {
   return (
     <section
@@ -327,17 +315,8 @@ function PlanCard({
           {loading ? "Aguarde..." : buttonText}
         </button>
 
-        <button
-          type="button"
-          onClick={onSelectPix}
-          disabled={loadingPix}
-          className="mt-3 h-12 w-full rounded-2xl border border-black/[0.08] bg-white text-sm font-semibold text-[#625d5f] transition disabled:opacity-60"
-        >
-          {loadingPix ? "Aguarde..." : "Pagar com PIX"}
-        </button>
-
-        <p className="mt-2 text-center text-[11px] text-[#aaa5a6]">
-          {pixNote} • sem renovação automática
+        <p className="mt-3 text-center text-[11px] text-[#aaa5a6]">
+          {pixNote}
         </p>
       </div>
     </section>
