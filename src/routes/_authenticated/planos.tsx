@@ -216,10 +216,8 @@ function PlanCard({
   buttonText,
   featured,
   loading,
-  loadingPix,
   pixNote,
   onSelect,
-  onSelectPix,
 }: {
   title: string;
   price: string;
@@ -228,10 +226,8 @@ function PlanCard({
   buttonText: string;
   featured: boolean;
   loading: boolean;
-  loadingPix: boolean;
   pixNote: string;
   onSelect: () => void;
-  onSelectPix: () => void;
 }) {
   return (
     <section
