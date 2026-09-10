@@ -212,23 +212,26 @@ function PlanosPage() {
           />
         </div>
 
-        <section className="rounded-3xl bg-[#faf4f5] px-5 py-4">
-          <div className="flex items-center gap-4">
-            <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-white text-[#9d6875]">
-              <Check className="size-5" strokeWidth={2} />
-            </div>
+        {!isPro && (
+          <section className="rounded-3xl bg-[#faf4f5] px-5 py-4">
+            <div className="flex items-center gap-4">
+              <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-white text-[#9d6875]">
+                <Check className="size-5" strokeWidth={2} />
+              </div>
 
-            <div>
-              <p className="text-base font-semibold text-[#211f20]">
-                14 dias grátis
-              </p>
+              <div>
+                <p className="text-base font-semibold text-[#211f20]">
+                  14 dias grátis
+                </p>
 
-              <p className="mt-0.5 text-xs leading-5 text-[#817b7d]">
-                Experimente todos os recursos sem compromisso.
-              </p>
+                <p className="mt-0.5 text-xs leading-5 text-[#817b7d]">
+                  Experimente todos os recursos sem compromisso.
+                </p>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
+
 
         <section className="grid grid-cols-2 gap-3">
           {benefits.map((benefit) => {
