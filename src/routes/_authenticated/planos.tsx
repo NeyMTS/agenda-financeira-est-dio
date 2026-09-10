@@ -12,7 +12,7 @@ import {
   WalletCards,
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
-import { createAsaasCheckout, createAsaasPixCheckout } from "@/lib/asaas.functions";
+import { createAsaasCheckout } from "@/lib/asaas.functions";
 import { useSubscription } from "@/hooks/use-subscription";
 import { effectiveStatus, trialDaysLeft, type SubscriptionPlan } from "@/lib/subscription";
 
@@ -46,7 +46,6 @@ const benefits = [
 function PlanosPage() {
   const navigate = useNavigate();
   const checkout = useServerFn(createAsaasCheckout);
-  const pixCheckout = useServerFn(createAsaasPixCheckout);
   const { data: subscription } = useSubscription();
   const [loadingKey, setLoadingKey] = useState<string | null>(null);
 
@@ -64,13 +63,10 @@ function PlanosPage() {
             ? "Assinatura cancelada"
             : "Teste grátis encerrado";
 
-  async function handleSubscribe(plan: SubscriptionPlan, method: "card" | "pix") {
-    setLoadingKey(`${plan}-${method}`);
+  async function handleSubscribe(plan: SubscriptionPlan) {
+    setLoadingKey(plan);
     try {
-      const result =
-        method === "pix"
-          ? await pixCheckout({ data: { plan } })
-          : await checkout({ data: { plan } });
+      const result = await checkout({ data: { plan } });
       if (!result.configured) {
         toast.info(result.message);
         return;
