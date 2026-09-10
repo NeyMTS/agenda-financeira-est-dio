@@ -11,6 +11,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell, EmptyState } from "@/components/AppShell";
 import { useHousehold } from "@/hooks/use-household";
+import { MONEY_MASK, useMoneyHidden } from "@/lib/money-privacy";
 
 export const Route = createFileRoute("/_authenticated/inicio")({
   head: () => ({
@@ -47,6 +48,7 @@ type BirthdayClient = {
 
 function InicioPage() {
   const { data: household } = useHousehold();
+  const moneyHidden = useMoneyHidden();
 
   const today = new Date();
 
@@ -288,6 +290,8 @@ function InicioPage() {
     .slice(0, 3);
 
   function money(value: number) {
+    if (moneyHidden) return MONEY_MASK;
+
     return value.toLocaleString("pt-BR", {
       minimumFractionDigits: 2,
     });
