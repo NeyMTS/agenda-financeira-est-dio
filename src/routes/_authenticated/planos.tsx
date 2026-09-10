@@ -12,7 +12,7 @@ import {
   WalletCards,
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
-import { createAsaasCheckout } from "@/lib/asaas.functions";
+import { createAsaasCheckout, createAsaasPixCheckout } from "@/lib/asaas.functions";
 import { useSubscription } from "@/hooks/use-subscription";
 import { effectiveStatus, trialDaysLeft, type SubscriptionPlan } from "@/lib/subscription";
 

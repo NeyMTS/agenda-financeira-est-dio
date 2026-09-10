@@ -18,6 +18,12 @@ type AsaasEvent = {
   };
 };
 
+function addDays(days: number): string {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return d.toISOString();
+}
+
 function addCycle(cycle: string | null | undefined): string {
   const d = new Date();
   if (cycle === "YEARLY") d.setFullYear(d.getFullYear() + 1);
