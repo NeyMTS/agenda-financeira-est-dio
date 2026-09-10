@@ -51,16 +51,36 @@ function PlanosPage() {
 
   const status = effectiveStatus(subscription);
   const daysLeft = trialDaysLeft(subscription);
+  const isPro = status === "active";
+
+  const planLabel =
+    subscription?.plan === "yearly"
+      ? "Anual"
+      : subscription?.plan === "monthly"
+        ? "Mensal"
+        : null;
+
+  const proExpiresAt =
+    subscription?.access_expires_at ?? subscription?.subscription_end ?? null;
+
+  const formatDay = (value: string | null) =>
+    value
+      ? new Date(value).toLocaleDateString("pt-BR", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        })
+      : null;
 
   const statusLabel =
     status === "trialing"
       ? `Teste grátis • ${daysLeft} ${daysLeft === 1 ? "dia restante" : "dias restantes"}`
-      : status === "active"
-        ? "Assinatura ativa"
+      : isPro
+        ? "Plano Pro ativo"
         : status === "past_due"
           ? "Pagamento pendente"
           : status === "canceled"
-            ? "Assinatura cancelada"
+            ? "Plano cancelado"
             : "Teste grátis encerrado";
 
   async function handleSubscribe(plan: SubscriptionPlan) {
