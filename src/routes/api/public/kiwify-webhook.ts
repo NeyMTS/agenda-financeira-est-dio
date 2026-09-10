@@ -109,12 +109,25 @@ export const Route = createFileRoute("/api/public/kiwify-webhook")({
           return new Response("ok");
         }
 
-        let plan: "monthly" | "yearly" | null = null;
-        if (productId && monthlyProduct && productId === monthlyProduct) plan = "monthly";
-        else if (productId && yearlyProduct && productId === yearlyProduct) plan = "yearly";
+        // O produto é o mesmo nas duas ofertas: a diferenciação vem do parâmetro
+        // de rastreio enviado no link (s2) e, como reserva, do valor pago.
+        const trackedPlan =
+          tracking["s2"] === "monthly" || tracking["s2"] === "yearly"
+            ? (tracking["s2"] as "monthly" | "yearly")
+            : null;
+
+        const paidCents =
+          toCents(body.Commissions?.charge_amount) ??
+          toCents(body.Commissions?.product_base_price);
+
+        const plan = trackedPlan ?? planFromAmount(paidCents);
 
         if (!plan) {
-          await log(null, false, "Produto desconhecido — acesso não liberado.");
+          await log(
+            null,
+            false,
+            `Oferta não identificada (valor: ${paidCents ?? "desconhecido"}) — acesso não liberado.`,
+          );
           return new Response("ok");
         }
 
