@@ -128,11 +128,9 @@ function PlanosPage() {
             description="Acesso completo"
             buttonText="Começar agora"
             featured={false}
-            pixNote="Libera 30 dias de acesso"
-            loading={loadingKey === "monthly-card"}
-            loadingPix={loadingKey === "monthly-pix"}
-            onSelect={() => void handleSubscribe("monthly", "card")}
-            onSelectPix={() => void handleSubscribe("monthly", "pix")}
+            pixNote="PIX ou cartão • libera 30 dias"
+            loading={loadingKey === "monthly"}
+            onSelect={() => void handleSubscribe("monthly")}
           />
 
           <PlanCard
@@ -142,11 +140,9 @@ function PlanosPage() {
             description="Tudo incluso"
             featured
             buttonText="Escolher anual"
-            pixNote="Libera 365 dias de acesso"
-            loading={loadingKey === "yearly-card"}
-            loadingPix={loadingKey === "yearly-pix"}
-            onSelect={() => void handleSubscribe("yearly", "card")}
-            onSelectPix={() => void handleSubscribe("yearly", "pix")}
+            pixNote="PIX ou cartão • libera 365 dias"
+            loading={loadingKey === "yearly"}
+            onSelect={() => void handleSubscribe("yearly")}
           />
         </div>
 
