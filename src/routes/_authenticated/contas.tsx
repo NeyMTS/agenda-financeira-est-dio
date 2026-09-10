@@ -58,6 +58,7 @@ export const Route = createFileRoute("/_authenticated/contas")({
 });
 
 function ContasPage() {
+  const moneyHidden = useMoneyHidden();
   const queryClient = useQueryClient();
   const { data: household } = useHousehold();
   const { data: membersCount } = useMembersCount(household?.id);
