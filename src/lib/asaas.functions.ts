@@ -14,11 +14,19 @@ const ASAAS_BASE_URL = "https://api.asaas.com/v3";
  */
 export const createAsaasCheckout = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { plan: SubscriptionPlan }) => {
+  .inputValidator((input: { plan: SubscriptionPlan; name: string; cpfCnpj: string }) => {
     if (input?.plan !== "monthly" && input?.plan !== "yearly") {
       throw new Error("Plano inválido.");
     }
-    return { plan: input.plan };
+    const name = (input.name ?? "").trim();
+    if (name.length < 3) {
+      throw new Error("Informe seu nome completo.");
+    }
+    const cpfCnpj = (input.cpfCnpj ?? "").replace(/\D/g, "");
+    if (cpfCnpj.length !== 11 && cpfCnpj.length !== 14) {
+      throw new Error("Informe um CPF (11 dígitos) ou CNPJ (14 dígitos) válido.");
+    }
+    return { plan: input.plan, name, cpfCnpj };
   })
   .handler(async ({ data, context }): Promise<CheckoutResult> => {
     const apiKey = process.env["ASAAS_API_KEY"];
@@ -45,29 +53,43 @@ export const createAsaasCheckout = createServerFn({ method: "POST" })
         ...init,
         headers: {
           "content-type": "application/json",
+          accept: "application/json",
+          // O Asaas exige User-Agent em todas as requisições.
+          "User-Agent": "Nuvie/1.0 (https://nuvieagenda.lovable.app)",
           access_token: apiKey,
           ...(init?.headers ?? {}),
         },
       });
       const body = await res.json().catch(() => null);
       if (!res.ok) {
-        console.error("[Asaas] request failed", path, res.status, body);
-        throw new Error("Não foi possível iniciar o pagamento agora.");
+        console.error("[Asaas] request failed", path, res.status, JSON.stringify(body));
+        const description = (
+          body as { errors?: Array<{ description?: string }> } | null
+        )?.errors?.[0]?.description;
+        throw new Error(description ?? "Não foi possível iniciar o pagamento agora.");
       }
       return body as Record<string, unknown>;
     };
 
     let customerId = sub?.asaas_customer_id ?? null;
+    const email = typeof claims?.email === "string" ? claims.email : undefined;
+    const customerPayload = {
+      name: data.name,
+      email,
+      cpfCnpj: data.cpfCnpj,
+      externalReference: userId,
+    };
 
-    if (!customerId) {
-      const email = typeof claims?.email === "string" ? claims.email : undefined;
+    if (customerId) {
+      // Garante que o cadastro tenha CPF/CNPJ (exigido pelo Asaas para cobrar).
+      await asaas(`/customers/${customerId}`, {
+        method: "POST",
+        body: JSON.stringify(customerPayload),
+      });
+    } else {
       const created = await asaas("/customers", {
         method: "POST",
-        body: JSON.stringify({
-          name: email ?? "Assinante Nuvie",
-          email,
-          externalReference: userId,
-        }),
+        body: JSON.stringify(customerPayload),
       });
       customerId = String(created["id"]);
     }
