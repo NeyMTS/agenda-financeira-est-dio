@@ -77,7 +77,7 @@ export const Route = createFileRoute("/api/public/kiwify-webhook")({
             user_id: userId,
             handled,
             note,
-            payload: body as unknown as Record<string, unknown>,
+            payload: body as unknown as never,
           });
         };
 
