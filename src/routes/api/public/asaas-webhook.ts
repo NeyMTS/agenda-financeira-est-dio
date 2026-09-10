@@ -2,8 +2,20 @@ import { createFileRoute } from "@tanstack/react-router";
 
 type AsaasEvent = {
   event?: string;
-  payment?: { subscription?: string; customer?: string };
-  subscription?: { id?: string; customer?: string; status?: string; cycle?: string };
+  payment?: { subscription?: string; customer?: string; externalReference?: string };
+  subscription?: {
+    id?: string;
+    customer?: string;
+    status?: string;
+    cycle?: string;
+    externalReference?: string;
+  };
+  checkout?: {
+    id?: string;
+    customer?: string;
+    subscription?: string | { id?: string };
+    externalReference?: string;
+  };
 };
 
 function addCycle(cycle: string | null | undefined): string {
