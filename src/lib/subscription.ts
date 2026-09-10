@@ -16,8 +16,8 @@ export type Subscription = {
   trial_end: string;
   subscription_start: string | null;
   subscription_end: string | null;
-  asaas_customer_id: string | null;
-  asaas_subscription_id: string | null;
+  kiwify_order_id?: string | null;
+  kiwify_product_id?: string | null;
   payment_method?: string | null;
   access_expires_at?: string | null;
   created_at: string;

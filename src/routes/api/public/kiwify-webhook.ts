@@ -102,20 +102,14 @@ export const Route = createFileRoute("/api/public/kiwify-webhook")({
         let userId: string | null = trackedUserId;
 
         if (!userId && email) {
-          const { data: profile } = await supabaseAdmin
-            .from("subscriptions")
-            .select("user_id")
-            .limit(1000);
-          if (profile) {
-            const { data: users } = await supabaseAdmin.auth.admin.listUsers({
-              page: 1,
-              perPage: 1000,
-            });
-            const match = users?.users.find(
-              (u) => (u.email ?? "").toLowerCase() === email.toLowerCase(),
-            );
-            userId = match?.id ?? null;
-          }
+          const { data: users } = await supabaseAdmin.auth.admin.listUsers({
+            page: 1,
+            perPage: 1000,
+          });
+          const match = users?.users.find(
+            (u) => (u.email ?? "").toLowerCase() === email.toLowerCase(),
+          );
+          userId = match?.id ?? null;
         }
 
         if (!userId) {
