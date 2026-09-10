@@ -134,7 +134,7 @@ function PlanosPage() {
             buttonText="Começar agora"
             featured={false}
             loading={loadingPlan === "monthly"}
-            onSelect={() => handleSubscribe("monthly")}
+            onSelect={() => setPendingPlan("monthly")}
           />
 
           <PlanCard
@@ -145,7 +145,7 @@ function PlanosPage() {
             featured
             buttonText="Escolher anual"
             loading={loadingPlan === "yearly"}
-            onSelect={() => handleSubscribe("yearly")}
+            onSelect={() => setPendingPlan("yearly")}
           />
         </div>
 
