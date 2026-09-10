@@ -72,16 +72,24 @@ export const createAsaasCheckout = createServerFn({ method: "POST" })
     };
 
     let customerId = sub?.asaas_customer_id ?? null;
+    const email = typeof claims?.email === "string" ? claims.email : undefined;
+    const customerPayload = {
+      name: data.name,
+      email,
+      cpfCnpj: data.cpfCnpj,
+      externalReference: userId,
+    };
 
-    if (!customerId) {
-      const email = typeof claims?.email === "string" ? claims.email : undefined;
+    if (customerId) {
+      // Garante que o cadastro tenha CPF/CNPJ (exigido pelo Asaas para cobrar).
+      await asaas(`/customers/${customerId}`, {
+        method: "POST",
+        body: JSON.stringify(customerPayload),
+      });
+    } else {
       const created = await asaas("/customers", {
         method: "POST",
-        body: JSON.stringify({
-          name: email ?? "Assinante Nuvie",
-          email,
-          externalReference: userId,
-        }),
+        body: JSON.stringify(customerPayload),
       });
       customerId = String(created["id"]);
     }
