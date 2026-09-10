@@ -51,27 +51,59 @@ export const Route = createFileRoute("/api/public/asaas-webhook")({
         }
 
         const event = body.event ?? "";
+        const checkoutSubscription =
+          typeof body.checkout?.subscription === "string"
+            ? body.checkout.subscription
+            : (body.checkout?.subscription?.id ?? null);
         const asaasSubscriptionId =
-          body.subscription?.id ?? body.payment?.subscription ?? null;
+          body.subscription?.id ?? body.payment?.subscription ?? checkoutSubscription ?? null;
         const asaasCustomerId =
-          body.subscription?.customer ?? body.payment?.customer ?? null;
-
-        if (!asaasSubscriptionId && !asaasCustomerId) {
-          return new Response("ok");
-        }
+          body.subscription?.customer ??
+          body.payment?.customer ??
+          body.checkout?.customer ??
+          null;
+        const asaasCheckoutId = body.checkout?.id ?? null;
+        const externalReference =
+          body.checkout?.externalReference ??
+          body.subscription?.externalReference ??
+          body.payment?.externalReference ??
+          null;
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-        const query = supabaseAdmin.from("subscriptions").select("*");
-        const { data: row, error } = asaasSubscriptionId
-          ? await query.eq("asaas_subscription_id", asaasSubscriptionId).maybeSingle()
-          : await query.eq("asaas_customer_id", asaasCustomerId!).maybeSingle();
+        // Localiza a assinatura pelo identificador mais confiável disponível.
+        const findBy = async (column: string, value: string) =>
+          await supabaseAdmin
+            .from("subscriptions")
+            .select("*")
+            .eq(column, value)
+            .maybeSingle();
 
-        if (error) {
-          console.error("[Asaas webhook] lookup failed", error.message);
-          return new Response("Error", { status: 500 });
+        const candidates: Array<[string, string | null]> = [
+          ["user_id", externalReference],
+          ["asaas_checkout_id", asaasCheckoutId],
+          ["asaas_subscription_id", asaasSubscriptionId],
+          ["asaas_customer_id", asaasCustomerId],
+        ];
+
+        let row: Record<string, unknown> | null = null;
+        for (const [column, value] of candidates) {
+          if (!value) continue;
+          const { data, error } = await findBy(column, value);
+          if (error) {
+            console.error("[Asaas webhook] lookup failed", column, error.message);
+            return new Response("Error", { status: 500 });
+          }
+          if (data) {
+            row = data as unknown as Record<string, unknown>;
+            break;
+          }
         }
-        if (!row) return new Response("ok");
+
+        if (!row) {
+          console.warn("[Asaas webhook] assinatura não encontrada para o evento", event);
+          return new Response("ok");
+        }
 
         type SubUpdate = {
           status?: string;
