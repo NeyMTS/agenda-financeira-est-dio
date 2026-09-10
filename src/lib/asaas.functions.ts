@@ -45,14 +45,20 @@ export const createAsaasCheckout = createServerFn({ method: "POST" })
         ...init,
         headers: {
           "content-type": "application/json",
+          accept: "application/json",
+          // O Asaas exige User-Agent em todas as requisições.
+          "User-Agent": "Nuvie/1.0 (https://nuvieagenda.lovable.app)",
           access_token: apiKey,
           ...(init?.headers ?? {}),
         },
       });
       const body = await res.json().catch(() => null);
       if (!res.ok) {
-        console.error("[Asaas] request failed", path, res.status, body);
-        throw new Error("Não foi possível iniciar o pagamento agora.");
+        console.error("[Asaas] request failed", path, res.status, JSON.stringify(body));
+        const description = (
+          body as { errors?: Array<{ description?: string }> } | null
+        )?.errors?.[0]?.description;
+        throw new Error(description ?? "Não foi possível iniciar o pagamento agora.");
       }
       return body as Record<string, unknown>;
     };
