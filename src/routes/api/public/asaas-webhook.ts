@@ -61,33 +61,39 @@ export const Route = createFileRoute("/api/public/asaas-webhook")({
         }
         if (!row) return new Response("ok");
 
-        const update: Record<string, unknown> = {};
+        type SubUpdate = {
+          status?: string;
+          subscription_start?: string;
+          subscription_end?: string;
+          asaas_subscription_id?: string;
+        };
+        const update: SubUpdate = {};
 
         switch (event) {
           case "PAYMENT_CONFIRMED":
           case "PAYMENT_RECEIVED":
-            update["status"] = "active";
-            update["subscription_start"] = row.subscription_start ?? new Date().toISOString();
-            update["subscription_end"] = addCycle(
+            update.status = "active";
+            update.subscription_start = row.subscription_start ?? new Date().toISOString();
+            update.subscription_end = addCycle(
               row.plan === "yearly" ? "YEARLY" : "MONTHLY",
             );
             break;
           case "PAYMENT_OVERDUE":
-            update["status"] = "past_due";
+            update.status = "past_due";
             break;
           case "PAYMENT_REFUNDED":
           case "PAYMENT_DELETED":
           case "PAYMENT_CHARGEBACK_REQUESTED":
-            update["status"] = "canceled";
+            update.status = "canceled";
             break;
           case "SUBSCRIPTION_CREATED":
           case "SUBSCRIPTION_UPDATED":
-            if (asaasSubscriptionId) update["asaas_subscription_id"] = asaasSubscriptionId;
-            if (body.subscription?.status === "INACTIVE") update["status"] = "canceled";
+            if (asaasSubscriptionId) update.asaas_subscription_id = asaasSubscriptionId;
+            if (body.subscription?.status === "INACTIVE") update.status = "canceled";
             break;
           case "SUBSCRIPTION_DELETED":
           case "SUBSCRIPTION_INACTIVATED":
-            update["status"] = "canceled";
+            update.status = "canceled";
             break;
           default:
             return new Response("ok");
