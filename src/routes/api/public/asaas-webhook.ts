@@ -18,6 +18,12 @@ type AsaasEvent = {
   };
 };
 
+function addDays(days: number): string {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return d.toISOString();
+}
+
 function addCycle(cycle: string | null | undefined): string {
   const d = new Date();
   if (cycle === "YEARLY") d.setFullYear(d.getFullYear() + 1);
@@ -109,18 +115,28 @@ export const Route = createFileRoute("/api/public/asaas-webhook")({
           status?: string;
           subscription_start?: string;
           subscription_end?: string;
+          access_expires_at?: string;
           asaas_subscription_id?: string;
           asaas_customer_id?: string;
         };
         const update: SubUpdate = {};
         const rowPlan = typeof row["plan"] === "string" ? row["plan"] : null;
+        const rowMethod = typeof row["payment_method"] === "string" ? row["payment_method"] : null;
         const rowStart =
           typeof row["subscription_start"] === "string" ? row["subscription_start"] : null;
 
         const activate = () => {
+          const isPix = rowMethod === "pix";
+          const end = isPix
+            ? addDays(rowPlan === "yearly" ? 365 : 30)
+            : addCycle(rowPlan === "yearly" ? "YEARLY" : "MONTHLY");
           update.status = "active";
-          update.subscription_start = rowStart ?? new Date().toISOString();
-          update.subscription_end = addCycle(rowPlan === "yearly" ? "YEARLY" : "MONTHLY");
+          // No PIX cada pagamento inicia um novo período de acesso.
+          update.subscription_start = isPix
+            ? new Date().toISOString()
+            : (rowStart ?? new Date().toISOString());
+          update.subscription_end = end;
+          update.access_expires_at = end;
           if (asaasSubscriptionId) update.asaas_subscription_id = asaasSubscriptionId;
           if (asaasCustomerId) update.asaas_customer_id = asaasCustomerId;
         };

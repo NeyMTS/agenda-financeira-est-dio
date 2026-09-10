@@ -411,11 +411,14 @@ export type Database = {
       }
       subscriptions: {
         Row: {
+          access_expires_at: string | null
           asaas_checkout_id: string | null
           asaas_customer_id: string | null
+          asaas_payment_id: string | null
           asaas_subscription_id: string | null
           created_at: string
           id: string
+          payment_method: string | null
           plan: string | null
           status: string
           subscription_end: string | null
@@ -426,11 +429,14 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          access_expires_at?: string | null
           asaas_checkout_id?: string | null
           asaas_customer_id?: string | null
+          asaas_payment_id?: string | null
           asaas_subscription_id?: string | null
           created_at?: string
           id?: string
+          payment_method?: string | null
           plan?: string | null
           status?: string
           subscription_end?: string | null
@@ -441,11 +447,14 @@ export type Database = {
           user_id: string
         }
         Update: {
+          access_expires_at?: string | null
           asaas_checkout_id?: string | null
           asaas_customer_id?: string | null
+          asaas_payment_id?: string | null
           asaas_subscription_id?: string | null
           created_at?: string
           id?: string
+          payment_method?: string | null
           plan?: string | null
           status?: string
           subscription_end?: string | null
@@ -564,11 +573,14 @@ export type Database = {
       ensure_subscription: {
         Args: never
         Returns: {
+          access_expires_at: string | null
           asaas_checkout_id: string | null
           asaas_customer_id: string | null
+          asaas_payment_id: string | null
           asaas_subscription_id: string | null
           created_at: string
           id: string
+          payment_method: string | null
           plan: string | null
           status: string
           subscription_end: string | null
