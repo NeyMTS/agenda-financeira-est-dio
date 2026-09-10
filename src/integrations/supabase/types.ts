@@ -409,6 +409,51 @@ export type Database = {
           },
         ]
       }
+      subscriptions: {
+        Row: {
+          asaas_customer_id: string | null
+          asaas_subscription_id: string | null
+          created_at: string
+          id: string
+          plan: string | null
+          status: string
+          subscription_end: string | null
+          subscription_start: string | null
+          trial_end: string
+          trial_start: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          asaas_customer_id?: string | null
+          asaas_subscription_id?: string | null
+          created_at?: string
+          id?: string
+          plan?: string | null
+          status?: string
+          subscription_end?: string | null
+          subscription_start?: string | null
+          trial_end?: string
+          trial_start?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          asaas_customer_id?: string | null
+          asaas_subscription_id?: string | null
+          created_at?: string
+          id?: string
+          plan?: string | null
+          status?: string
+          subscription_end?: string | null
+          subscription_start?: string | null
+          trial_end?: string
+          trial_start?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       transactions: {
         Row: {
           account_id: string | null
@@ -513,6 +558,29 @@ export type Database = {
     }
     Functions: {
       create_household: { Args: { _name: string }; Returns: string }
+      ensure_subscription: {
+        Args: never
+        Returns: {
+          asaas_customer_id: string | null
+          asaas_subscription_id: string | null
+          created_at: string
+          id: string
+          plan: string | null
+          status: string
+          subscription_end: string | null
+          subscription_start: string | null
+          trial_end: string
+          trial_start: string
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "subscriptions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       is_household_member: {
         Args: { _household_id: string; _user_id: string }
         Returns: boolean

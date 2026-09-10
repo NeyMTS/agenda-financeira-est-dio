@@ -1,4 +1,7 @@
+import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { toast } from "sonner";
 import {
   ArrowLeft,
   CalendarDays,
@@ -9,6 +12,9 @@ import {
   WalletCards,
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { createAsaasCheckout } from "@/lib/asaas.functions";
+import { useSubscription } from "@/hooks/use-subscription";
+import { effectiveStatus, trialDaysLeft, type SubscriptionPlan } from "@/lib/subscription";
 
 export const Route = createFileRoute("/_authenticated/planos")({
   component: PlanosPage,
@@ -39,6 +45,39 @@ const benefits = [
 
 function PlanosPage() {
   const navigate = useNavigate();
+  const checkout = useServerFn(createAsaasCheckout);
+  const { data: subscription } = useSubscription();
+  const [loadingPlan, setLoadingPlan] = useState<SubscriptionPlan | null>(null);
+
+  const status = effectiveStatus(subscription);
+  const daysLeft = trialDaysLeft(subscription);
+
+  const statusLabel =
+    status === "trialing"
+      ? `Teste grátis • ${daysLeft} ${daysLeft === 1 ? "dia restante" : "dias restantes"}`
+      : status === "active"
+        ? "Assinatura ativa"
+        : status === "past_due"
+          ? "Pagamento pendente"
+          : status === "canceled"
+            ? "Assinatura cancelada"
+            : "Teste grátis encerrado";
+
+  async function handleSubscribe(plan: SubscriptionPlan) {
+    setLoadingPlan(plan);
+    try {
+      const result = await checkout({ data: { plan } });
+      if (!result.configured) {
+        toast.info(result.message);
+        return;
+      }
+      window.location.href = result.checkoutUrl;
+    } catch {
+      toast.error("Não foi possível iniciar o pagamento. Tente novamente.");
+    } finally {
+      setLoadingPlan(null);
+    }
+  }
 
   return (
     <AppShell
@@ -74,6 +113,7 @@ function PlanosPage() {
             <br />
             Simples para cuidar do seu negócio.
           </p>
+          <p className="mt-3 text-xs font-medium text-[#9d6875]">{statusLabel}</p>
         </section>
 
         <div className="grid gap-4">
@@ -84,6 +124,8 @@ function PlanosPage() {
             description="Acesso completo"
             buttonText="Começar agora"
             featured={false}
+            loading={loadingPlan === "monthly"}
+            onSelect={() => handleSubscribe("monthly")}
           />
 
           <PlanCard
@@ -93,6 +135,8 @@ function PlanosPage() {
             description="Tudo incluso"
             featured
             buttonText="Escolher anual"
+            loading={loadingPlan === "yearly"}
+            onSelect={() => handleSubscribe("yearly")}
           />
         </div>
 
@@ -164,6 +208,8 @@ function PlanCard({
   description,
   buttonText,
   featured,
+  loading,
+  onSelect,
 }: {
   title: string;
   price: string;
@@ -171,6 +217,8 @@ function PlanCard({
   description: string;
   buttonText: string;
   featured: boolean;
+  loading: boolean;
+  onSelect: () => void;
 }) {
   return (
     <section
@@ -247,13 +295,15 @@ function PlanCard({
 
         <button
           type="button"
-          className={`mt-6 h-12 w-full rounded-2xl text-sm font-semibold transition ${
+          onClick={onSelect}
+          disabled={loading}
+          className={`mt-6 h-12 w-full rounded-2xl text-sm font-semibold transition disabled:opacity-60 ${
             featured
               ? "bg-[#b7838e] text-white"
               : "border border-[#b7838e] bg-white text-[#9d6875]"
           }`}
         >
-          {buttonText}
+          {loading ? "Aguarde..." : buttonText}
         </button>
       </div>
     </section>
