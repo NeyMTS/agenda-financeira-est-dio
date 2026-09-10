@@ -411,6 +411,7 @@ export type Database = {
       }
       subscriptions: {
         Row: {
+          asaas_checkout_id: string | null
           asaas_customer_id: string | null
           asaas_subscription_id: string | null
           created_at: string
@@ -425,6 +426,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          asaas_checkout_id?: string | null
           asaas_customer_id?: string | null
           asaas_subscription_id?: string | null
           created_at?: string
@@ -439,6 +441,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          asaas_checkout_id?: string | null
           asaas_customer_id?: string | null
           asaas_subscription_id?: string | null
           created_at?: string
@@ -561,6 +564,7 @@ export type Database = {
       ensure_subscription: {
         Args: never
         Returns: {
+          asaas_checkout_id: string | null
           asaas_customer_id: string | null
           asaas_subscription_id: string | null
           created_at: string
