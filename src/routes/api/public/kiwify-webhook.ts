@@ -11,10 +11,31 @@ type KiwifyEvent = {
   Subscription?: { plan?: { id?: string } };
   Customer?: { email?: string };
   TrackingParameters?: Record<string, string | null>;
+  Commissions?: {
+    charge_amount?: string | number;
+    product_base_price?: string | number;
+  };
   [key: string]: unknown;
 };
 
 const APPROVED_EVENTS = new Set(["order_approved", "pix_created"]);
+
+/** Valor pago em centavos, aceitando string/número em centavos ou reais. */
+function toCents(value: string | number | null | undefined): number | null {
+  if (value === null || value === undefined) return null;
+  const raw = typeof value === "number" ? value : Number(String(value).replace(",", "."));
+  if (!Number.isFinite(raw) || raw <= 0) return null;
+  // Valores com casas decimais chegam em reais; inteiros chegam em centavos.
+  return Number.isInteger(raw) ? raw : Math.round(raw * 100);
+}
+
+/** Mapeia a oferta comprada: 29,90 → 30 dias | 299,90 → 365 dias. */
+function planFromAmount(cents: number | null): "monthly" | "yearly" | null {
+  if (cents === null) return null;
+  if (cents >= 2900 && cents <= 3100) return "monthly";
+  if (cents >= 29000 && cents <= 31000) return "yearly";
+  return null;
+}
 
 function timingSafeEqualHex(a: string, b: string): boolean {
   if (a.length !== b.length) return false;
