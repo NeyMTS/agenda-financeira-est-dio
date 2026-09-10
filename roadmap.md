@@ -5,3 +5,4 @@
 - [ ] Add optional client birthday persistence, display, WhatsApp action, today alert, and upcoming birthdays
 - [ ] Fix iPhone PWA zoom behavior and form input sizing
 - [ ] Verify database CRUD/select persistence, build, and main browser flows
+- [ ] Switch billing to single one-off Asaas DETACHED checkout (PIX + card), 30/365 days via webhook
