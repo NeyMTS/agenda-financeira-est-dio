@@ -64,10 +64,13 @@ function PlanosPage() {
             ? "Assinatura cancelada"
             : "Teste grátis encerrado";
 
-  async function handleSubscribe(plan: SubscriptionPlan) {
-    setLoadingPlan(plan);
+  async function handleSubscribe(plan: SubscriptionPlan, method: "card" | "pix") {
+    setLoadingKey(`${plan}-${method}`);
     try {
-      const result = await checkout({ data: { plan } });
+      const result =
+        method === "pix"
+          ? await pixCheckout({ data: { plan } })
+          : await checkout({ data: { plan } });
       if (!result.configured) {
         toast.info(result.message);
         return;
@@ -80,7 +83,7 @@ function PlanosPage() {
           : "Não foi possível iniciar o pagamento. Tente novamente.",
       );
     } finally {
-      setLoadingPlan(null);
+      setLoadingKey(null);
     }
   }
 
