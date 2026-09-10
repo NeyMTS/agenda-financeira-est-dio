@@ -160,7 +160,7 @@ export const Route = createFileRoute("/api/public/asaas-webhook")({
           const { error: updateError } = await supabaseAdmin
             .from("subscriptions")
             .update(update)
-            .eq("id", row.id);
+            .eq("id", String(row["id"]));
           if (updateError) {
             console.error("[Asaas webhook] update failed", updateError.message);
             return new Response("Error", { status: 500 });
