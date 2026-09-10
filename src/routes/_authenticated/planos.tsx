@@ -46,8 +46,9 @@ const benefits = [
 function PlanosPage() {
   const navigate = useNavigate();
   const checkout = useServerFn(createAsaasCheckout);
+  const pixCheckout = useServerFn(createAsaasPixCheckout);
   const { data: subscription } = useSubscription();
-  const [loadingPlan, setLoadingPlan] = useState<SubscriptionPlan | null>(null);
+  const [loadingKey, setLoadingKey] = useState<string | null>(null);
 
   const status = effectiveStatus(subscription);
   const daysLeft = trialDaysLeft(subscription);
