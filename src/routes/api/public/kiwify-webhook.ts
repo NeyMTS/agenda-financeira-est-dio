@@ -49,8 +49,7 @@ export const Route = createFileRoute("/api/public/kiwify-webhook")({
     handlers: {
       POST: async ({ request }) => {
         const token = process.env["KIWIFY_WEBHOOK_TOKEN"];
-        const monthlyProduct = process.env["KIWIFY_MONTHLY_PRODUCT_ID"];
-        const yearlyProduct = process.env["KIWIFY_YEARLY_PRODUCT_ID"];
+
 
         if (!token) {
           console.error("[Kiwify] KIWIFY_WEBHOOK_TOKEN não configurado");
