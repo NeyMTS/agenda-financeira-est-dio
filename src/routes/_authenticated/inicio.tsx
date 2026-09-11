@@ -5,7 +5,7 @@ import {
   CalendarDays,
   ChevronRight,
   LogOut,
-  MoreVertical,
+  
   Sparkles,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";

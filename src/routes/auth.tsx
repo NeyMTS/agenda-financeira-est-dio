@@ -7,6 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { BrandMark } from "@/components/BrandMark";
+import {
+  checkLoginLock,
+  clearLoginAttempts,
+  registerLoginFailure,
+} from "@/lib/login-guard.functions";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -75,12 +80,37 @@ function AuthPage() {
 
         navigate({ to: "/inicio" });
       } else {
+        const lock = await checkLoginLock({ data: { email } });
+
+        if (lock.locked) {
+          toast.error(
+            `Acesso temporariamente bloqueado por muitas tentativas. Tente novamente em ${lock.minutesLeft} minuto(s).`
+          );
+          return;
+        }
+
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
 
-        if (error) throw error;
+        if (error) {
+          const after = await registerLoginFailure({ data: { email } });
+
+          if (after.locked) {
+            toast.error(
+              `Acesso temporariamente bloqueado por ${after.minutesLeft} minuto(s) após 5 tentativas incorretas.`
+            );
+          } else {
+            toast.error(
+              `Email ou senha incorretos. Tentativas restantes: ${after.attemptsLeft}.`
+            );
+          }
+
+          return;
+        }
+
+        await clearLoginAttempts({ data: { email } });
 
         navigate({ to: "/inicio" });
       }
