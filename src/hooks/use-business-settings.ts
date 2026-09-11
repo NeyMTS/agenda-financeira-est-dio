@@ -82,7 +82,10 @@ export function useBusinessSettingsQuery() {
   return useQuery({
     queryKey: QUERY_KEY,
     queryFn: fetchSettings,
-    staleTime: 60_000,
+    staleTime: 10 * 60_000,
+    gcTime: 60 * 60_000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 }
 

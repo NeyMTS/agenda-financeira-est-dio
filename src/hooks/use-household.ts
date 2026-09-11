@@ -74,7 +74,12 @@ export function useHousehold() {
       if (error) throw error;
       return household;
     },
-    staleTime: 60_000,
+    // A conta compartilhada praticamente não muda: mantém em cache
+    // para as telas não repetirem essa consulta em sequência.
+    staleTime: 10 * 60_000,
+    gcTime: 60 * 60_000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 }
 
