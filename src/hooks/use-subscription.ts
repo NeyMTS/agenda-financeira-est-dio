@@ -11,7 +11,7 @@ export function useSubscription() {
     queryKey: ["subscription", "current-user"],
     staleTime: 30_000,
     // Reflete rapidamente a confirmação de pagamento vinda do webhook.
-    refetchInterval: 60_000,
+    refetchInterval: 5 * 60_000,
     refetchOnWindowFocus: true,
     queryFn: async (): Promise<Subscription | null> => {
       const { data, error } = await supabase.rpc("ensure_subscription");
