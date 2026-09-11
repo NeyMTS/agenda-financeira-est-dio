@@ -17,6 +17,9 @@ export const Route = createFileRoute("/_authenticated")({
     if (error || !user) throw redirect({ to: "/auth" });
     return { user };
   },
+  pendingMs: 150,
+  pendingMinMs: 200,
+  pendingComponent: PageSkeleton,
   component: () => (
     <SubscriptionGate>
       <PageTransition>
