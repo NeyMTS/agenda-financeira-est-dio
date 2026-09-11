@@ -164,14 +164,16 @@
   letter-spacing: -0.025em;
 }
 
+/*
+ * Apenas opacidade: transform criaria um contexto que faria o menu
+ * inferior fixo rolar junto com o conteúdo da página.
+ */
 @keyframes nuvie-page-enter {
   from {
     opacity: 0;
-    transform: translateY(6px);
   }
   to {
     opacity: 1;
-    transform: none;
   }
 }
 
