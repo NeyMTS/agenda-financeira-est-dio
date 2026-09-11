@@ -665,15 +665,6 @@ function InicioPage() {
           </div>
         )}
       </section>
-
-      {/* RODAPÉ DISCRETO */}
-      <div className="mt-8 flex items-center justify-center gap-2 text-[10px] text-[#aaa5a6]">
-        <MoreVertical
-          className="size-3"
-        />
-
-        Studio Lary Andrade
-      </div>
     </AppShell>
   );
 }
