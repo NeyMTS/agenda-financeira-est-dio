@@ -2,6 +2,7 @@ import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { SubscriptionGate } from "@/components/SubscriptionGate";
 import { PageTransition } from "@/components/PageTransition";
+import { PageSkeleton } from "@/components/PageSkeleton";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
