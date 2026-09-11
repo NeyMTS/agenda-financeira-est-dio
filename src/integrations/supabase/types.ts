@@ -221,6 +221,27 @@ export type Database = {
         }
         Relationships: []
       }
+      login_attempts: {
+        Row: {
+          email: string
+          failed_count: number
+          last_failed_at: string
+          locked_until: string | null
+        }
+        Insert: {
+          email: string
+          failed_count?: number
+          last_failed_at?: string
+          locked_until?: string | null
+        }
+        Update: {
+          email?: string
+          failed_count?: number
+          last_failed_at?: string
+          locked_until?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
