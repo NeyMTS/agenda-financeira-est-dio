@@ -14,9 +14,10 @@ import {
 } from "@/lib/login-guard.functions";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    criar: search.criar === true || search.criar === "true",
-  }),
+  validateSearch: (search: Record<string, unknown>): { criar?: boolean } => {
+    const criar = search["criar"] === true || search["criar"] === "true";
+    return criar ? { criar: true } : {};
+  },
   head: () => ({
     meta: [
       { title: "Nuvie — Gestão para profissionais da beleza" },
