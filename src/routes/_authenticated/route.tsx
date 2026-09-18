@@ -15,7 +15,7 @@ export const Route = createFileRoute("/_authenticated")({
      */
     const { data, error } = await supabase.auth.getSession();
     const user = data.session?.user ?? null;
-    if (error || !user) throw redirect({ to: "/auth" });
+    if (error || !user) throw redirect({ to: "/auth", search: {} });
     return { user };
   },
   pendingMs: 150,
