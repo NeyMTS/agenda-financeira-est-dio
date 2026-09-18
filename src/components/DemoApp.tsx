@@ -202,7 +202,10 @@ function DemoHome({ displayMoney, onAction }: DemoMoneyProps) {
       <div className="space-y-2">{appointments.slice(0, 2).map((item) => <AppointmentRow key={item.time} item={item} displayMoney={displayMoney} onAction={onAction} />)}</div>
     </section>
     <section><h2 className="mb-3 text-sm font-semibold">Acesso rápido</h2><div className="grid grid-cols-2 gap-3">
-      <ActionTile icon={UsersRound} text="Nova cliente" onClick={onAction} /><ActionTile icon={Sparkles} text="Novo serviço" onClick={onAction} />
+      <ActionTile icon={UsersRound} text="Nova cliente" onClick={onAction} />
+      <Link to="/demo/$section" params={{ section: "servicos" }} className="surface flex h-20 items-center justify-start gap-2 px-4 text-sm font-medium">
+        <Sparkles className="size-5 text-[var(--nuvie-primary-strong)]" /><span>Ver serviços</span>
+      </Link>
     </div></section>
   </div>;
 }
