@@ -15,7 +15,7 @@ import {
   WalletCards,
   X,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { BrandMark } from "@/components/BrandMark";
 import { MoneyToggle } from "@/components/MoneyToggle";
 import { Button } from "@/components/ui/button";
@@ -96,7 +96,7 @@ export function DemoApp() {
         "--nuvie-primary-medium": `color-mix(in srgb, ${DEMO_PRIMARY} 32%, white)`,
         "--nuvie-primary-strong": `color-mix(in srgb, ${DEMO_PRIMARY} 82%, black)`,
         "--nuvie-primary-deep": `color-mix(in srgb, ${DEMO_PRIMARY} 72%, black)`,
-      } as React.CSSProperties}
+      } as CSSProperties}
     >
       <div className="mx-auto min-h-screen w-full max-w-md px-5 pb-32 pt-5">
         <div className="mb-5 flex items-center justify-between rounded-xl border border-black/[0.05] bg-white px-3 py-2 shadow-sm">

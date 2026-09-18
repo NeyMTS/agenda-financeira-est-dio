@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
@@ -14,6 +14,9 @@ import {
 } from "@/lib/login-guard.functions";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    criar: search.criar === true || search.criar === "true",
+  }),
   head: () => ({
     meta: [
       { title: "Nuvie — Gestão para profissionais da beleza" },
@@ -38,8 +41,11 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const navigate = useNavigate();
+  const search = Route.useSearch();
 
-  const [mode, setMode] = useState<"login" | "signup">("login");
+  const [mode, setMode] = useState<"login" | "signup">(
+    search.criar ? "signup" : "login"
+  );
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -249,6 +255,19 @@ function AuthPage() {
                 : "Criar minha conta"}
           </Button>
         </form>
+
+        {mode === "login" ? (
+          <Button
+            type="button"
+            variant="outline"
+            asChild
+            className="mt-3 h-11 w-full rounded-xl border-black/[0.08] bg-white text-sm font-semibold text-[#625d5f]"
+          >
+            <Link to="/demo/$section" params={{ section: "agenda" }}>
+              Conhecer demonstração
+            </Link>
+          </Button>
+        ) : null}
 
         {/* ALTERNAR LOGIN/CADASTRO */}
         <button

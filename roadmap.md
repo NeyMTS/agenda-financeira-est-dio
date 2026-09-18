@@ -1,3 +1,4 @@
+- [x] Adicionar modo visitante/demonstração isolado e somente leitura
 # Roadmap
 
 - [ ] Audit database schema, grants, RLS, auth, household association, and frontend CRUD paths
