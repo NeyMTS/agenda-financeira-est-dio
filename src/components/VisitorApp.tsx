@@ -101,7 +101,7 @@ export function VisitorApp() {
 
   function requestAccount() {
     setForm(null);
-    setAccountPromptOpen(true);
+    window.setTimeout(() => setAccountPromptOpen(true), 150);
   }
 
   return (
@@ -182,7 +182,7 @@ export function VisitorApp() {
             <DialogDescription>{ACCOUNT_MESSAGE}</DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setAccountPromptOpen(false)}>Continuar explorando</Button>
+            <Button variant="outline" onClick={() => navigate({ to: "/auth", search: {} })}>Entrar</Button>
             <Button onClick={() => navigate({ to: "/auth", search: { criar: true } })}>Criar conta</Button>
           </DialogFooter>
         </DialogContent>
