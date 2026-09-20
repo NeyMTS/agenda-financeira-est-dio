@@ -21,6 +21,10 @@ import {
 } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useHousehold } from "@/hooks/use-household";
+import {
+  applyMessageTemplate,
+  useBusinessSettings,
+} from "@/hooks/use-business-settings";
 import { MONEY_MASK, useMoneyHidden } from "@/lib/money-privacy";
 import {
   AppShell,
@@ -366,6 +370,7 @@ function getClient(
 }
 
 function AgendaPage() {
+  const businessSettings = useBusinessSettings();
   const moneyHidden = useMoneyHidden();
 
   const {
@@ -2230,21 +2235,16 @@ function AgendaPage() {
         "pt-BR"
       );
 
-    const message =
-      `Olá, ${client.name}! 💕\n\n` +
-      `Gostaríamos de confirmar seu agendamento:\n` +
-      `📅 Data: ${dateFormatted}\n` +
-      `⏰ Horário: ${
-        appointment.scheduled_time?.slice(
-          0,
-          5
-        ) ??
-        "a confirmar"
-      }\n` +
-      `✨ Serviço: ${appointment.service_name}\n\n` +
-      `Pedimos, por favor, que chegue 5 minutos antes do horário agendado.\n\n` +
-      `Será um prazer receber você!\n` +
-      `Studio Lary Andrade`;
+    const message = applyMessageTemplate(
+      businessSettings.appointmentMessage,
+      {
+        nome: client.name,
+        data: dateFormatted,
+        horario:
+          appointment.scheduled_time?.slice(0, 5) ?? "a confirmar",
+        servico: appointment.service_name,
+      }
+    );
 
     window.open(
       `https://wa.me/${phone}?text=${encodeURIComponent(

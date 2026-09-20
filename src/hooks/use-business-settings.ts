@@ -3,6 +3,33 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const LOGO_BUCKET = "business-logos";
 
+export const DEFAULT_BIRTHDAY_MESSAGE =
+  "Olá, {nome}! 💕\n\n" +
+  "Passando para desejar um feliz aniversário! 🎂✨\n\n" +
+  "Que seu novo ciclo seja cheio de saúde, felicidade e momentos especiais.\n\n" +
+  "Um beijo,\n" +
+  "Studio Lary Andrade";
+
+export const DEFAULT_APPOINTMENT_MESSAGE =
+  "Olá, {nome}! 💕\n\n" +
+  "Gostaríamos de confirmar seu agendamento:\n" +
+  "📅 Data: {data}\n" +
+  "⏰ Horário: {horario}\n" +
+  "✨ Serviço: {servico}\n\n" +
+  "Pedimos, por favor, que chegue 5 minutos antes do horário agendado.\n\n" +
+  "Será um prazer receber você!\n" +
+  "Studio Lary Andrade";
+
+export function applyMessageTemplate(
+  template: string,
+  values: Partial<Record<"nome" | "data" | "horario" | "servico", string>>
+) {
+  return Object.entries(values).reduce(
+    (message, [key, value]) => message.replaceAll(`{${key}}`, value ?? ""),
+    template
+  );
+}
+
 export type BusinessSettings = {
   businessName: string;
   professionalName: string;
@@ -13,6 +40,8 @@ export type BusinessSettings = {
   /** URL pronta para exibição — derivada, não é salva. */
   logoUrl?: string;
   primaryColor: string;
+  birthdayMessage: string;
+  appointmentMessage: string;
 };
 
 export const defaultSettings: BusinessSettings = {
@@ -23,6 +52,8 @@ export const defaultSettings: BusinessSettings = {
   logo: "",
   logoUrl: "",
   primaryColor: "#B7838E",
+  birthdayMessage: DEFAULT_BIRTHDAY_MESSAGE,
+  appointmentMessage: DEFAULT_APPOINTMENT_MESSAGE,
 };
 
 const QUERY_KEY = ["business-settings"];
@@ -46,7 +77,7 @@ async function fetchSettings(): Promise<BusinessSettings> {
   const { data, error } = await supabase
     .from("business_settings")
     .select(
-      "business_name, professional_name, whatsapp, instagram, logo, primary_color"
+      "business_name, professional_name, whatsapp, instagram, logo, primary_color, birthday_message, appointment_message"
     )
     .eq("user_id", user.id)
     .maybeSingle();
@@ -75,6 +106,10 @@ async function fetchSettings(): Promise<BusinessSettings> {
     logo,
     logoUrl: await resolveLogoUrl(logo),
     primaryColor: data.primary_color ?? defaultSettings.primaryColor,
+    birthdayMessage:
+      data.birthday_message ?? defaultSettings.birthdayMessage,
+    appointmentMessage:
+      data.appointment_message ?? defaultSettings.appointmentMessage,
   };
 }
 
@@ -112,6 +147,10 @@ export function useSaveBusinessSettings() {
           instagram: settings.instagram,
           logo: settings.logo,
           primary_color: settings.primaryColor,
+          birthday_message:
+            settings.birthdayMessage || DEFAULT_BIRTHDAY_MESSAGE,
+          appointment_message:
+            settings.appointmentMessage || DEFAULT_APPOINTMENT_MESSAGE,
         },
         { onConflict: "user_id" }
       );
