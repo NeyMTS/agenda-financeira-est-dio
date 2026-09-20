@@ -22,7 +22,6 @@ import { Route as AuthenticatedMetasRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedMovimentacoesRouteImport } from './routes/_authenticated/movimentacoes'
 import { Route as AuthenticatedPlanosRouteImport } from './routes/_authenticated/planos'
 import { Route as AuthenticatedServicosRouteImport } from './routes/_authenticated/servicos'
-import { Route as DemoSectionRouteImport } from './routes/demo.$section'
 import { Route as ApiPublicKiwifyWebhookRouteImport } from './routes/api/public/kiwify-webhook'
 
 const IndexRoute = IndexRouteImport.update({
@@ -91,11 +90,6 @@ const AuthenticatedServicosRoute = AuthenticatedServicosRouteImport.update({
   path: '/servicos',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const DemoSectionRoute = DemoSectionRouteImport.update({
-  id: '/demo/$section',
-  path: '/demo/$section',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiPublicKiwifyWebhookRoute = ApiPublicKiwifyWebhookRouteImport.update({
   id: '/api/public/kiwify-webhook',
   path: '/api/public/kiwify-webhook',
@@ -115,7 +109,6 @@ export interface FileRoutesByFullPath {
   '/movimentacoes': typeof AuthenticatedMovimentacoesRoute
   '/planos': typeof AuthenticatedPlanosRoute
   '/servicos': typeof AuthenticatedServicosRoute
-  '/demo/$section': typeof DemoSectionRoute
   '/api/public/kiwify-webhook': typeof ApiPublicKiwifyWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -131,7 +124,6 @@ export interface FileRoutesByTo {
   '/movimentacoes': typeof AuthenticatedMovimentacoesRoute
   '/planos': typeof AuthenticatedPlanosRoute
   '/servicos': typeof AuthenticatedServicosRoute
-  '/demo/$section': typeof DemoSectionRoute
   '/api/public/kiwify-webhook': typeof ApiPublicKiwifyWebhookRoute
 }
 export interface FileRoutesById {
@@ -149,7 +141,6 @@ export interface FileRoutesById {
   '/_authenticated/movimentacoes': typeof AuthenticatedMovimentacoesRoute
   '/_authenticated/planos': typeof AuthenticatedPlanosRoute
   '/_authenticated/servicos': typeof AuthenticatedServicosRoute
-  '/demo/$section': typeof DemoSectionRoute
   '/api/public/kiwify-webhook': typeof ApiPublicKiwifyWebhookRoute
 }
 export interface FileRouteTypes {
@@ -167,7 +158,6 @@ export interface FileRouteTypes {
     | '/movimentacoes'
     | '/planos'
     | '/servicos'
-    | '/demo/$section'
     | '/api/public/kiwify-webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -183,7 +173,6 @@ export interface FileRouteTypes {
     | '/movimentacoes'
     | '/planos'
     | '/servicos'
-    | '/demo/$section'
     | '/api/public/kiwify-webhook'
   id:
     | '__root__'
@@ -200,7 +189,6 @@ export interface FileRouteTypes {
     | '/_authenticated/movimentacoes'
     | '/_authenticated/planos'
     | '/_authenticated/servicos'
-    | '/demo/$section'
     | '/api/public/kiwify-webhook'
   fileRoutesById: FileRoutesById
 }
@@ -208,7 +196,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
-  DemoSectionRoute: typeof DemoSectionRoute
   ApiPublicKiwifyWebhookRoute: typeof ApiPublicKiwifyWebhookRoute
 }
 
@@ -305,13 +292,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedServicosRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/demo/$section': {
-      id: '/demo/$section'
-      path: '/demo/$section'
-      fullPath: '/demo/$section'
-      preLoaderRoute: typeof DemoSectionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/public/kiwify-webhook': {
       id: '/api/public/kiwify-webhook'
       path: '/api/public/kiwify-webhook'
@@ -355,7 +335,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
-  DemoSectionRoute: DemoSectionRoute,
   ApiPublicKiwifyWebhookRoute: ApiPublicKiwifyWebhookRoute,
 }
 export const routeTree = rootRouteImport

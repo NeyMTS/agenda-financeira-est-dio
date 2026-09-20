@@ -31,7 +31,7 @@ function Index() {
     supabase.auth.getUser().then(({ data, error }) => {
       if (!active) return;
       navigate({
-        to: !error && data.user ? "/inicio" : "/auth",
+        to: "/inicio",
         replace: true,
       });
     });

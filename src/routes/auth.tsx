@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
@@ -256,19 +256,6 @@ function AuthPage() {
                 : "Criar minha conta"}
           </Button>
         </form>
-
-        {mode === "login" ? (
-          <Button
-            type="button"
-            variant="outline"
-            asChild
-            className="mt-3 h-11 w-full rounded-xl border-black/[0.08] bg-white text-sm font-semibold text-[#625d5f]"
-          >
-            <Link to="/demo/$section" params={{ section: "agenda" }}>
-              Conhecer demonstração
-            </Link>
-          </Button>
-        ) : null}
 
         {/* ALTERNAR LOGIN/CADASTRO */}
         <button
