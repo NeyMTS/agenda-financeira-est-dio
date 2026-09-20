@@ -1,8 +1,9 @@
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { SubscriptionGate } from "@/components/SubscriptionGate";
 import { PageTransition } from "@/components/PageTransition";
 import { PageSkeleton } from "@/components/PageSkeleton";
+import { VisitorApp } from "@/components/VisitorApp";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -15,17 +16,24 @@ export const Route = createFileRoute("/_authenticated")({
      */
     const { data, error } = await supabase.auth.getSession();
     const user = data.session?.user ?? null;
-    if (error || !user) throw redirect({ to: "/auth", search: {} });
-    return { user };
+    return { user: error ? null : user };
   },
   pendingMs: 150,
   pendingMinMs: 200,
   pendingComponent: PageSkeleton,
-  component: () => (
+  component: AuthenticatedLayout,
+});
+
+function AuthenticatedLayout() {
+  const { user } = Route.useRouteContext();
+
+  if (!user) return <VisitorApp />;
+
+  return (
     <SubscriptionGate>
       <PageTransition>
         <Outlet />
       </PageTransition>
     </SubscriptionGate>
-  ),
-});
+  );
+}

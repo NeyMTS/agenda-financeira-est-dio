@@ -1,4 +1,4 @@
-- [x] Adicionar modo visitante/demonstração isolado e somente leitura
+- [x] Substituir a demonstração separada por acesso visitante nas telas principais, sem persistência
 # Roadmap
 
 - [ ] Audit database schema, grants, RLS, auth, household association, and frontend CRUD paths
