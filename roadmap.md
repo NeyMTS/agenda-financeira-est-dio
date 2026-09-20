@@ -10,4 +10,4 @@
 - [x] Migrar pagamento do Asaas para a Kiwify (pagamento único 30/365 dias via webhook)
 - [x] Otimizar performance de navegação (sessão local, preload, cache, transição)
 
-- [ ] Adicionar mensagens automáticas personalizáveis por usuário
+- [x] Adicionar mensagens automáticas personalizáveis por usuário
