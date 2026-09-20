@@ -1,0 +1,3 @@
+ALTER TABLE public.business_settings
+  ADD COLUMN birthday_message text NOT NULL DEFAULT E'Olá, {nome}! 💕\n\nPassando para desejar um feliz aniversário! 🎂✨\n\nQue seu novo ciclo seja cheio de saúde, felicidade e momentos especiais.\n\nUm beijo,\nStudio Lary Andrade',
+  ADD COLUMN appointment_message text NOT NULL DEFAULT E'Olá, {nome}! 💕\n\nGostaríamos de confirmar seu agendamento:\n📅 Data: {data}\n⏰ Horário: {horario}\n✨ Serviço: {servico}\n\nPedimos, por favor, que chegue 5 minutos antes do horário agendado.\n\nSerá um prazer receber você!\nStudio Lary Andrade';

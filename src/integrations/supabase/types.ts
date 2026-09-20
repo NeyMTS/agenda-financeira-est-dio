@@ -54,6 +54,8 @@ export type Database = {
       }
       business_settings: {
         Row: {
+          appointment_message: string
+          birthday_message: string
           business_name: string
           created_at: string
           instagram: string
@@ -65,6 +67,8 @@ export type Database = {
           whatsapp: string
         }
         Insert: {
+          appointment_message?: string
+          birthday_message?: string
           business_name?: string
           created_at?: string
           instagram?: string
@@ -76,6 +80,8 @@ export type Database = {
           whatsapp?: string
         }
         Update: {
+          appointment_message?: string
+          birthday_message?: string
           business_name?: string
           created_at?: string
           instagram?: string
