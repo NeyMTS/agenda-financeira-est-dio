@@ -20,13 +20,6 @@ export const DEFAULT_APPOINTMENT_MESSAGE =
   "Será um prazer receber você!\n" +
   "Studio Lary Andrade";
 
-export const DEFAULT_CLIENT_APPOINTMENT_MESSAGE =
-  "Olá, {nome}! 💕\n\n" +
-  "Gostaríamos de confirmar seu atendimento.\n\n" +
-  "Pedimos, por favor, que chegue 5 minutos antes do horário agendado.\n\n" +
-  "Será um prazer receber você!\n" +
-  "Studio Lary Andrade";
-
 export function applyMessageTemplate(
   template: string,
   values: Partial<Record<"nome" | "data" | "horario" | "servico", string>>
