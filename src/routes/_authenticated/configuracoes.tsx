@@ -5,6 +5,7 @@ import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import {
   defaultSettings,
@@ -200,6 +201,50 @@ function ConfiguracoesPage() {
                 }
                 placeholder="Ex.: Maria Silva"
               />
+            </div>
+          </div>
+        </section>
+
+        <section className="rounded-3xl border border-black/[0.05] bg-white p-5 shadow-sm">
+          <div className="mb-5">
+            <h2 className="text-base font-semibold text-[#211f20]">
+              Mensagens automáticas
+            </h2>
+
+            <p className="mt-1 text-xs leading-5 text-[#817b7d]">
+              Personalize os textos usados nas mensagens atuais.
+            </p>
+          </div>
+
+          <div className="space-y-5">
+            <div className="space-y-2">
+              <Label htmlFor="birthdayMessage">Mensagem de aniversário</Label>
+              <Textarea
+                id="birthdayMessage"
+                value={settings.birthdayMessage}
+                onChange={(event) =>
+                  updateField("birthdayMessage", event.target.value)
+                }
+                className="min-h-40 resize-y text-sm leading-5"
+              />
+              <p className="text-[10px] text-[#aaa5a6]">
+                Use {"{nome}"} para incluir o nome da cliente.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="appointmentMessage">Mensagem de agendamento</Label>
+              <Textarea
+                id="appointmentMessage"
+                value={settings.appointmentMessage}
+                onChange={(event) =>
+                  updateField("appointmentMessage", event.target.value)
+                }
+                className="min-h-56 resize-y text-sm leading-5"
+              />
+              <p className="text-[10px] leading-4 text-[#aaa5a6]">
+                Use {"{nome}"}, {"{data}"}, {"{horario}"} e {"{servico}"} para incluir os dados do agendamento.
+              </p>
             </div>
           </div>
         </section>

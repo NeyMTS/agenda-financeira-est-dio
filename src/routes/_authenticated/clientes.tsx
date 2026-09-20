@@ -14,6 +14,12 @@ import {
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useHousehold } from "@/hooks/use-household";
+import {
+  applyMessageTemplate,
+  DEFAULT_APPOINTMENT_MESSAGE,
+  DEFAULT_CLIENT_APPOINTMENT_MESSAGE,
+  useBusinessSettings,
+} from "@/hooks/use-business-settings";
 import { AppShell, EmptyState } from "@/components/AppShell";
 
 export const Route = createFileRoute("/_authenticated/clientes")({
@@ -30,6 +36,7 @@ type Client = {
 
 function ClientesPage() {
   const { data: household } = useHousehold();
+  const businessSettings = useBusinessSettings();
   const queryClient = useQueryClient();
 
   const [search, setSearch] = useState("");
@@ -213,12 +220,11 @@ function ClientesPage() {
 
     if (!phone) return;
 
-    const message =
-      `Olá, ${client.name}! 💕\n\n` +
-      `Gostaríamos de confirmar seu atendimento.\n\n` +
-      `Pedimos, por favor, que chegue 5 minutos antes do horário agendado.\n\n` +
-      `Será um prazer receber você!\n` +
-      `Studio Lary Andrade`;
+    const template =
+      businessSettings.appointmentMessage === DEFAULT_APPOINTMENT_MESSAGE
+        ? DEFAULT_CLIENT_APPOINTMENT_MESSAGE
+        : businessSettings.appointmentMessage;
+    const message = applyMessageTemplate(template, { nome: client.name });
 
     window.open(
       `https://wa.me/${phone}?text=${encodeURIComponent(message)}`,
@@ -231,12 +237,10 @@ function ClientesPage() {
 
     if (!phone) return;
 
-    const message =
-      `Olá, ${client.name}! 💕\n\n` +
-      `Passando para desejar um feliz aniversário! 🎂✨\n\n` +
-      `Que seu novo ciclo seja cheio de saúde, felicidade e momentos especiais.\n\n` +
-      `Um beijo,\n` +
-      `Studio Lary Andrade`;
+    const message = applyMessageTemplate(
+      businessSettings.birthdayMessage,
+      { nome: client.name }
+    );
 
     window.open(
       `https://wa.me/${phone}?text=${encodeURIComponent(message)}`,
