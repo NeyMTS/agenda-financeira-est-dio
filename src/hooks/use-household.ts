@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useVisitorAccess } from "@/components/VisitorAccess";
 
 export type Household = {
   id: string;
@@ -45,6 +46,7 @@ export async function resolveHouseholdId(): Promise<string> {
  * Se ainda não existir, cria uma automaticamente via função segura no banco.
  */
 export function useHousehold() {
+  const { isVisitor } = useVisitorAccess();
   return useQuery({
     queryKey: ["household", "current-user"],
     queryFn: async (): Promise<Household> => {
@@ -74,6 +76,7 @@ export function useHousehold() {
       if (error) throw error;
       return household;
     },
+    enabled: !isVisitor,
     // A conta compartilhada praticamente não muda: mantém em cache
     // para as telas não repetirem essa consulta em sequência.
     staleTime: 10 * 60_000,
@@ -84,14 +87,15 @@ export function useHousehold() {
 }
 
 export function useMembersCount(householdId: string | undefined) {
+  const { isVisitor } = useVisitorAccess();
   return useQuery({
     queryKey: ["members", householdId],
-    enabled: Boolean(householdId),
+    enabled: Boolean(householdId) && !isVisitor,
     queryFn: async () => {
       const { count, error } = await supabase
         .from("household_members")
         .select("user_id", { count: "exact", head: true })
-        .eq("household_id", householdId!);
+        .eq("household_id", householdId ?? "");
       if (error) throw error;
       return count ?? 1;
     },

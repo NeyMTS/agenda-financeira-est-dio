@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useVisitorAccess } from "@/components/VisitorAccess";
 
 export const LOGO_BUCKET = "business-logos";
 
@@ -114,9 +115,11 @@ async function fetchSettings(): Promise<BusinessSettings> {
 }
 
 export function useBusinessSettingsQuery() {
+  const { isVisitor } = useVisitorAccess();
   return useQuery({
     queryKey: QUERY_KEY,
     queryFn: fetchSettings,
+    enabled: !isVisitor,
     staleTime: 10 * 60_000,
     gcTime: 60 * 60_000,
     refetchOnWindowFocus: false,
