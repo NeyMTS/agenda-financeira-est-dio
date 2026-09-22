@@ -15,6 +15,7 @@ import {
   useSaveBusinessSettings,
   type BusinessSettings,
 } from "@/hooks/use-business-settings";
+import { useVisitorAccess } from "@/components/VisitorAccess";
 
 
 const colorOptions = [
@@ -31,6 +32,7 @@ export const Route = createFileRoute("/_authenticated/configuracoes")({
 });
 
 function ConfiguracoesPage() {
+  const { requestAuthentication } = useVisitorAccess();
   const navigate = useNavigate();
 
   const { data } = useBusinessSettingsQuery();
@@ -58,6 +60,10 @@ function ConfiguracoesPage() {
   async function handleLogoChange(
     event: React.ChangeEvent<HTMLInputElement>
   ) {
+    if (requestAuthentication()) {
+      event.target.value = "";
+      return;
+    }
     const file = event.target.files?.[0];
 
     if (!file) return;
@@ -97,6 +103,7 @@ function ConfiguracoesPage() {
 
 
   async function handleSave() {
+    if (requestAuthentication({ kind: "settings", draft: settings })) return;
     try {
       await saveSettings.mutateAsync(settings);
       toast.success("Configurações salvas.");

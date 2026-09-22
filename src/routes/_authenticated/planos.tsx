@@ -15,6 +15,7 @@ import { AppShell } from "@/components/AppShell";
 import { getKiwifyCheckoutUrl } from "@/lib/kiwify.functions";
 import { useSubscription } from "@/hooks/use-subscription";
 import { effectiveStatus, trialDaysLeft, type SubscriptionPlan } from "@/lib/subscription";
+import { useVisitorAccess } from "@/components/VisitorAccess";
 
 export const Route = createFileRoute("/_authenticated/planos")({
   component: PlanosPage,
@@ -44,6 +45,7 @@ const benefits = [
 ];
 
 function PlanosPage() {
+  const { isVisitor, requestAuthentication } = useVisitorAccess();
   const navigate = useNavigate();
   const checkout = useServerFn(getKiwifyCheckoutUrl);
   const { data: subscription } = useSubscription();
@@ -84,6 +86,7 @@ function PlanosPage() {
             : "Teste grátis encerrado";
 
   async function handleSubscribe(plan: SubscriptionPlan) {
+    if (requestAuthentication()) return;
     setLoadingKey(plan);
     try {
       const result = await checkout({ data: { plan } });
@@ -137,10 +140,10 @@ function PlanosPage() {
             <br />
             Simples para cuidar do seu negócio.
           </p>
-          <p className="mt-3 text-xs font-medium text-[#9d6875]">{statusLabel}</p>
+          {!isVisitor && <p className="mt-3 text-xs font-medium text-[#9d6875]">{statusLabel}</p>}
         </section>
 
-        <section className="rounded-3xl border border-black/[0.06] bg-white px-5 py-4 text-left shadow-sm">
+        {!isVisitor && <section className="rounded-3xl border border-black/[0.06] bg-white px-5 py-4 text-left shadow-sm">
           {isPro ? (
             <>
               <p className="text-base font-semibold text-[#211f20]">
@@ -183,7 +186,7 @@ function PlanosPage() {
               </p>
             </>
           )}
-        </section>
+        </section>}
 
 
         <div className="grid gap-4">

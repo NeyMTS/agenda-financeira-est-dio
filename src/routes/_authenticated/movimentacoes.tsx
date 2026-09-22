@@ -14,6 +14,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useHousehold } from "@/hooks/use-household";
 import { AppShell, EmptyState } from "@/components/AppShell";
 import { MONEY_MASK, useMoneyHidden } from "@/lib/money-privacy";
+import { takePendingVisitorAction, useVisitorAccess } from "@/components/VisitorAccess";
+import { useEffect } from "react";
 
 export const Route = createFileRoute(
   "/_authenticated/movimentacoes"
@@ -32,6 +34,7 @@ type Transaction = {
 };
 
 function MovimentacoesPage() {
+  const { isVisitor, requestAuthentication } = useVisitorAccess();
   const moneyHidden = useMoneyHidden();
   const { data: household } = useHousehold();
   const queryClient = useQueryClient();
@@ -92,7 +95,7 @@ function MovimentacoesPage() {
       monthStart,
       monthEnd,
     ],
-    enabled: Boolean(household?.id),
+    enabled: Boolean(household?.id) && !isVisitor,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("transactions")
@@ -111,6 +114,17 @@ function MovimentacoesPage() {
       return (data ?? []) as Transaction[];
     },
   });
+
+  useEffect(() => {
+    const draft = takePendingVisitorAction<{ description: string; amount: string; type: "income" | "expense"; date: string; status: string }>("transaction");
+    if (!draft) return;
+    setDescription(draft.description);
+    setAmount(draft.amount);
+    setType(draft.type);
+    setDate(draft.date);
+    setStatus(draft.status);
+    setShowForm(true);
+  }, []);
 
   const totals = useMemo(() => {
     const paidIncome = transactions
@@ -287,6 +301,7 @@ function MovimentacoesPage() {
   }
 
   async function saveTransaction() {
+    if (requestAuthentication({ kind: "transaction", draft: { description, amount, type, date, status } })) return;
     if (
       !household?.id ||
       !description.trim() ||
@@ -375,6 +390,7 @@ function MovimentacoesPage() {
   async function deleteTransaction(
     transaction: Transaction
   ) {
+    if (requestAuthentication()) return;
     if (
       !window.confirm(
         `Excluir "${transaction.description}"?`
@@ -421,6 +437,7 @@ function MovimentacoesPage() {
   async function markAsPaid(
     transaction: Transaction
   ) {
+    if (requestAuthentication()) return;
     if (!household?.id) return;
 
     try {

@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AppShell, EmptyState } from "@/components/AppShell";
 import { useHousehold } from "@/hooks/use-household";
 import { MONEY_MASK, useMoneyHidden } from "@/lib/money-privacy";
+import { useVisitorAccess } from "@/components/VisitorAccess";
 
 export const Route = createFileRoute("/_authenticated/inicio")({
   head: () => ({
@@ -47,6 +48,7 @@ type BirthdayClient = {
 };
 
 function InicioPage() {
+  const { isVisitor, requestAuthentication } = useVisitorAccess();
   const { data: household } = useHousehold();
   const moneyHidden = useMoneyHidden();
 
@@ -83,7 +85,7 @@ function InicioPage() {
         monthStart,
         monthEnd,
       ],
-      enabled: Boolean(household?.id),
+      enabled: Boolean(household?.id) && !isVisitor,
       queryFn: async () => {
         const { data, error } = await supabase
           .from("transactions")
@@ -109,7 +111,7 @@ function InicioPage() {
       monthStart,
       monthEnd,
     ],
-    enabled: Boolean(household?.id),
+    enabled: Boolean(household?.id) && !isVisitor,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("studio_appointments")
@@ -140,7 +142,7 @@ function InicioPage() {
 
   const { data: services = [] } = useQuery({
     queryKey: ["studio-dashboard-services", household?.id],
-    enabled: Boolean(household?.id),
+    enabled: Boolean(household?.id) && !isVisitor,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("studio_services")
@@ -156,7 +158,7 @@ function InicioPage() {
 
   const { data: birthdayClients = [] } = useQuery({
     queryKey: ["studio-birthdays", household?.id],
-    enabled: Boolean(household?.id),
+    enabled: Boolean(household?.id) && !isVisitor,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("studio_clients")
@@ -314,6 +316,7 @@ function InicioPage() {
   }
 
   async function signOut() {
+    if (requestAuthentication()) return;
     await supabase.auth.signOut();
   }
 
