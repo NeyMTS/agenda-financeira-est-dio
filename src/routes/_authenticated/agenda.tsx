@@ -29,6 +29,7 @@ import { MONEY_MASK, useMoneyHidden } from "@/lib/money-privacy";
 import {
   AppShell,
 } from "@/components/AppShell";
+import { takePendingVisitorAction, useVisitorAccess } from "@/components/VisitorAccess";
 
 export const Route = createFileRoute(
   "/_authenticated/agenda"
@@ -370,6 +371,7 @@ function getClient(
 }
 
 function AgendaPage() {
+  const { isVisitor, requestAuthentication } = useVisitorAccess();
   const businessSettings = useBusinessSettings();
   const moneyHidden = useMoneyHidden();
 
