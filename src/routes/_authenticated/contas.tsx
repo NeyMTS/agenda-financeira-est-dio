@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pencil, Plus, Trash2, Users } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,6 +10,7 @@ import { currencyInputValue, formatCurrency, parseCurrencyInput } from "@/lib/fo
 import { MONEY_MASK, useMoneyHidden } from "@/lib/money-privacy";
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { Button } from "@/components/ui/button";
+import { takePendingVisitorAction, useVisitorAccess } from "@/components/VisitorAccess";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -58,6 +59,7 @@ export const Route = createFileRoute("/_authenticated/contas")({
 });
 
 function ContasPage() {
+  const { isVisitor, requestAuthentication } = useVisitorAccess();
   const moneyHidden = useMoneyHidden();
   const queryClient = useQueryClient();
   const { data: household } = useHousehold();
@@ -70,7 +72,7 @@ function ContasPage() {
 
   const { data: accounts } = useQuery({
     queryKey: ["accounts", household?.id],
-    enabled: Boolean(household?.id),
+    enabled: Boolean(household?.id) && !isVisitor,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("accounts")
@@ -84,6 +86,7 @@ function ContasPage() {
 
   const saveAccount = useMutation({
     mutationFn: async () => {
+      if (requestAuthentication({ kind: "account", draft: form })) return;
       const payload = {
         name: form.name.trim(),
         kind: form.kind,
@@ -131,6 +134,7 @@ const { error } = await supabase.from("accounts").insert({
 
   const deleteAccount = useMutation({
     mutationFn: async (id: string) => {
+      if (requestAuthentication()) return;
       const { error } = await supabase.from("accounts").delete().eq("id", id);
       if (error) throw error;
     },
@@ -144,6 +148,7 @@ const { error } = await supabase.from("accounts").insert({
 
   const joinHousehold = useMutation({
     mutationFn: async () => {
+      if (requestAuthentication({ kind: "join-household", draft: { inviteCode } })) return;
       const { error } = await supabase.rpc("join_household", { _invite_code: inviteCode });
       if (error) throw error;
     },
@@ -156,6 +161,17 @@ const { error } = await supabase.from("accounts").insert({
   });
 
   const rows = accounts ?? [];
+
+  useEffect(() => {
+    const accountDraft = takePendingVisitorAction<typeof emptyForm>("account");
+    if (accountDraft) {
+      setForm(accountDraft);
+      setOpen(true);
+      return;
+    }
+    const joinDraft = takePendingVisitorAction<{ inviteCode: string }>("join-household");
+    if (joinDraft) setInviteCode(joinDraft.inviteCode);
+  }, []);
 
   return (
     <AppShell

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Check,
   ChevronDown,
@@ -23,6 +23,7 @@ import {
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { MONEY_MASK, useMoneyHidden } from "@/lib/money-privacy";
 import { Button } from "@/components/ui/button";
+import { takePendingVisitorAction, useVisitorAccess } from "@/components/VisitorAccess";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -142,6 +143,7 @@ function getNextGoalStep(steps: GoalPlanStep[]) {
 }
 
 function MetasPage() {
+  const { isVisitor, requestAuthentication } = useVisitorAccess();
   const moneyHidden = useMoneyHidden();
 
   const formatCurrency = (value: number) =>
@@ -159,7 +161,7 @@ function MetasPage() {
 
   const { data: goals } = useQuery({
     queryKey: ["goals", household?.id],
-    enabled: Boolean(household?.id),
+    enabled: Boolean(household?.id) && !isVisitor,
     queryFn: async () => {
       if (!household?.id) {
         return [];
@@ -181,6 +183,7 @@ function MetasPage() {
 
   const saveGoal = useMutation({
     mutationFn: async () => {
+      if (requestAuthentication({ kind: "goal", draft: form })) return;
       const targetAmount = parseCurrencyInput(form.target_amount);
       const savedAmount = parseCurrencyInput(form.saved_amount);
 
@@ -249,6 +252,7 @@ const { error } = await supabase.from("goals").insert({
 
   const deleteGoal = useMutation({
     mutationFn: async (id: string) => {
+      if (requestAuthentication()) return;
       const { error } = await supabase
         .from("goals")
         .delete()
@@ -278,6 +282,13 @@ const { error } = await supabase.from("goals").insert({
   };
 
   const rows = goals ?? [];
+
+  useEffect(() => {
+    const draft = takePendingVisitorAction<typeof emptyForm>("goal");
+    if (!draft) return;
+    setForm(draft);
+    setOpen(true);
+  }, []);
 
   return (
     <AppShell

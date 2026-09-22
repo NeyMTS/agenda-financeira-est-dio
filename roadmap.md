@@ -1,4 +1,4 @@
-- [x] Substituir a demonstração separada por acesso visitante nas telas principais, sem persistência
+- [ ] Corrigir acesso visitante para usar somente as telas reais, sem dados fictícios ou persistência
 # Roadmap
 
 - [ ] Audit database schema, grants, RLS, auth, household association, and frontend CRUD paths

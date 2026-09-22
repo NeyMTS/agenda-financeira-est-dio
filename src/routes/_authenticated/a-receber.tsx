@@ -19,6 +19,7 @@ import {
   useBusinessSettings,
 } from "@/hooks/use-business-settings";
 import { AppShell, EmptyState } from "@/components/AppShell";
+import { takePendingVisitorAction, useVisitorAccess } from "@/components/VisitorAccess";
 
 export const Route = createFileRoute("/_authenticated/a-receber")({
   component: ClientesPage,
@@ -33,6 +34,7 @@ type Client = {
 };
 
 function ClientesPage() {
+  const { isVisitor, requestAuthentication } = useVisitorAccess();
   const { data: household } = useHousehold();
   const businessSettings = useBusinessSettings();
   const queryClient = useQueryClient();
@@ -49,7 +51,7 @@ function ClientesPage() {
 
   const { data: clients = [], isLoading } = useQuery({
     queryKey: ["studio-clients", household?.id],
-    enabled: Boolean(household?.id),
+    enabled: Boolean(household?.id) && !isVisitor,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("studio_clients")
@@ -66,6 +68,16 @@ function ClientesPage() {
   const filteredClients = clients.filter((client) =>
     client.name.toLowerCase().includes(search.toLowerCase())
   );
+
+  useEffect(() => {
+    const draft = takePendingVisitorAction<{ name: string; phone: string; birthDate: string }>("receivable-client");
+    if (draft) {
+      setName(draft.name);
+      setPhone(draft.phone);
+      setBirthDate(draft.birthDate);
+      setShowForm(true);
+    }
+  }, []);
 
   useEffect(() => {
     const selectedClientId = window.location.hash.replace(
@@ -107,6 +119,7 @@ function ClientesPage() {
   }
 
   async function saveClient() {
+    if (requestAuthentication({ kind: "receivable-client", draft: { name, phone, birthDate } })) return;
     if (!household?.id) {
       alert("Não foi possível identificar o estúdio.");
       return;
@@ -173,6 +186,7 @@ function ClientesPage() {
   }
 
   async function deleteClient(client: Client) {
+    if (requestAuthentication()) return;
     const confirmed = window.confirm(
       `Excluir a cliente "${client.name}"?`
     );

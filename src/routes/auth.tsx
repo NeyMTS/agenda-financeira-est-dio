@@ -14,9 +14,11 @@ import {
 } from "@/lib/login-guard.functions";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>): { criar?: boolean } => {
+  validateSearch: (search: Record<string, unknown>): { criar?: boolean; redirect?: string } => {
     const criar = search["criar"] === true || search["criar"] === "true";
-    return criar ? { criar: true } : {};
+    const candidate = typeof search["redirect"] === "string" ? search["redirect"] : "";
+    const redirect = candidate.startsWith("/") && !candidate.startsWith("//") ? candidate : undefined;
+    return { ...(criar ? { criar: true } : {}), ...(redirect ? { redirect } : {}) };
   },
   head: () => ({
     meta: [
@@ -52,6 +54,7 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const destination = search.redirect ?? "/inicio";
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -85,7 +88,7 @@ function AuthPage() {
           display_name: name,
         });
 
-        navigate({ to: "/inicio" });
+        navigate({ to: destination });
       } else {
         const lock = await checkLoginLock({ data: { email } });
 
@@ -119,7 +122,7 @@ function AuthPage() {
 
         await clearLoginAttempts({ data: { email } });
 
-        navigate({ to: "/inicio" });
+        navigate({ to: destination });
       }
     } catch (error) {
       toast.error(

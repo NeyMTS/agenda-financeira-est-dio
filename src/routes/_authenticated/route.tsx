@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { SubscriptionGate } from "@/components/SubscriptionGate";
 import { PageTransition } from "@/components/PageTransition";
 import { PageSkeleton } from "@/components/PageSkeleton";
-import { VisitorApp } from "@/components/VisitorApp";
+import { VisitorAccessProvider } from "@/components/VisitorAccess";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -27,13 +27,15 @@ export const Route = createFileRoute("/_authenticated")({
 function AuthenticatedLayout() {
   const { user } = Route.useRouteContext();
 
-  if (!user) return <VisitorApp />;
-
   return (
-    <SubscriptionGate>
-      <PageTransition>
-        <Outlet />
-      </PageTransition>
-    </SubscriptionGate>
+    <VisitorAccessProvider user={user}>
+      {user ? (
+        <SubscriptionGate>
+          <PageTransition><Outlet /></PageTransition>
+        </SubscriptionGate>
+      ) : (
+        <PageTransition><Outlet /></PageTransition>
+      )}
+    </VisitorAccessProvider>
   );
 }

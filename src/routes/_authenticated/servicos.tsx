@@ -18,6 +18,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useHousehold } from "@/hooks/use-household";
 import { AppShell, EmptyState } from "@/components/AppShell";
 import { MONEY_MASK, useMoneyHidden } from "@/lib/money-privacy";
+import { takePendingVisitorAction, useVisitorAccess } from "@/components/VisitorAccess";
 
 export const Route = createFileRoute("/_authenticated/servicos")({
   component: ServicosPage,
@@ -151,6 +152,7 @@ function formatDuration(minutes: number) {
 }
 
 function ServicosPage() {
+  const { isVisitor, requestAuthentication } = useVisitorAccess();
   const moneyHidden = useMoneyHidden();
   const { data: household } = useHousehold();
   const queryClient = useQueryClient();
@@ -190,7 +192,7 @@ function ServicosPage() {
 
   const { data: services = [], isLoading } = useQuery({
     queryKey: ["studio-services", household?.id],
-    enabled: Boolean(household?.id),
+    enabled: Boolean(household?.id) && !isVisitor,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("studio_services")
@@ -206,6 +208,17 @@ function ServicosPage() {
       return (data ?? []) as Service[];
     },
   });
+
+  useEffect(() => {
+    const draft = takePendingVisitorAction<{ name: string; price: string; icon: string; category: string; duration: string }>("service");
+    if (!draft) return;
+    setName(draft.name);
+    setPrice(draft.price);
+    setIcon(draft.icon);
+    setCategory(draft.category);
+    setDuration(draft.duration);
+    setShowForm(true);
+  }, []);
 
   function parseMoney(value: string) {
     return (
@@ -282,6 +295,7 @@ function ServicosPage() {
   }
 
   function createCategory() {
+    if (requestAuthentication()) return;
     if (!household?.id) return;
 
     const trimmed = newCategory.trim();
@@ -322,6 +336,7 @@ function ServicosPage() {
   function deleteCategory(
     categoryToDelete: string
   ) {
+    if (requestAuthentication()) return;
     if (!household?.id) return;
 
     const servicesUsingCategory =
@@ -367,6 +382,7 @@ function ServicosPage() {
   }
 
   async function saveService() {
+    if (requestAuthentication({ kind: "service", draft: { name, price, icon, category, duration } })) return;
     if (!household?.id || !name.trim()) {
       alert("Informe o nome do serviço.");
       return;
@@ -477,6 +493,7 @@ function ServicosPage() {
   async function deleteService(
     service: Service
   ) {
+    if (requestAuthentication()) return;
     const confirmed = window.confirm(
       `Excluir o serviço "${service.name}"?`
     );
