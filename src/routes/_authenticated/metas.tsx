@@ -183,7 +183,7 @@ function MetasPage() {
 
   const saveGoal = useMutation({
     mutationFn: async () => {
-      if (requestAuthentication({ kind: "goal", draft: form })) return;
+      if (requestAuthentication({ kind: "goal", draft: form })) return false;
       const targetAmount = parseCurrencyInput(form.target_amount);
       const savedAmount = parseCurrencyInput(form.saved_amount);
 
@@ -209,7 +209,7 @@ function MetasPage() {
           .eq("id", editingId);
 
         if (error) throw error;
-        return;
+        return true;
       }
 
 const householdId = await resolveHouseholdId();
@@ -231,9 +231,11 @@ const { error } = await supabase.from("goals").insert({
       if (error) {
         throw error;
       }
+      return true;
     },
 
-    onSuccess: () => {
+    onSuccess: (saved) => {
+      if (!saved) return;
       toast.success(editingId ? "Meta atualizada." : "Meta criada.");
 
       setOpen(false);
@@ -252,16 +254,18 @@ const { error } = await supabase.from("goals").insert({
 
   const deleteGoal = useMutation({
     mutationFn: async (id: string) => {
-      if (requestAuthentication()) return;
+      if (requestAuthentication()) return false;
       const { error } = await supabase
         .from("goals")
         .delete()
         .eq("id", id);
 
       if (error) throw error;
+      return true;
     },
 
-    onSuccess: () => {
+    onSuccess: (deleted) => {
+      if (!deleted) return;
       toast.success("Meta excluída.");
       setDeletingId(null);
 

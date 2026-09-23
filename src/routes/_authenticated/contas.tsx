@@ -86,7 +86,7 @@ function ContasPage() {
 
   const saveAccount = useMutation({
     mutationFn: async () => {
-      if (requestAuthentication({ kind: "account", draft: form })) return;
+      if (requestAuthentication({ kind: "account", draft: form })) return false;
       const payload = {
         name: form.name.trim(),
         kind: form.kind,
@@ -103,7 +103,7 @@ function ContasPage() {
           .update(payload)
           .eq("id", editingId);
         if (error) throw error;
-        return;
+        return true;
       }
 
 const householdId = await resolveHouseholdId();
@@ -121,8 +121,10 @@ const { error } = await supabase.from("accounts").insert({
   ...payload,
 });
       if (error) throw error;
+      return true;
     },
-    onSuccess: () => {
+    onSuccess: (saved) => {
+      if (!saved) return;
       toast.success(editingId ? "Conta atualizada." : "Conta criada.");
       setOpen(false);
       setEditingId(null);
@@ -134,11 +136,13 @@ const { error } = await supabase.from("accounts").insert({
 
   const deleteAccount = useMutation({
     mutationFn: async (id: string) => {
-      if (requestAuthentication()) return;
+      if (requestAuthentication()) return false;
       const { error } = await supabase.from("accounts").delete().eq("id", id);
       if (error) throw error;
+      return true;
     },
-    onSuccess: () => {
+    onSuccess: (deleted) => {
+      if (!deleted) return;
       toast.success("Conta excluída.");
       setDeletingId(null);
       queryClient.invalidateQueries({ queryKey: ["accounts"] });
@@ -148,11 +152,13 @@ const { error } = await supabase.from("accounts").insert({
 
   const joinHousehold = useMutation({
     mutationFn: async () => {
-      if (requestAuthentication({ kind: "join-household", draft: { inviteCode } })) return;
+      if (requestAuthentication({ kind: "join-household", draft: { inviteCode } })) return false;
       const { error } = await supabase.rpc("join_household", { _invite_code: inviteCode });
       if (error) throw error;
+      return true;
     },
-    onSuccess: () => {
+    onSuccess: (joined) => {
+      if (!joined) return;
       toast.success("Você entrou na conta compartilhada.");
       setInviteCode("");
       queryClient.invalidateQueries();

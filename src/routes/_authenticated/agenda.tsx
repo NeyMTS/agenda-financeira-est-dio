@@ -463,6 +463,40 @@ function AgendaPage() {
     setSaving,
   ] = useState(false);
 
+  useEffect(() => {
+    const appointmentDraft = takePendingVisitorAction<{
+      clientId: string;
+      selectedServices: SelectedService[];
+      depositEntries: DepositEntry[];
+      date: string;
+      time: string;
+    }>("appointment");
+    if (appointmentDraft) {
+      setClientId(appointmentDraft.clientId);
+      setSelectedServices(appointmentDraft.selectedServices);
+      setDepositEntries(appointmentDraft.depositEntries);
+      setDate(appointmentDraft.date);
+      setTime(appointmentDraft.time);
+      setShowForm(true);
+      return;
+    }
+
+    const blockDraft = takePendingVisitorAction<{
+      blockTitle: string;
+      blockDate: string;
+      blockTime: string;
+      blockDuration: number;
+      blockAllDay: boolean;
+    }>("calendar-block");
+    if (!blockDraft) return;
+    setBlockTitle(blockDraft.blockTitle);
+    setBlockDate(blockDraft.blockDate);
+    setBlockTime(blockDraft.blockTime);
+    setBlockDuration(blockDraft.blockDuration);
+    setBlockAllDay(blockDraft.blockAllDay);
+    setShowBlockForm(true);
+  }, []);
+
   const [
     calendarBlocks,
     setCalendarBlocks,
@@ -626,7 +660,7 @@ function AgendaPage() {
     enabled:
       Boolean(
         household?.id
-      ),
+      ) && !isVisitor,
     queryFn: async () => {
       const {
         data,
@@ -660,7 +694,7 @@ function AgendaPage() {
     enabled:
       Boolean(
         household?.id
-      ),
+      ) && !isVisitor,
     queryFn: async () => {
       const {
         data,
@@ -703,7 +737,7 @@ function AgendaPage() {
     enabled:
       Boolean(
         household?.id
-      ),
+      ) && !isVisitor,
     queryFn: async () => {
       const {
         data,
@@ -1458,6 +1492,10 @@ function AgendaPage() {
   }
 
   async function saveCalendarBlock() {
+    if (requestAuthentication({
+      kind: "calendar-block",
+      draft: { blockTitle, blockDate, blockTime, blockDuration, blockAllDay },
+    })) return;
     if (
       !household?.id ||
       !blockDate
@@ -1631,6 +1669,7 @@ function AgendaPage() {
   function deleteCalendarBlock(
     block: CalendarBlock
   ) {
+    if (requestAuthentication()) return;
     if (
       !household?.id
     ) {
@@ -1681,6 +1720,10 @@ function AgendaPage() {
   }
 
   async function saveAppointment() {
+    if (requestAuthentication({
+      kind: "appointment",
+      draft: { clientId, selectedServices, depositEntries, date, time },
+    })) return;
     if (
       !household?.id ||
       !clientId ||
@@ -2049,6 +2092,7 @@ function AgendaPage() {
     appointment: Appointment,
     newTime: string
   ) {
+    if (requestAuthentication()) return;
     if (!household?.id) {
       return;
     }
@@ -2142,6 +2186,7 @@ function AgendaPage() {
   async function deleteAppointment(
     appointment: Appointment
   ) {
+    if (requestAuthentication()) return;
     const confirmed =
       window.confirm(
         "Excluir este agendamento?"
@@ -2259,6 +2304,7 @@ function AgendaPage() {
   async function finalizeAppointment(
     appointment: Appointment
   ) {
+    if (requestAuthentication()) return;
     if (
       !household?.id
     ) {

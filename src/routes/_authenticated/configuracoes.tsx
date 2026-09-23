@@ -15,7 +15,7 @@ import {
   useSaveBusinessSettings,
   type BusinessSettings,
 } from "@/hooks/use-business-settings";
-import { useVisitorAccess } from "@/components/VisitorAccess";
+import { takePendingVisitorAction, useVisitorAccess } from "@/components/VisitorAccess";
 
 
 const colorOptions = [
@@ -44,6 +44,11 @@ function ConfiguracoesPage() {
   useEffect(() => {
     if (data) setSettings(data);
   }, [data]);
+
+  useEffect(() => {
+    const draft = takePendingVisitorAction<BusinessSettings>("settings");
+    if (draft) setSettings(draft);
+  }, []);
 
   function updateField<K extends keyof BusinessSettings>(
     field: K,

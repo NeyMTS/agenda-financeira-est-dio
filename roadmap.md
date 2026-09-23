@@ -1,4 +1,4 @@
-- [ ] Corrigir acesso visitante para usar somente as telas reais, sem dados fictícios ou persistência
+- [x] Corrigir acesso visitante para usar somente as telas reais, sem dados fictícios ou persistência
 # Roadmap
 
 - [ ] Audit database schema, grants, RLS, auth, household association, and frontend CRUD paths
