@@ -41,7 +41,9 @@ export function VisitorAccessProvider({ user, children }: { user: User | null; c
         path: location.pathname,
         ...action,
       };
-      sessionStorage.setItem(VISITOR_ACTION_KEY, JSON.stringify(pending));
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem(VISITOR_ACTION_KEY, JSON.stringify(pending));
+      }
       setPromptOpen(true);
       return true;
     },

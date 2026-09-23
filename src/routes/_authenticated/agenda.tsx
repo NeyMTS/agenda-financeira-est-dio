@@ -463,6 +463,40 @@ function AgendaPage() {
     setSaving,
   ] = useState(false);
 
+  useEffect(() => {
+    const appointmentDraft = takePendingVisitorAction<{
+      clientId: string;
+      selectedServices: SelectedService[];
+      depositEntries: DepositEntry[];
+      date: string;
+      time: string;
+    }>("appointment");
+    if (appointmentDraft) {
+      setClientId(appointmentDraft.clientId);
+      setSelectedServices(appointmentDraft.selectedServices);
+      setDepositEntries(appointmentDraft.depositEntries);
+      setDate(appointmentDraft.date);
+      setTime(appointmentDraft.time);
+      setShowForm(true);
+      return;
+    }
+
+    const blockDraft = takePendingVisitorAction<{
+      blockTitle: string;
+      blockDate: string;
+      blockTime: string;
+      blockDuration: number;
+      blockAllDay: boolean;
+    }>("calendar-block");
+    if (!blockDraft) return;
+    setBlockTitle(blockDraft.blockTitle);
+    setBlockDate(blockDraft.blockDate);
+    setBlockTime(blockDraft.blockTime);
+    setBlockDuration(blockDraft.blockDuration);
+    setBlockAllDay(blockDraft.blockAllDay);
+    setShowBlockForm(true);
+  }, []);
+
   const [
     calendarBlocks,
     setCalendarBlocks,
