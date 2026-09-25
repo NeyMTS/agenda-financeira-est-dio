@@ -253,16 +253,19 @@ export type Database = {
           created_at: string
           display_name: string
           id: string
+          last_access_at: string | null
         }
         Insert: {
           created_at?: string
           display_name?: string
           id: string
+          last_access_at?: string | null
         }
         Update: {
           created_at?: string
           display_name?: string
           id?: string
+          last_access_at?: string | null
         }
         Relationships: []
       }
@@ -481,6 +484,8 @@ export type Database = {
       subscriptions: {
         Row: {
           access_expires_at: string | null
+          admin_access_expires_at: string | null
+          admin_access_permanent: boolean
           created_at: string
           id: string
           kiwify_order_id: string | null
@@ -497,6 +502,8 @@ export type Database = {
         }
         Insert: {
           access_expires_at?: string | null
+          admin_access_expires_at?: string | null
+          admin_access_permanent?: boolean
           created_at?: string
           id?: string
           kiwify_order_id?: string | null
@@ -513,6 +520,8 @@ export type Database = {
         }
         Update: {
           access_expires_at?: string | null
+          admin_access_expires_at?: string | null
+          admin_access_permanent?: boolean
           created_at?: string
           id?: string
           kiwify_order_id?: string | null
@@ -627,6 +636,27 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -637,6 +667,8 @@ export type Database = {
         Args: never
         Returns: {
           access_expires_at: string | null
+          admin_access_expires_at: string | null
+          admin_access_permanent: boolean
           created_at: string
           id: string
           kiwify_order_id: string | null
@@ -658,14 +690,22 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       is_household_member: {
         Args: { _household_id: string; _user_id: string }
         Returns: boolean
       }
       join_household: { Args: { _invite_code: string }; Returns: string }
+      touch_last_access: { Args: never; Returns: string }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -792,6 +832,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "user"],
+    },
   },
 } as const
