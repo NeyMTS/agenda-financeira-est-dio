@@ -11,3 +11,4 @@
 - [x] Otimizar performance de navegação (sessão local, preload, cache, transição)
 
 - [x] Adicionar mensagens automáticas personalizáveis por usuário
+- [ ] Implementar painel administrativo seguro com gestão de acesso e último acesso
