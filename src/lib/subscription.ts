@@ -58,6 +58,14 @@ export function effectiveStatus(sub: Subscription | null | undefined): Subscript
   if (!sub) return "expired";
   const now = Date.now();
 
+  if (sub.admin_access_permanent) return "active";
+  if (
+    sub.admin_access_expires_at &&
+    new Date(sub.admin_access_expires_at).getTime() >= now
+  ) {
+    return "active";
+  }
+
   if (sub.status === "active") {
     if (sub.subscription_end && new Date(sub.subscription_end).getTime() < now) {
       return "past_due";
@@ -82,14 +90,6 @@ export function effectiveStatus(sub: Subscription | null | undefined): Subscript
 
 /** Função central de controle de acesso. */
 export function hasAccess(sub: Subscription | null | undefined): boolean {
-  if (sub?.admin_access_permanent) return true;
-  if (
-    sub?.admin_access_expires_at &&
-    new Date(sub.admin_access_expires_at).getTime() >= Date.now()
-  ) {
-    return true;
-  }
-
   const status = effectiveStatus(sub);
   return status === "trialing" || status === "active";
 }

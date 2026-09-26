@@ -17,19 +17,29 @@ export type AdminAccessPeriod = z.infer<typeof accessPeriodSchema>;
 
 async function assertAdmin(
   supabase: {
-    rpc: (
-      name: "has_role",
-      args: { _user_id: string; _role: "admin" },
-    ) => PromiseLike<{ data: boolean | null; error: { message: string } | null }>;
+    from: (table: "user_roles") => {
+      select: (columns: "role") => {
+        eq: (column: "user_id", value: string) => {
+          eq: (column: "role", value: "admin") => {
+            maybeSingle: () => PromiseLike<{
+              data: { role: "admin" } | null;
+              error: { message: string } | null;
+            }>;
+          };
+        };
+      };
+    };
   },
   userId: string,
 ) {
-  const { data, error } = await supabase.rpc("has_role", {
-    _user_id: userId,
-    _role: "admin",
-  });
+  const { data, error } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .eq("role", "admin")
+    .maybeSingle();
 
-  if (error || data !== true) throw new Error("Acesso não autorizado.");
+  if (error || data?.role !== "admin") throw new Error("Acesso não autorizado.");
 }
 
 export const checkAdminAccess = createServerFn({ method: "GET" })
