@@ -20,6 +20,8 @@ export type Subscription = {
   kiwify_product_id?: string | null;
   payment_method?: string | null;
   access_expires_at?: string | null;
+  admin_access_expires_at?: string | null;
+  admin_access_permanent?: boolean;
   created_at: string;
   updated_at: string;
 };
@@ -55,6 +57,14 @@ export const PLANS: Record<
 export function effectiveStatus(sub: Subscription | null | undefined): SubscriptionStatus {
   if (!sub) return "expired";
   const now = Date.now();
+
+  if (sub.admin_access_permanent) return "active";
+  if (
+    sub.admin_access_expires_at &&
+    new Date(sub.admin_access_expires_at).getTime() >= now
+  ) {
+    return "active";
+  }
 
   if (sub.status === "active") {
     if (sub.subscription_end && new Date(sub.subscription_end).getTime() < now) {

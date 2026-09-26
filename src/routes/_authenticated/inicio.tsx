@@ -1,11 +1,12 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
   Cake,
   CalendarDays,
   ChevronRight,
+  EllipsisVertical,
   LogOut,
-  
+  ShieldCheck,
   Sparkles,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,6 +14,15 @@ import { AppShell, EmptyState } from "@/components/AppShell";
 import { useHousehold } from "@/hooks/use-household";
 import { MONEY_MASK, useMoneyHidden } from "@/lib/money-privacy";
 import { useVisitorAccess } from "@/components/VisitorAccess";
+import { useAdminRole } from "@/hooks/use-admin-role";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_authenticated/inicio")({
   head: () => ({
@@ -49,6 +59,8 @@ type BirthdayClient = {
 
 function InicioPage() {
   const { isVisitor, requestAuthentication } = useVisitorAccess();
+  const navigate = useNavigate();
+  const { data: isAdmin = false } = useAdminRole();
   const { data: household } = useHousehold();
   const moneyHidden = useMoneyHidden();
 
@@ -325,17 +337,34 @@ function InicioPage() {
       title="Olá! 👋"
       subtitle={`Resumo de ${monthLabel}`}
       action={
-        <button
-          type="button"
-          onClick={signOut}
-          className="flex size-10 items-center justify-center rounded-full border border-black/[0.06] bg-white text-[#817b7d]"
-          aria-label="Sair"
-        >
-          <LogOut
-            className="size-4"
-            strokeWidth={1.7}
-          />
-        </button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              className="size-10 rounded-full bg-white text-[#817b7d]"
+              aria-label="Abrir menu"
+            >
+              <EllipsisVertical className="size-4" strokeWidth={1.7} />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="min-w-44 rounded-xl">
+            {isAdmin ? (
+              <>
+                <DropdownMenuItem onSelect={() => navigate({ to: "/admin" })}>
+                  <ShieldCheck />
+                  Administração
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+              </>
+            ) : null}
+            <DropdownMenuItem onSelect={() => void signOut()}>
+              <LogOut />
+              Sair
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       }
     >
       {birthdaysToday.map((client) => (

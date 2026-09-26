@@ -1,4 +1,5 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SubscriptionGate } from "@/components/SubscriptionGate";
 import { PageTransition } from "@/components/PageTransition";
@@ -26,6 +27,12 @@ export const Route = createFileRoute("/_authenticated")({
 
 function AuthenticatedLayout() {
   const { user } = Route.useRouteContext();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (!user) return;
+    void supabase.rpc("touch_last_access");
+  }, [location.pathname, user]);
 
   return (
     <VisitorAccessProvider user={user}>
