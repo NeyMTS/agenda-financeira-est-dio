@@ -4,7 +4,7 @@ import { useSubscription } from "@/hooks/use-subscription";
 import { hasAccess } from "@/lib/subscription";
 
 /** Rotas sempre liberadas, mesmo sem assinatura ativa. */
-const ALWAYS_ALLOWED = ["/planos", "/configuracoes"];
+const ALWAYS_ALLOWED = ["/planos", "/configuracoes", "/admin"];
 
 export function SubscriptionGate({ children }: { children: ReactNode }) {
   const location = useLocation();

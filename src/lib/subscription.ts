@@ -20,6 +20,8 @@ export type Subscription = {
   kiwify_product_id?: string | null;
   payment_method?: string | null;
   access_expires_at?: string | null;
+  admin_access_expires_at?: string | null;
+  admin_access_permanent?: boolean;
   created_at: string;
   updated_at: string;
 };
@@ -80,6 +82,14 @@ export function effectiveStatus(sub: Subscription | null | undefined): Subscript
 
 /** Função central de controle de acesso. */
 export function hasAccess(sub: Subscription | null | undefined): boolean {
+  if (sub?.admin_access_permanent) return true;
+  if (
+    sub?.admin_access_expires_at &&
+    new Date(sub.admin_access_expires_at).getTime() >= Date.now()
+  ) {
+    return true;
+  }
+
   const status = effectiveStatus(sub);
   return status === "trialing" || status === "active";
 }
