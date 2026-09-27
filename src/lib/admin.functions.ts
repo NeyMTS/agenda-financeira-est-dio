@@ -15,8 +15,7 @@ const accessPeriodSchema = z.enum([
 
 export type AdminAccessPeriod = z.infer<typeof accessPeriodSchema>;
 
-async function assertAdmin(
-  supabase: {
+type AdminRoleClient = {
     from: (table: "user_roles") => {
       select: (columns: "role") => {
         eq: (column: "user_id", value: string) => {
@@ -29,9 +28,9 @@ async function assertAdmin(
         };
       };
     };
-  },
-  userId: string,
-) {
+};
+
+async function assertAdmin(supabase: AdminRoleClient, userId: string) {
   const { data, error } = await supabase
     .from("user_roles")
     .select("role")
@@ -45,7 +44,7 @@ async function assertAdmin(
 export const checkAdminAccess = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.supabase as unknown as AdminRoleClient, context.userId);
     return { isAdmin: true as const };
   });
 
@@ -68,7 +67,7 @@ export type AdminUser = {
 export const listAdminUsers = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.supabase as unknown as AdminRoleClient, context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const [{ data: authData, error: authError }, profilesResult, subscriptionsResult] =
@@ -165,7 +164,7 @@ export const manageAdminAccess = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(async ({ data, context }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.supabase as unknown as AdminRoleClient, context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     let permanent = false;
