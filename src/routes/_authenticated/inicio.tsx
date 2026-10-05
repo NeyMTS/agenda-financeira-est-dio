@@ -15,6 +15,7 @@ import { useHousehold } from "@/hooks/use-household";
 import { MONEY_MASK, useMoneyHidden } from "@/lib/money-privacy";
 import { useVisitorAccess } from "@/components/VisitorAccess";
 import { useAdminRole } from "@/hooks/use-admin-role";
+import { useBusinessSettingsQuery } from "@/hooks/use-business-settings";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,10 +28,10 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/_authenticated/inicio")({
   head: () => ({
     meta: [
-      { title: "Studio Lary Andrade" },
+      { title: "Nuvie" },
       {
         name: "description",
-        content: "Gestão financeira e agenda do Studio Lary Andrade.",
+        content: "Gestão de agenda, clientes, serviços e financeiro.",
       },
     ],
   }),
@@ -62,7 +63,11 @@ function InicioPage() {
   const navigate = useNavigate();
   const { data: isAdmin = false } = useAdminRole();
   const { data: household } = useHousehold();
+  const { data: businessSettings } = useBusinessSettingsQuery();
   const moneyHidden = useMoneyHidden();
+
+  const professionalName =
+    businessSettings?.professionalName?.trim() || "";
 
   const today = new Date();
 
@@ -334,7 +339,7 @@ function InicioPage() {
 
   return (
     <AppShell
-      title="Olá! 👋"
+      title={`Olá${professionalName ? `, ${professionalName}` : ""}! 👋`}
       subtitle={`Resumo de ${monthLabel}`}
       action={
         <DropdownMenu>
@@ -346,20 +351,35 @@ function InicioPage() {
               className="size-10 rounded-full bg-white text-[#817b7d]"
               aria-label="Abrir menu"
             >
-              <EllipsisVertical className="size-4" strokeWidth={1.7} />
+              <EllipsisVertical
+                className="size-4"
+                strokeWidth={1.7}
+              />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="min-w-44 rounded-xl">
+
+          <DropdownMenuContent
+            align="end"
+            className="min-w-44 rounded-xl"
+          >
             {isAdmin ? (
               <>
-                <DropdownMenuItem onSelect={() => navigate({ to: "/admin" })}>
+                <DropdownMenuItem
+                  onSelect={() =>
+                    navigate({ to: "/admin" })
+                  }
+                >
                   <ShieldCheck />
                   Administração
                 </DropdownMenuItem>
+
                 <DropdownMenuSeparator />
               </>
             ) : null}
-            <DropdownMenuItem onSelect={() => void signOut()}>
+
+            <DropdownMenuItem
+              onSelect={() => void signOut()}
+            >
               <LogOut />
               Sair
             </DropdownMenuItem>
