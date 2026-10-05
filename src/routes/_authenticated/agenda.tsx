@@ -1386,7 +1386,8 @@ function AgendaPage() {
     startTime: string,
     appointmentDate: string,
     appointmentDuration: number,
-    ignoreId?: string
+    ignoreId?: string,
+    ignoreBlockId?: string
   ) {
     const newStart =
       timeToMinutes(
@@ -1463,7 +1464,8 @@ function AgendaPage() {
     return hasBlockConflict(
       startTime,
       appointmentDate,
-      appointmentDuration
+      appointmentDuration,
+      ignoreBlockId
     );
   }
 
