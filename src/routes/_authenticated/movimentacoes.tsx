@@ -1,8 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowDownCircle,
   ArrowUpCircle,
+  BarChart3,
   Check,
   Pencil,
   Plus,
@@ -14,7 +15,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { useHousehold } from "@/hooks/use-household";
 import { AppShell, EmptyState } from "@/components/AppShell";
 import { MONEY_MASK, useMoneyHidden } from "@/lib/money-privacy";
-import { takePendingVisitorAction, useVisitorAccess } from "@/components/VisitorAccess";
+import {
+  takePendingVisitorAction,
+  useVisitorAccess,
+} from "@/components/VisitorAccess";
 import { useEffect } from "react";
 
 export const Route = createFileRoute(
@@ -34,32 +38,63 @@ type Transaction = {
 };
 
 function MovimentacoesPage() {
-  const { isVisitor, requestAuthentication } = useVisitorAccess();
+  const { isVisitor, requestAuthentication } =
+    useVisitorAccess();
+
   const moneyHidden = useMoneyHidden();
+
   const { data: household } = useHousehold();
+
   const queryClient = useQueryClient();
 
   const today = new Date();
 
-  const [selectedMonth, setSelectedMonth] = useState(
-    new Date(today.getFullYear(), today.getMonth(), 1)
-  );
+  const [selectedMonth, setSelectedMonth] =
+    useState(
+      new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        1
+      )
+    );
 
   const [filter, setFilter] = useState<
-    "all" | "income" | "expense" | "pending-income" | "pending-expense"
+    | "all"
+    | "income"
+    | "expense"
+    | "pending-income"
+    | "pending-expense"
   >("all");
 
-  const [showForm, setShowForm] = useState(false);
-  const [editing, setEditing] = useState<Transaction | null>(null);
+  const [showForm, setShowForm] =
+    useState(false);
 
-  const [description, setDescription] = useState("");
-  const [amount, setAmount] = useState("");
-  const [type, setType] = useState<"income" | "expense">("income");
-  const [date, setDate] = useState(
-    new Date().toISOString().slice(0, 10)
-  );
-  const [status, setStatus] = useState("paid");
-  const [saving, setSaving] = useState(false);
+  const [editing, setEditing] =
+    useState<Transaction | null>(null);
+
+  const [description, setDescription] =
+    useState("");
+
+  const [amount, setAmount] =
+    useState("");
+
+  const [type, setType] =
+    useState<"income" | "expense">(
+      "income"
+    );
+
+  const [date, setDate] =
+    useState(
+      new Date()
+        .toISOString()
+        .slice(0, 10)
+    );
+
+  const [status, setStatus] =
+    useState("paid");
+
+  const [saving, setSaving] =
+    useState(false);
 
   const monthStart = `${selectedMonth.getFullYear()}-${String(
     selectedMonth.getMonth() + 1
@@ -77,13 +112,14 @@ function MovimentacoesPage() {
     monthEndDate.getDate()
   ).padStart(2, "0")}`;
 
-  const monthLabel = selectedMonth.toLocaleDateString(
-    "pt-BR",
-    {
-      month: "long",
-      year: "numeric",
-    }
-  );
+  const monthLabel =
+    selectedMonth.toLocaleDateString(
+      "pt-BR",
+      {
+        month: "long",
+        year: "numeric",
+      }
+    );
 
   const {
     data: transactions = [],
@@ -95,140 +131,234 @@ function MovimentacoesPage() {
       monthStart,
       monthEnd,
     ],
-    enabled: Boolean(household?.id) && !isVisitor,
+
+    enabled:
+      Boolean(household?.id) &&
+      !isVisitor,
+
     queryFn: async () => {
-      const { data, error } = await supabase
+      const {
+        data,
+        error,
+      } = await supabase
         .from("transactions")
         .select(
           "id, description, amount, type, date, status, category"
         )
-        .eq("household_id", household!.id)
-        .gte("date", monthStart)
-        .lte("date", monthEnd)
+        .eq(
+          "household_id",
+          household!.id
+        )
+        .gte(
+          "date",
+          monthStart
+        )
+        .lte(
+          "date",
+          monthEnd
+        )
         .order("date", {
           ascending: false,
         });
 
-      if (error) throw error;
+      if (error) {
+        throw error;
+      }
 
-      return (data ?? []) as Transaction[];
+      return (data ??
+        []) as Transaction[];
     },
   });
 
   useEffect(() => {
-    const draft = takePendingVisitorAction<{ description: string; amount: string; type: "income" | "expense"; date: string; status: string }>("transaction");
-    if (!draft) return;
-    setDescription(draft.description);
-    setAmount(draft.amount);
-    setType(draft.type);
-    setDate(draft.date);
-    setStatus(draft.status);
+    const draft =
+      takePendingVisitorAction<{
+        description: string;
+        amount: string;
+        type:
+          | "income"
+          | "expense";
+        date: string;
+        status: string;
+      }>("transaction");
+
+    if (!draft) {
+      return;
+    }
+
+    setDescription(
+      draft.description
+    );
+
+    setAmount(
+      draft.amount
+    );
+
+    setType(
+      draft.type
+    );
+
+    setDate(
+      draft.date
+    );
+
+    setStatus(
+      draft.status
+    );
+
     setShowForm(true);
   }, []);
 
   const totals = useMemo(() => {
-    const paidIncome = transactions
-      .filter(
-        (item) =>
-          item.type === "income" &&
-          item.status !== "pending"
-      )
-      .reduce(
-        (sum, item) =>
-          sum + Number(item.amount),
-        0
-      );
+    const paidIncome =
+      transactions
+        .filter(
+          (item) =>
+            item.type ===
+              "income" &&
+            item.status !==
+              "pending"
+        )
+        .reduce(
+          (sum, item) =>
+            sum +
+            Number(
+              item.amount
+            ),
+          0
+        );
 
-    const paidExpense = transactions
-      .filter(
-        (item) =>
-          item.type === "expense" &&
-          item.status !== "pending"
-      )
-      .reduce(
-        (sum, item) =>
-          sum + Number(item.amount),
-        0
-      );
+    const paidExpense =
+      transactions
+        .filter(
+          (item) =>
+            item.type ===
+              "expense" &&
+            item.status !==
+              "pending"
+        )
+        .reduce(
+          (sum, item) =>
+            sum +
+            Number(
+              item.amount
+            ),
+          0
+        );
 
-    const pendingIncome = transactions
-      .filter(
-        (item) =>
-          item.type === "income" &&
-          item.status === "pending"
-      )
-      .reduce(
-        (sum, item) =>
-          sum + Number(item.amount),
-        0
-      );
+    const pendingIncome =
+      transactions
+        .filter(
+          (item) =>
+            item.type ===
+              "income" &&
+            item.status ===
+              "pending"
+        )
+        .reduce(
+          (sum, item) =>
+            sum +
+            Number(
+              item.amount
+            ),
+          0
+        );
 
-    const pendingExpense = transactions
-      .filter(
-        (item) =>
-          item.type === "expense" &&
-          item.status === "pending"
-      )
-      .reduce(
-        (sum, item) =>
-          sum + Number(item.amount),
-        0
-      );
+    const pendingExpense =
+      transactions
+        .filter(
+          (item) =>
+            item.type ===
+              "expense" &&
+            item.status ===
+              "pending"
+        )
+        .reduce(
+          (sum, item) =>
+            sum +
+            Number(
+              item.amount
+            ),
+          0
+        );
 
     return {
       paidIncome,
       paidExpense,
       pendingIncome,
       pendingExpense,
-      balance: paidIncome - paidExpense,
+      balance:
+        paidIncome -
+        paidExpense,
     };
   }, [transactions]);
 
-  const visibleTransactions = useMemo(() => {
-    switch (filter) {
-      case "income":
-        return transactions.filter(
-          (item) =>
-            item.type === "income" &&
-            item.status !== "pending"
-        );
+  const visibleTransactions =
+    useMemo(() => {
+      switch (filter) {
+        case "income":
+          return transactions.filter(
+            (item) =>
+              item.type ===
+                "income" &&
+              item.status !==
+                "pending"
+          );
 
-      case "expense":
-        return transactions.filter(
-          (item) =>
-            item.type === "expense" &&
-            item.status !== "pending"
-        );
+        case "expense":
+          return transactions.filter(
+            (item) =>
+              item.type ===
+                "expense" &&
+              item.status !==
+                "pending"
+          );
 
-      case "pending-income":
-        return transactions.filter(
-          (item) =>
-            item.type === "income" &&
-            item.status === "pending"
-        );
+        case "pending-income":
+          return transactions.filter(
+            (item) =>
+              item.type ===
+                "income" &&
+              item.status ===
+                "pending"
+          );
 
-      case "pending-expense":
-        return transactions.filter(
-          (item) =>
-            item.type === "expense" &&
-            item.status === "pending"
-        );
+        case "pending-expense":
+          return transactions.filter(
+            (item) =>
+              item.type ===
+                "expense" &&
+              item.status ===
+                "pending"
+          );
 
-      default:
-        return transactions;
+        default:
+          return transactions;
+      }
+    }, [
+      transactions,
+      filter,
+    ]);
+
+  function formatMoney(
+    value: number
+  ) {
+    if (moneyHidden) {
+      return MONEY_MASK;
     }
-  }, [transactions, filter]);
 
-  function formatMoney(value: number) {
-    if (moneyHidden) return MONEY_MASK;
-
-    return value.toLocaleString("pt-BR", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
+    return value.toLocaleString(
+      "pt-BR",
+      {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }
+    );
   }
 
-  function parseMoney(value: string) {
+  function parseMoney(
+    value: string
+  ) {
     return (
       Number(
         value
@@ -260,15 +390,21 @@ function MovimentacoesPage() {
 
   function openNew() {
     setEditing(null);
+
     setDescription("");
+
     setAmount("");
+
     setType("income");
+
     setDate(
       new Date()
         .toISOString()
         .slice(0, 10)
     );
+
     setStatus("paid");
+
     setShowForm(true);
   }
 
@@ -276,32 +412,61 @@ function MovimentacoesPage() {
     transaction: Transaction
   ) {
     setEditing(transaction);
+
     setDescription(
       transaction.description
     );
+
     setAmount(
       formatMoney(
-        Number(transaction.amount)
+        Number(
+          transaction.amount
+        )
       )
     );
-    setType(transaction.type);
-    setDate(transaction.date);
+
+    setType(
+      transaction.type
+    );
+
+    setDate(
+      transaction.date
+    );
+
     setStatus(
       transaction.status ||
         "paid"
     );
+
     setShowForm(true);
   }
 
   function closeForm() {
-    if (saving) return;
+    if (saving) {
+      return;
+    }
 
     setShowForm(false);
+
     setEditing(null);
   }
 
   async function saveTransaction() {
-    if (requestAuthentication({ kind: "transaction", draft: { description, amount, type, date, status } })) return;
+    if (
+      requestAuthentication({
+        kind: "transaction",
+        draft: {
+          description,
+          amount,
+          type,
+          date,
+          status,
+        },
+      })
+    ) {
+      return;
+    }
+
     if (
       !household?.id ||
       !description.trim() ||
@@ -311,6 +476,7 @@ function MovimentacoesPage() {
       alert(
         "Preencha descrição, valor e data da movimentação."
       );
+
       return;
     }
 
@@ -318,8 +484,11 @@ function MovimentacoesPage() {
 
     try {
       const {
-        data: { user },
-      } = await supabase.auth.getUser();
+        data: {
+          user,
+        },
+      } =
+        await supabase.auth.getUser();
 
       if (!user) {
         throw new Error(
@@ -330,16 +499,21 @@ function MovimentacoesPage() {
       const payload = {
         description:
           description.trim(),
-        amount: parseMoney(amount),
+        amount:
+          parseMoney(amount),
         type,
         date,
         status,
       };
 
       if (editing) {
-        const { error } =
+        const {
+          error,
+        } =
           await supabase
-            .from("transactions")
+            .from(
+              "transactions"
+            )
             .update(payload)
             .eq(
               "id",
@@ -350,19 +524,28 @@ function MovimentacoesPage() {
               household.id
             );
 
-        if (error) throw error;
+        if (error) {
+          throw error;
+        }
       } else {
-        const { error } =
+        const {
+          error,
+        } =
           await supabase
-            .from("transactions")
+            .from(
+              "transactions"
+            )
             .insert({
               household_id:
                 household.id,
-              user_id: user.id,
+              user_id:
+                user.id,
               ...payload,
             });
 
-        if (error) throw error;
+        if (error) {
+          throw error;
+        }
       }
 
       await queryClient.invalidateQueries(
@@ -390,7 +573,12 @@ function MovimentacoesPage() {
   async function deleteTransaction(
     transaction: Transaction
   ) {
-    if (requestAuthentication()) return;
+    if (
+      requestAuthentication()
+    ) {
+      return;
+    }
+
     if (
       !window.confirm(
         `Excluir "${transaction.description}"?`
@@ -401,9 +589,13 @@ function MovimentacoesPage() {
     }
 
     try {
-      const { error } =
+      const {
+        error,
+      } =
         await supabase
-          .from("transactions")
+          .from(
+            "transactions"
+          )
           .delete()
           .eq(
             "id",
@@ -414,7 +606,9 @@ function MovimentacoesPage() {
             household.id
           );
 
-      if (error) throw error;
+      if (error) {
+        throw error;
+      }
 
       await queryClient.invalidateQueries(
         {
@@ -437,13 +631,24 @@ function MovimentacoesPage() {
   async function markAsPaid(
     transaction: Transaction
   ) {
-    if (requestAuthentication()) return;
-    if (!household?.id) return;
+    if (
+      requestAuthentication()
+    ) {
+      return;
+    }
+
+    if (!household?.id) {
+      return;
+    }
 
     try {
-      const { error } =
+      const {
+        error,
+      } =
         await supabase
-          .from("transactions")
+          .from(
+            "transactions"
+          )
           .update({
             status: "paid",
           })
@@ -456,7 +661,9 @@ function MovimentacoesPage() {
             household.id
           );
 
-      if (error) throw error;
+      if (error) {
+        throw error;
+      }
 
       await queryClient.invalidateQueries(
         {
@@ -494,8 +701,35 @@ function MovimentacoesPage() {
         </button>
       }
     >
+      {/* RELATÓRIOS */}
+      <Link
+        to="/relatorios"
+        className="mt-4 flex items-center gap-3 rounded-2xl border border-black/[0.05] bg-white p-4 shadow-sm transition-transform active:scale-[0.99]"
+      >
+        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[var(--nuvie-primary-soft)] text-[var(--nuvie-primary-strong)]">
+          <BarChart3
+            className="size-5"
+            strokeWidth={1.7}
+          />
+        </div>
+
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-semibold text-[#211f20]">
+            Relatórios
+          </p>
+
+          <p className="mt-1 text-xs text-[#817b7d]">
+            Veja o desempenho do seu negócio
+          </p>
+        </div>
+
+        <span className="text-lg text-[#a18a8f]">
+          ›
+        </span>
+      </Link>
+
       {/* MÊS */}
-      <div className="flex items-center justify-between rounded-2xl border border-black/[0.05] bg-white px-3 py-2 shadow-sm">
+      <div className="mt-3 flex items-center justify-between rounded-2xl border border-black/[0.05] bg-white px-3 py-2 shadow-sm">
         <button
           type="button"
           onClick={previousMonth}
@@ -705,16 +939,12 @@ function MovimentacoesPage() {
                         {isIncome ? (
                           <ArrowUpCircle
                             className="size-5"
-                            strokeWidth={
-                              1.6
-                            }
+                            strokeWidth={1.6}
                           />
                         ) : (
                           <ArrowDownCircle
                             className="size-5"
-                            strokeWidth={
-                              1.6
-                            }
+                            strokeWidth={1.6}
                           />
                         )}
                       </div>
@@ -795,9 +1025,7 @@ function MovimentacoesPage() {
                           >
                             <Check
                               className="size-4"
-                              strokeWidth={
-                                1.8
-                              }
+                              strokeWidth={1.8}
                             />
                           </button>
                         )}
@@ -814,9 +1042,7 @@ function MovimentacoesPage() {
                         >
                           <Pencil
                             className="size-3.5"
-                            strokeWidth={
-                              1.7
-                            }
+                            strokeWidth={1.7}
                           />
                         </button>
 
@@ -832,9 +1058,7 @@ function MovimentacoesPage() {
                         >
                           <Trash2
                             className="size-3.5"
-                            strokeWidth={
-                              1.7
-                            }
+                            strokeWidth={1.7}
                           />
                         </button>
                       </div>
@@ -941,8 +1165,7 @@ function MovimentacoesPage() {
                   event
                 ) =>
                   setDescription(
-                    event.target
-                      .value
+                    event.target.value
                   )
                 }
                 placeholder="Descrição"
@@ -956,8 +1179,7 @@ function MovimentacoesPage() {
                   event
                 ) =>
                   setAmount(
-                    event.target
-                      .value
+                    event.target.value
                   )
                 }
                 placeholder="Valor"
@@ -972,8 +1194,7 @@ function MovimentacoesPage() {
                   event
                 ) =>
                   setDate(
-                    event.target
-                      .value
+                    event.target.value
                   )
                 }
                 className="h-11 w-full rounded-xl border border-black/[0.07] bg-[#faf9f8] px-4 text-sm outline-none focus:border-[var(--nuvie-primary)]/50"
@@ -986,8 +1207,7 @@ function MovimentacoesPage() {
                   event
                 ) =>
                   setStatus(
-                    event.target
-                      .value
+                    event.target.value
                   )
                 }
                 className="h-11 w-full rounded-xl border border-black/[0.07] bg-[#faf9f8] px-4 text-sm outline-none focus:border-[var(--nuvie-primary)]/50"
