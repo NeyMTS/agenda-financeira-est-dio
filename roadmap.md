@@ -12,3 +12,4 @@
 
 - [x] Adicionar mensagens automáticas personalizáveis por usuário
 - [x] Implementar painel administrativo seguro com gestão de acesso e último acesso
+- [x] Permitir editar e confirmar bloqueios existentes na agenda
