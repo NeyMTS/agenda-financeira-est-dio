@@ -541,6 +541,11 @@ function AgendaPage() {
     setSavingBlock,
   ] = useState(false);
 
+  const [
+    editingBlock,
+    setEditingBlock,
+  ] = useState<CalendarBlock | null>(null);
+
   const serviceMetadata =
     useMemo(
       () =>
@@ -1315,7 +1320,8 @@ function AgendaPage() {
   function hasBlockConflict(
     startTime: string,
     appointmentDate: string,
-    appointmentDuration: number
+    appointmentDuration: number,
+    ignoreBlockId?: string
   ) {
     const newStart =
       timeToMinutes(
@@ -1338,6 +1344,13 @@ function AgendaPage() {
       ] ?? []
     ).some(
       (block) => {
+        if (
+          block.id ===
+          ignoreBlockId
+        ) {
+          return false;
+        }
+
         const blockStart =
           block.all_day
             ? DAY_START_HOUR *
@@ -1373,7 +1386,8 @@ function AgendaPage() {
     startTime: string,
     appointmentDate: string,
     appointmentDuration: number,
-    ignoreId?: string
+    ignoreId?: string,
+    ignoreBlockId?: string
   ) {
     const newStart =
       timeToMinutes(
@@ -1450,7 +1464,8 @@ function AgendaPage() {
     return hasBlockConflict(
       startTime,
       appointmentDate,
-      appointmentDuration
+      appointmentDuration,
+      ignoreBlockId
     );
   }
 
@@ -1458,6 +1473,7 @@ function AgendaPage() {
     dateValue?: string,
     timeValue?: string
   ) {
+    setEditingBlock(null);
     setBlockTitle("");
 
     setBlockDate(
@@ -1483,12 +1499,34 @@ function AgendaPage() {
     );
   }
 
+  function openEditBlock(
+    block: CalendarBlock
+  ) {
+    setEditingBlock(block);
+    setBlockTitle(block.title);
+    setBlockDate(block.date);
+    setBlockTime(
+      block.start_time?.slice(
+        0,
+        5
+      ) ?? ""
+    );
+    setBlockDuration(
+      block.duration_minutes
+    );
+    setBlockAllDay(
+      block.all_day
+    );
+    setShowBlockForm(true);
+  }
+
   function closeBlockForm() {
     if (savingBlock) return;
 
     setShowBlockForm(
       false
     );
+    setEditingBlock(null);
   }
 
   async function saveCalendarBlock() {
@@ -1561,7 +1599,9 @@ function AgendaPage() {
         hasConflict(
           blockTime,
           blockDate,
-          blockDuration
+          blockDuration,
+          undefined,
+          editingBlock?.id
         )
       ) {
         alert(
@@ -1586,7 +1626,11 @@ function AgendaPage() {
           calendarBlocks[
             blockDate
           ] ?? []
-        ).length > 0;
+        ).some(
+          (block) =>
+            block.id !==
+            editingBlock?.id
+        );
 
       if (
         existingAppointments ||
@@ -1607,6 +1651,7 @@ function AgendaPage() {
       const newBlock: CalendarBlock =
         {
           id:
+            editingBlock?.id ??
             crypto.randomUUID(),
           title:
             blockTitle.trim() ||
@@ -1626,16 +1671,40 @@ function AgendaPage() {
             blockAllDay,
         };
 
-      const nextBlocks: CalendarBlocksMap =
-        {
-          ...calendarBlocks,
-          [blockDate]: [
-            ...(calendarBlocks[
-              blockDate
-            ] ?? []),
-            newBlock,
-          ],
-        };
+      const nextBlocks: CalendarBlocksMap = {
+        ...calendarBlocks,
+      };
+
+      if (editingBlock) {
+        nextBlocks[
+          editingBlock.date
+        ] = (
+          nextBlocks[
+            editingBlock.date
+          ] ?? []
+        ).filter(
+          (block) =>
+            block.id !==
+            editingBlock.id
+        );
+
+        if (
+          nextBlocks[
+            editingBlock.date
+          ]?.length === 0
+        ) {
+          delete nextBlocks[
+            editingBlock.date
+          ];
+        }
+      }
+
+      nextBlocks[blockDate] = [
+        ...(nextBlocks[
+          blockDate
+        ] ?? []),
+        newBlock,
+      ];
 
       setCalendarBlocks(
         nextBlocks
@@ -1659,6 +1728,7 @@ function AgendaPage() {
       setShowBlockForm(
         false
       );
+      setEditingBlock(null);
     } finally {
       setSavingBlock(
         false
@@ -2568,6 +2638,9 @@ function AgendaPage() {
             onDeleteBlock={
               deleteCalendarBlock
             }
+            onEditBlock={
+              openEditBlock
+            }
             onWhatsApp={
               openWhatsApp
             }
@@ -3098,7 +3171,9 @@ function AgendaPage() {
                 </p>
 
                 <h2 className="mt-1 text-xl font-semibold text-[#211f20]">
-                  Bloquear horário
+                  {editingBlock
+                    ? "Editar bloqueio"
+                    : "Bloquear horário"}
                 </h2>
 
                 <p className="mt-1 text-xs leading-relaxed text-[#817b7d]">
@@ -3330,7 +3405,9 @@ function AgendaPage() {
               >
                 {savingBlock
                   ? "Salvando..."
-                  : "Bloquear agenda"}
+                  : editingBlock
+                    ? "Confirmar alterações"
+                    : "Bloquear agenda"}
               </button>
             </div>
           </div>
@@ -3351,6 +3428,7 @@ function DaySchedule({
   onEdit,
   onDelete,
   onDeleteBlock,
+  onEditBlock,
   onWhatsApp,
   onFinalize,
   onMove,
@@ -3377,6 +3455,9 @@ function DaySchedule({
     appointment: Appointment
   ) => void;
   onDeleteBlock: (
+    block: CalendarBlock
+  ) => void;
+  onEditBlock: (
     block: CalendarBlock
   ) => void;
   onWhatsApp: (
@@ -4291,23 +4372,43 @@ function DaySchedule({
                         </p>
                       </div>
 
-                      <button
-                        type="button"
-                        onClick={() =>
-                          onDeleteBlock(
-                            block
-                          )
-                        }
-                        className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white text-[#b56f6f] shadow-sm"
-                        aria-label={`Remover ${block.title}`}
-                      >
-                        <Trash2
-                          className="size-3.5"
-                          strokeWidth={
-                            1.7
+                      <div className="flex shrink-0 items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            onEditBlock(
+                              block
+                            )
                           }
-                        />
-                      </button>
+                          className="flex size-8 items-center justify-center rounded-full bg-white text-[#625d5f] shadow-sm"
+                          aria-label={`Editar ${block.title}`}
+                        >
+                          <Pencil
+                            className="size-3.5"
+                            strokeWidth={
+                              1.7
+                            }
+                          />
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            onDeleteBlock(
+                              block
+                            )
+                          }
+                          className="flex size-8 items-center justify-center rounded-full bg-white text-[#b56f6f] shadow-sm"
+                          aria-label={`Remover ${block.title}`}
+                        >
+                          <Trash2
+                            className="size-3.5"
+                            strokeWidth={
+                              1.7
+                            }
+                          />
+                        </button>
+                      </div>
                     </div>
                   </div>
 
