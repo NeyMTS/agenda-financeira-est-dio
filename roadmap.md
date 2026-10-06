@@ -13,4 +13,4 @@
 - [x] Adicionar mensagens automáticas personalizáveis por usuário
 - [x] Implementar painel administrativo seguro com gestão de acesso e último acesso
 - [x] Permitir editar e confirmar bloqueios existentes na agenda
-- [x] Confirmar compartilhamento seguro dos dados de larissaandrade1412@hotmail.com entre Financeiro Estúdio e Nuvie Agenda
+- [ ] Migrar os dados de larissaandrade1412@hotmail.com do Financeiro Estúdio para o Nuvie Agenda — aguardando exportação da origem
