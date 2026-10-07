@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { BottomNav } from "./BottomNav";
+import { InstallPrompt } from "./InstallPrompt";
 import { BrandMark } from "./BrandMark";
 import { NuvieTheme } from "./NuvieTheme";
 import { MoneyToggle } from "./MoneyToggle";
@@ -93,6 +94,7 @@ export function AppShell({
         <main className="pb-4">{children}</main>
       </div>
 
+      <InstallPrompt />
       <BottomNav />
     </div>
   );
