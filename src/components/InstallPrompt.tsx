@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { X, Share, PlusSquare } from "lucide-react";
-import { BrandMark } from "./BrandMark";
+import { X, Share, PlusSquare, Smartphone } from "lucide-react";
 
 const DISMISS_KEY = "nuvie:install-banner-dismissed";
 const OPEN_EVENT = "nuvie:open-install";
@@ -93,10 +92,18 @@ export function InstallPrompt() {
       {showBanner && !installed ? (
         <div className="fixed inset-x-0 bottom-[calc(76px+env(safe-area-inset-bottom))] z-20 px-4">
           <div className="mx-auto flex max-w-md items-center gap-3 rounded-2xl border border-black/[0.06] bg-white/95 p-3 shadow-lg backdrop-blur-xl">
-            <BrandMark className="size-9 shrink-0 rounded-xl" />
+            <span
+              className="flex size-9 shrink-0 items-center justify-center rounded-xl"
+              style={{
+                backgroundColor: "var(--nuvie-primary-soft, #f3e9eb)",
+                color: "var(--nuvie-primary, #B7838E)",
+              }}
+            >
+              <Smartphone className="size-[18px]" strokeWidth={1.7} />
+            </span>
             <div className="min-w-0 flex-1">
               <p className="text-[13px] font-semibold text-[#211f20]">
-                📱 Instale o Nuvie
+                Instale o Nuvie
               </p>
               <p className="truncate text-[11px] text-[#817b7d]">
                 Tenha sua agenda sempre à mão.
@@ -132,13 +139,24 @@ export function InstallPrompt() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-base font-semibold text-[#211f20]">
-                {installed
-                  ? "O Nuvie já está instalado"
-                  : isIOS()
-                    ? "Instale o Nuvie no seu iPhone"
-                    : "Instale o Nuvie"}
-              </h2>
+              <div className="flex min-w-0 items-center gap-3">
+                <span
+                  className="flex size-9 shrink-0 items-center justify-center rounded-xl"
+                  style={{
+                    backgroundColor: "var(--nuvie-primary-soft, #f3e9eb)",
+                    color: "var(--nuvie-primary, #B7838E)",
+                  }}
+                >
+                  <Smartphone className="size-[18px]" strokeWidth={1.7} />
+                </span>
+                <h2 className="text-base font-semibold text-[#211f20]">
+                  {installed
+                    ? "O Nuvie já está instalado"
+                    : isIOS()
+                      ? "Instale o Nuvie no seu iPhone"
+                      : "Instale o Nuvie"}
+                </h2>
+              </div>
               <button
                 type="button"
                 aria-label="Fechar"

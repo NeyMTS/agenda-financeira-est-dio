@@ -3,14 +3,15 @@
 
 - [ ] Audit database schema, grants, RLS, auth, household association, and frontend CRUD paths
 - [ ] Fix persistence and visible operation errors for clients, services, appointments, and transactions
-- [ ] Add optional client birthday persistence, display, WhatsApp action, today alert, and upcoming birthdays
+- [x] Add optional client birthday persistence, display, WhatsApp action, today alert, and upcoming birthdays
 - [ ] Fix iPhone PWA zoom behavior and form input sizing
 - [ ] Verify database CRUD/select persistence, build, and main browser flows
-- [ ] Switch billing to single one-off Asaas DETACHED checkout (PIX + card), 30/365 days via webhook
+- [x] Switch billing to single one-off checkout (superseded by Kiwify migration below)
 - [x] Migrar pagamento do Asaas para a Kiwify (pagamento único 30/365 dias via webhook)
 - [x] Otimizar performance de navegação (sessão local, preload, cache, transição)
 
 - [x] Adicionar mensagens automáticas personalizáveis por usuário
 - [x] Implementar painel administrativo seguro com gestão de acesso e último acesso
 - [x] Permitir editar e confirmar bloqueios existentes na agenda
+- [x] PWA instalável com convite discreto, tutorial do iPhone e opção no menu
 - [ ] Migrar os dados de larissaandrade1412@hotmail.com do Financeiro Estúdio para o Nuvie Agenda — aguardando exportação da origem
