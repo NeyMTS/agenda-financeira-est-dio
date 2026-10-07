@@ -139,13 +139,24 @@ export function InstallPrompt() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-base font-semibold text-[#211f20]">
-                {installed
-                  ? "O Nuvie já está instalado"
-                  : isIOS()
-                    ? "Instale o Nuvie no seu iPhone"
-                    : "Instale o Nuvie"}
-              </h2>
+              <div className="flex min-w-0 items-center gap-3">
+                <span
+                  className="flex size-9 shrink-0 items-center justify-center rounded-xl"
+                  style={{
+                    backgroundColor: "var(--nuvie-primary-soft, #f3e9eb)",
+                    color: "var(--nuvie-primary, #B7838E)",
+                  }}
+                >
+                  <Smartphone className="size-[18px]" strokeWidth={1.7} />
+                </span>
+                <h2 className="text-base font-semibold text-[#211f20]">
+                  {installed
+                    ? "O Nuvie já está instalado"
+                    : isIOS()
+                      ? "Instale o Nuvie no seu iPhone"
+                      : "Instale o Nuvie"}
+                </h2>
+              </div>
               <button
                 type="button"
                 aria-label="Fechar"
