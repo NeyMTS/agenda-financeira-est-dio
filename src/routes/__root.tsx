@@ -45,7 +45,7 @@ function ErrorComponent({
   error,
   reset,
 }: {
-  error: Error;
+  error: unknown;
   reset: () => void;
 }) {
   console.error(error);

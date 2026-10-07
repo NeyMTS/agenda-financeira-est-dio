@@ -671,7 +671,6 @@ function RelatoriosPage() {
     <AppShell
       title="Relatórios"
       subtitle="Veja o desempenho do seu negócio"
-      backHref="/movimentacoes"
     >
       <div className="mt-4">
         <div className="rounded-2xl border border-black/[0.05] bg-white p-1 shadow-sm">
