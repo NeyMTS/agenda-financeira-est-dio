@@ -6,6 +6,9 @@ import {
   ChevronRight,
   EllipsisVertical,
   LogOut,
+} from "lucide-react";
+import { openInstallNuvie } from "@/components/InstallPrompt";
+import {
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
@@ -376,6 +379,12 @@ function InicioPage() {
                 <DropdownMenuSeparator />
               </>
             ) : null}
+
+            <DropdownMenuItem onSelect={() => openInstallNuvie()}>
+              📱 Instalar Nuvie
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
 
             <DropdownMenuItem
               onSelect={() => void signOut()}
