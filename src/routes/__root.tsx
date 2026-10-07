@@ -120,6 +120,11 @@ export const Route = createRootRouteWithContext<{
         content:
           "Controle financeiro compartilhado para casais.",
       },
+      { name: "theme-color", content: "#faf9f7" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
+      { name: "apple-mobile-web-app-title", content: "Nuvie" },
       {
         property: "og:type",
         content: "website",
