@@ -10,6 +10,7 @@ import {
 import { openInstallNuvie } from "@/components/InstallPrompt";
 import {
   ShieldCheck,
+  Smartphone,
   Sparkles,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -381,7 +382,8 @@ function InicioPage() {
             ) : null}
 
             <DropdownMenuItem onSelect={() => openInstallNuvie()}>
-              📱 Instalar Nuvie
+              <Smartphone />
+              Instalar Nuvie
             </DropdownMenuItem>
 
             <DropdownMenuSeparator />
