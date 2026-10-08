@@ -4333,11 +4333,9 @@ function DaySchedule({
             if (
               block &&
               (
-                block.all_day ||
-                timeToMinutes(
-                  block.start_time
-                ) ===
-                  minute
+                (block.all_day
+                  ? DAY_START_HOUR * 60
+                  : timeToMinutes(block.start_time)) === minute
               )
             ) {
               const duration =
