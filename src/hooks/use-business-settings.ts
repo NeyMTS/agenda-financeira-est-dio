@@ -31,6 +31,23 @@ export function applyMessageTemplate(
   );
 }
 
+export function openBirthdayWhatsApp(
+  client: { name: string; phone: string | null },
+  template = DEFAULT_BIRTHDAY_MESSAGE
+) {
+  const phone = client.phone?.replace(/\D/g, "");
+  if (!phone) {
+    window.alert("Cadastre o WhatsApp da cliente primeiro.");
+    return;
+  }
+
+  const message = applyMessageTemplate(template, { nome: client.name });
+  window.open(
+    `https://wa.me/${phone}?text=${encodeURIComponent(message)}`,
+    "_blank"
+  );
+}
+
 export type BusinessSettings = {
   businessName: string;
   professionalName: string;

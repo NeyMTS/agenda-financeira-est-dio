@@ -19,7 +19,7 @@ import { useHousehold } from "@/hooks/use-household";
 import { MONEY_MASK, useMoneyHidden } from "@/lib/money-privacy";
 import { useVisitorAccess } from "@/components/VisitorAccess";
 import { useAdminRole } from "@/hooks/use-admin-role";
-import { useBusinessSettingsQuery } from "@/hooks/use-business-settings";
+import { openBirthdayWhatsApp, useBusinessSettingsQuery } from "@/hooks/use-business-settings";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,6 +37,10 @@ export const Route = createFileRoute("/_authenticated/inicio")({
         name: "description",
         content: "Gestão de agenda, clientes, serviços e financeiro.",
       },
+      { property: "og:title", content: "Nuvie — Sua agenda" },
+      { property: "og:description", content: "Gestão de agenda, clientes, serviços e financeiro." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: InicioPage,
@@ -59,6 +63,7 @@ type Appointment = {
 type BirthdayClient = {
   id: string;
   name: string;
+  phone: string | null;
   birth_date: string;
 };
 
@@ -183,7 +188,7 @@ function InicioPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("studio_clients")
-        .select("id, name, birth_date")
+        .select("id, name, phone, birth_date")
         .eq("household_id", household?.id ?? "")
         .not("birth_date", "is", null);
 
@@ -399,11 +404,12 @@ function InicioPage() {
       }
     >
       {birthdaysToday.map((client) => (
-        <Link
+        <Button
           key={client.id}
-          to="/clientes"
-          hash={`cliente-${client.id}`}
-          className="mb-3 flex items-center gap-3 rounded-2xl bg-[var(--nuvie-primary-soft)] p-4 text-[var(--nuvie-primary-strong)]"
+          type="button"
+          variant="ghost"
+          onClick={() => openBirthdayWhatsApp(client, businessSettings?.birthdayMessage)}
+          className="mb-3 flex h-auto w-full items-center justify-start gap-3 whitespace-normal rounded-2xl bg-[var(--nuvie-primary-soft)] p-4 text-left text-[var(--nuvie-primary-strong)] hover:bg-[var(--nuvie-primary-soft)]"
         >
           <Cake
             className="size-5 shrink-0"
@@ -417,14 +423,14 @@ function InicioPage() {
             </p>
 
             <p className="mt-1 text-xs text-[var(--nuvie-primary-deep)]">
-              Toque para abrir o cadastro da cliente
+               Toque para parabenizar pelo WhatsApp
             </p>
           </div>
 
           <ChevronRight
             className="size-4 shrink-0"
           />
-        </Link>
+        </Button>
       ))}
 
       {upcomingBirthdays.length > 0 && (

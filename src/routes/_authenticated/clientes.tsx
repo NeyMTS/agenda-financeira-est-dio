@@ -15,13 +15,23 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useHousehold } from "@/hooks/use-household";
 import {
-  applyMessageTemplate,
+  openBirthdayWhatsApp,
   useBusinessSettings,
 } from "@/hooks/use-business-settings";
 import { AppShell, EmptyState } from "@/components/AppShell";
 import { takePendingVisitorAction, useVisitorAccess } from "@/components/VisitorAccess";
 
 export const Route = createFileRoute("/_authenticated/clientes")({
+  head: () => ({
+    meta: [
+      { title: "Clientes | Nuvie" },
+      { name: "description", content: "Cadastro e acompanhamento das clientes do seu negócio no Nuvie." },
+      { property: "og:title", content: "Clientes | Nuvie" },
+      { property: "og:description", content: "Cadastro e acompanhamento das clientes do seu negócio no Nuvie." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
   component: ClientesPage,
 });
 
@@ -245,22 +255,6 @@ function ClientesPage() {
     );
   }
 
-  function openBirthdayWhatsApp(client: Client) {
-    const phone = getPhone(client);
-
-    if (!phone) return;
-
-    const message = applyMessageTemplate(
-      businessSettings.birthdayMessage,
-      { nome: client.name }
-    );
-
-    window.open(
-      `https://wa.me/${phone}?text=${encodeURIComponent(message)}`,
-      "_blank"
-    );
-  }
-
   function formatBirthday(value: string) {
     return new Date(`${value}T12:00:00`).toLocaleDateString(
       "pt-BR",
@@ -405,7 +399,7 @@ function ClientesPage() {
                   <button
                     type="button"
                     onClick={() =>
-                      openBirthdayWhatsApp(client)
+                      openBirthdayWhatsApp(client, businessSettings.birthdayMessage)
                     }
                     className="mt-2 flex h-9 w-full items-center justify-center gap-1.5 rounded-xl bg-[#f8eef0] text-xs font-medium text-[var(--nuvie-primary-strong)]"
                   >
