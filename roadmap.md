@@ -13,5 +13,6 @@
 - [x] Adicionar mensagens automáticas personalizáveis por usuário
 - [x] Implementar painel administrativo seguro com gestão de acesso e último acesso
 - [x] Permitir editar e confirmar bloqueios existentes na agenda
+- [x] Corrigir edição de bloqueios em horários entre os intervalos da agenda
 - [x] PWA instalável com convite discreto, tutorial do iPhone e opção no menu
 - [ ] Migrar os dados de larissaandrade1412@hotmail.com do Financeiro Estúdio para o Nuvie Agenda — aguardando exportação da origem

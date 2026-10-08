@@ -3837,13 +3837,13 @@ function DaySchedule({
         start + duration;
 
       for (
-        let minute = start;
+        let minute = DAY_START_HOUR * 60;
         minute < end;
         minute += SLOT_MINUTES
       ) {
-        occupiedSlots.add(
-          minute
-        );
+        if (minute + SLOT_MINUTES > start) {
+          occupiedSlots.add(minute);
+        }
       }
     }
   );
@@ -3862,6 +3862,17 @@ function DaySchedule({
       minute
     );
   }
+
+  // Keep a row at the exact start of every block, even between grid slots.
+  blocks.forEach((block) => {
+    const start = block.all_day
+      ? DAY_START_HOUR * 60
+      : timeToMinutes(block.start_time);
+    if (start !== null && !slots.includes(start)) {
+      slots.push(start);
+    }
+  });
+  slots.sort((a, b) => a - b);
 
   function appointmentAt(
     minute: number
@@ -4322,11 +4333,9 @@ function DaySchedule({
             if (
               block &&
               (
-                block.all_day ||
-                timeToMinutes(
-                  block.start_time
-                ) ===
-                  minute
+                (block.all_day
+                  ? DAY_START_HOUR * 60
+                  : timeToMinutes(block.start_time)) === minute
               )
             ) {
               const duration =
