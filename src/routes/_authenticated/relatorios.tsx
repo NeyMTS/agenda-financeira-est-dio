@@ -35,6 +35,16 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute(
   "/_authenticated/relatorios"
 )({
+  head: () => ({
+    meta: [
+      { title: "Relatórios | Nuvie" },
+      { name: "description", content: "Relatórios mensais de serviços, atendimentos e finanças do seu negócio no Nuvie." },
+      { property: "og:title", content: "Relatórios | Nuvie" },
+      { property: "og:description", content: "Relatórios mensais de serviços, atendimentos e finanças do seu negócio no Nuvie." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
   component: RelatoriosPage,
 });
 
@@ -52,6 +62,7 @@ type Appointment = {
   id: string;
   client_id: string | null;
   service_id: string | null;
+  service_name: string;
   total_amount: number | null;
   scheduled_date: string;
   status: string | null;
@@ -340,6 +351,7 @@ function RelatoriosPage() {
               id,
               client_id,
               service_id,
+              service_name,
               total_amount,
               scheduled_date,
               status,
@@ -511,32 +523,45 @@ function RelatoriosPage() {
       previousData.appointments
     );
 
+  const { data: services = [] } = useQuery({
+    queryKey: ["relatorios-services", household?.id],
+    enabled: Boolean(household?.id) && activeTab === "services",
+    queryFn: async () => {
+      if (!household?.id) return [];
+      const { data, error } = await supabase
+        .from("studio_services")
+        .select("id, name")
+        .eq("household_id", household.id);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
   const serviceData =
     useMemo<ServiceData[]>(() => {
       const map = new Map<
         string,
         ServiceData
       >();
+      const serviceNames = new Map(services.map((service) => [service.id, service.name]));
+      const monthKey = getMonthKey(selectedMonth);
 
       appointments.forEach(
         (appointment) => {
           if (
-            appointment.status ===
-            "cancelled"
+            appointment.status !== "concluido" ||
+            appointment.scheduled_date.slice(0, 7) !== monthKey
           ) {
             return;
           }
 
           const serviceName =
-            appointment.service_id
-              ? `Serviço ${appointment.service_id.slice(
-                  0,
-                  6
-                )}`
-              : "Serviço";
+            (appointment.service_id ? serviceNames.get(appointment.service_id) : undefined) ??
+            (appointment.service_name?.trim() || "Serviço removido");
+          const serviceKey = appointment.service_id ?? serviceName;
 
           const current =
-            map.get(serviceName) ?? {
+            map.get(serviceKey) ?? {
               name: serviceName,
               count: 0,
               revenue: 0,
@@ -549,7 +574,7 @@ function RelatoriosPage() {
           );
 
           map.set(
-            serviceName,
+            serviceKey,
             current
           );
         }
@@ -563,7 +588,7 @@ function RelatoriosPage() {
             b.revenue - a.revenue
         )
         .slice(0, 6);
-    }, [appointments]);
+    }, [appointments, services, selectedMonth]);
 
   const selectedMonthTransactions =
     useMemo(() => {

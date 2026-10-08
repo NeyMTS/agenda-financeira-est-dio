@@ -11,3 +11,4 @@
 
 - Administrative access uses `user_roles` plus fail-closed authenticated server functions; never infer admin status from email or client state, because URL and API access must remain server-authorized.
 - Day agenda rows must include exact calendar-block start times in addition to the regular grid, so arbitrary-time blocks remain visible and editable.
+- Birthday WhatsApp actions share one helper and the user's configured template, so the home card and client action cannot diverge.
