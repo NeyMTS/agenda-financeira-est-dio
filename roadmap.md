@@ -1,8 +1,8 @@
 - [x] Corrigir acesso visitante para usar somente as telas reais, sem dados fictícios ou persistência
 # Roadmap
 
-- [ ] Corrigir nomes e contagem mensal na aba Serviços dos relatórios
-- [ ] Abrir WhatsApp pelo card de aniversariantes com a mensagem existente e aviso sem telefone
+- [x] Corrigir nomes e contagem mensal na aba Serviços dos relatórios
+- [x] Abrir WhatsApp pelo card de aniversariantes com a mensagem existente e aviso sem telefone
 
 - [ ] Audit database schema, grants, RLS, auth, household association, and frontend CRUD paths
 - [ ] Fix persistence and visible operation errors for clients, services, appointments, and transactions
