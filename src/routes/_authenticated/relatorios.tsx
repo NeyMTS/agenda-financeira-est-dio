@@ -90,6 +90,7 @@ type MonthData = {
 };
 
 type ServiceData = {
+  id: string;
   name: string;
   count: number;
   revenue: number;
@@ -562,6 +563,7 @@ function RelatoriosPage() {
 
           const current =
             map.get(serviceKey) ?? {
+              id: serviceKey,
               name: serviceName,
               count: 0,
               revenue: 0,
@@ -1304,7 +1306,7 @@ function RelatoriosPage() {
                         ) => (
                           <div
                             key={
-                              service.name
+                              service.id
                             }
                             className="rounded-2xl border border-black/[0.05] bg-white p-4 shadow-sm"
                           >
