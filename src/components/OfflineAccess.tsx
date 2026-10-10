@@ -14,7 +14,7 @@ export function purgeOfflineData() {
   return storageQueue;
 }
 
-export function OfflineAccess({ userId, children }: { userId?: string; children: ReactNode }) {
+export function OfflineAccess({ userId, children }: { userId: string | undefined; children: ReactNode }) {
   const client = useQueryClient();
   const location = useLocation();
   const [online, setOnline] = useState(true);
@@ -61,6 +61,7 @@ export function OfflineAccess({ userId, children }: { userId?: string; children:
         if (!entries.length) return;
         storageQueue = storageQueue.catch(() => {}).then(() => {
           if (active) return saveOfflineSnapshot({ userId, entries });
+          return undefined;
         }).catch(() => { if (active) setStorageFailed(true); });
       }, 150);
     });
