@@ -29,11 +29,21 @@ import { MONEY_MASK, useMoneyHidden } from "@/lib/money-privacy";
 import {
   AppShell,
 } from "@/components/AppShell";
+import { appointmentOptions, clientOptions, serviceOptions } from "@/lib/studio-queries";
+import { useOfflineAccess } from "@/components/OfflineAccess";
 import { takePendingVisitorAction, useVisitorAccess } from "@/components/VisitorAccess";
 
 export const Route = createFileRoute(
   "/_authenticated/agenda"
 )({
+  head: () => ({ meta: [
+    { title: "Agenda | Nuvie" },
+    { name: "description", content: "Sua agenda de atendimentos e compromissos no Nuvie." },
+    { property: "og:title", content: "Agenda | Nuvie" },
+    { property: "og:description", content: "Sua agenda de atendimentos e compromissos no Nuvie." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: AgendaPage,
 });
 
@@ -372,6 +382,7 @@ function getClient(
 
 function AgendaPage() {
   const { isVisitor, requestAuthentication } = useVisitorAccess();
+  const { online } = useOfflineAccess();
   const businessSettings = useBusinessSettings();
   const moneyHidden = useMoneyHidden();
 
@@ -658,149 +669,23 @@ function AgendaPage() {
   const {
     data: clients = [],
   } = useQuery({
-    queryKey: [
-      "studio-clients",
-      household?.id,
-    ],
-    enabled:
-      Boolean(
-        household?.id
-      ) && !isVisitor,
-    queryFn: async () => {
-      const {
-        data,
-        error,
-      } = await supabase
-        .from(
-          "studio_clients"
-        )
-        .select(
-          "id, name, phone"
-        )
-        .eq(
-          "household_id",
-          household!.id
-        )
-        .order("name");
-
-      if (error) throw error;
-
-      return data ?? [];
-    },
+    ...clientOptions(household?.id ?? ""),
+    enabled: Boolean(household?.id) && !isVisitor,
   });
 
   const {
     data: services = [],
   } = useQuery({
-    queryKey: [
-      "studio-services",
-      household?.id,
-    ],
-    enabled:
-      Boolean(
-        household?.id
-      ) && !isVisitor,
-    queryFn: async () => {
-      const {
-        data,
-        error,
-      } = await supabase
-        .from(
-          "studio_services"
-        )
-        .select(
-          "id, name, default_price"
-        )
-        .eq(
-          "household_id",
-          household!.id
-        )
-        .eq(
-          "active",
-          true
-        )
-        .order("name");
-
-      if (error) throw error;
-
-      return (
-        data ?? []
-      ) as Service[];
-    },
+    ...serviceOptions(household?.id ?? ""),
+    enabled: Boolean(household?.id) && !isVisitor,
   });
 
   const {
     data: appointments = [],
     isLoading,
   } = useQuery({
-    queryKey: [
-      "studio-appointments",
-      household?.id,
-      monthStart,
-      monthEnd,
-    ],
-    enabled:
-      Boolean(
-        household?.id
-      ) && !isVisitor,
-    queryFn: async () => {
-      const {
-        data,
-        error,
-      } = await supabase
-        .from(
-          "studio_appointments"
-        )
-        .select(
-          `
-          id,
-          client_id,
-          service_id,
-          service_name,
-          total_amount,
-          deposit_amount,
-          received_amount,
-          scheduled_date,
-          scheduled_time,
-          status,
-          studio_clients(name, phone)
-        `
-        )
-        .eq(
-          "household_id",
-          household!.id
-        )
-        .gte(
-          "scheduled_date",
-          monthStart
-        )
-        .lte(
-          "scheduled_date",
-          monthEnd
-        )
-        .neq(
-          "status",
-          "cancelado"
-        )
-        .order(
-          "scheduled_date",
-          {
-            ascending: true,
-          }
-        )
-        .order(
-          "scheduled_time",
-          {
-            ascending: true,
-          }
-        );
-
-      if (error) throw error;
-
-      return (
-        data ?? []
-      ) as Appointment[];
-    },
+    ...appointmentOptions(household?.id ?? "", monthStart, monthEnd),
+    enabled: Boolean(household?.id) && !isVisitor,
   });
 
   const selectedDayAppointments =
@@ -2568,7 +2453,9 @@ function AgendaPage() {
       </div>
 
       <section className="mt-5">
-        {isLoading ? (
+        {!online && !queryClient.getQueryState(["studio-appointments", household?.id, monthStart, monthEnd])?.dataUpdatedAt ? (
+          <p role="status" className="py-7 text-center text-sm text-muted-foreground">Este mês não foi baixado para consulta offline.</p>
+        ) : isLoading ? (
           <div className="rounded-2xl border border-black/[0.05] bg-white px-4 py-8 text-center text-sm text-[#817b7d]">
             Carregando agenda...
           </div>

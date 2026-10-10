@@ -12,6 +12,8 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { clientOptions } from "@/lib/studio-queries";
+import { useOfflineAccess } from "@/components/OfflineAccess";
 import { supabase } from "@/integrations/supabase/client";
 import { useHousehold } from "@/hooks/use-household";
 import {
@@ -49,6 +51,7 @@ function ClientesPage() {
   const businessSettings = useBusinessSettings();
   const queryClient = useQueryClient();
 
+  const { online } = useOfflineAccess();
   const [search, setSearch] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [editingClient, setEditingClient] =
@@ -60,19 +63,8 @@ function ClientesPage() {
   const [saving, setSaving] = useState(false);
 
   const { data: clients = [], isLoading } = useQuery({
-    queryKey: ["studio-clients", household?.id],
+    ...clientOptions(household?.id ?? ""),
     enabled: Boolean(household?.id) && !isVisitor,
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("studio_clients")
-        .select("id, name, phone, birth_date, created_at")
-        .eq("household_id", household!.id)
-        .order("name", { ascending: true });
-
-      if (error) throw error;
-
-      return (data ?? []) as Client[];
-    },
   });
 
   const filteredClients = clients.filter((client) =>
@@ -308,7 +300,9 @@ function ClientesPage() {
           </span>
         </div>
 
-        {isLoading ? (
+        {!online && !queryClient.getQueryState(["studio-clients", household?.id])?.dataUpdatedAt ? (
+          <p role="status" className="py-7 text-center text-sm text-muted-foreground">Clientes não baixadas para consulta offline.</p>
+        ) : isLoading ? (
           <div className="rounded-2xl border border-black/[0.05] bg-white px-4 py-7 text-center text-sm text-[#817b7d]">
             Carregando...
           </div>
