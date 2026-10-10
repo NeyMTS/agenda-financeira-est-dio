@@ -7,6 +7,7 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 import { VitePWA } from "vite-plugin-pwa";
 import { readFile, writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import type { Plugin } from "vite";
 
 const pwa = VitePWA({
@@ -20,10 +21,10 @@ const pwa = VitePWA({
   workbox: {
     globDirectory: "dist/client",
     globPatterns: ["assets/**/*.{js,css,woff2}", "app-icon-512.png", "manifest.webmanifest"],
-    navigateFallback: undefined,
+    navigateFallback: null,
     cleanupOutdatedCaches: true,
     maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
-    additionalManifestEntries: [{ url: "/offline-shell.html", revision: "nuvie-shell-v1" }],
+    additionalManifestEntries: [],
     runtimeCaching: [{
       urlPattern: ({ request, url }) => request.mode === "navigate" &&
         url.origin === self.location.origin && ["/", "/inicio", "/agenda", "/clientes", "/servicos"].includes(url.pathname),
@@ -47,6 +48,7 @@ const finishOfflineBuild: Plugin = {
     await writeFile("dist/client/offline-shell.html", shell);
     const plugin = pwa.find((item) => item.api?.generateSW);
     if (!plugin) throw new Error("Missing offline build generator");
+    plugin.api.extendManifestEntries(() => [{ url: "/offline-shell.html", revision: createHash("sha256").update(shell).digest("hex") }]);
     await plugin.api.generateSW();
   } },
 };
