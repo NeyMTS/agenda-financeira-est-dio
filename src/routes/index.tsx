@@ -1,6 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -13,6 +12,8 @@ export const Route = createFileRoute("/")({
           "Agenda, clientes e controle financeiro em um só lugar.",
       },
       { property: "og:title", content: "Nuvie — Gestão para profissionais da beleza" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       {
         property: "og:description",
         content:
@@ -26,19 +27,7 @@ function Index() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    let active = true;
-
-    supabase.auth.getUser().then(({ data, error }) => {
-      if (!active) return;
-      navigate({
-        to: "/inicio",
-        replace: true,
-      });
-    });
-
-    return () => {
-      active = false;
-    };
+    void navigate({ to: "/inicio", replace: true });
   }, [navigate]);
 
   return <div className="min-h-screen bg-background" />;

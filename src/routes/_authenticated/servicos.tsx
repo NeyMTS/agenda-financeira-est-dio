@@ -14,6 +14,8 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { serviceOptions } from "@/lib/studio-queries";
+import { useOfflineAccess } from "@/components/OfflineAccess";
 import { supabase } from "@/integrations/supabase/client";
 import { useHousehold } from "@/hooks/use-household";
 import { AppShell, EmptyState } from "@/components/AppShell";
@@ -153,6 +155,7 @@ function formatDuration(minutes: number) {
 
 function ServicosPage() {
   const { isVisitor, requestAuthentication } = useVisitorAccess();
+  const { online } = useOfflineAccess();
   const moneyHidden = useMoneyHidden();
   const { data: household } = useHousehold();
   const queryClient = useQueryClient();
@@ -191,22 +194,8 @@ function ServicosPage() {
   }, [household?.id]);
 
   const { data: services = [], isLoading } = useQuery({
-    queryKey: ["studio-services", household?.id],
+    ...serviceOptions(household?.id ?? ""),
     enabled: Boolean(household?.id) && !isVisitor,
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("studio_services")
-        .select(
-          "id, name, default_price, icon, active"
-        )
-        .eq("household_id", household!.id)
-        .eq("active", true)
-        .order("name", { ascending: true });
-
-      if (error) throw error;
-
-      return (data ?? []) as Service[];
-    },
   });
 
   useEffect(() => {
@@ -617,7 +606,9 @@ function ServicosPage() {
           </div>
         </div>
 
-        {isLoading ? (
+        {!online && !queryClient.getQueryState(["studio-services", household?.id])?.dataUpdatedAt ? (
+          <p role="status" className="py-7 text-center text-sm text-muted-foreground">Serviços não baixados para consulta offline.</p>
+        ) : isLoading ? (
           <div className="rounded-2xl border border-black/[0.05] bg-white px-4 py-7 text-center text-sm text-[#817b7d]">
             Carregando...
           </div>

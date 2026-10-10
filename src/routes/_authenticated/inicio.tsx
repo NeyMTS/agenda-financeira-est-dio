@@ -13,6 +13,8 @@ import {
   Smartphone,
   Sparkles,
 } from "lucide-react";
+import { appointmentOptions, clientOptions, serviceOptions } from "@/lib/studio-queries";
+import { useOfflineAccess } from "@/components/OfflineAccess";
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell, EmptyState } from "@/components/AppShell";
 import { useHousehold } from "@/hooks/use-household";
@@ -69,6 +71,7 @@ type BirthdayClient = {
 
 function InicioPage() {
   const { isVisitor, requestAuthentication } = useVisitorAccess();
+  const { online } = useOfflineAccess();
   const navigate = useNavigate();
   const { data: isAdmin = false } = useAdminRole();
   const { data: household } = useHousehold();
@@ -111,7 +114,7 @@ function InicioPage() {
         monthStart,
         monthEnd,
       ],
-      enabled: Boolean(household?.id) && !isVisitor,
+      enabled: Boolean(household?.id) && !isVisitor && online,
       queryFn: async () => {
         const { data, error } = await supabase
           .from("transactions")
@@ -131,72 +134,20 @@ function InicioPage() {
     data: appointments = [],
     isLoading: loadingAppointments,
   } = useQuery({
-    queryKey: [
-      "studio-dashboard-appointments",
-      household?.id,
-      monthStart,
-      monthEnd,
-    ],
+    ...appointmentOptions(household?.id ?? "", monthStart, monthEnd),
     enabled: Boolean(household?.id) && !isVisitor,
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("studio_appointments")
-        .select(
-          `
-          id,
-          service_name,
-          total_amount,
-          received_amount,
-          scheduled_date,
-          scheduled_time,
-          status,
-          studio_clients(name)
-        `
-        )
-        .eq("household_id", household!.id)
-        .gte("scheduled_date", monthStart)
-        .lte("scheduled_date", monthEnd)
-        .neq("status", "cancelado")
-        .order("scheduled_date", { ascending: true })
-        .order("scheduled_time", { ascending: true });
-
-      if (error) throw error;
-
-      return (data ?? []) as Appointment[];
-    },
   });
 
   const { data: services = [] } = useQuery({
-    queryKey: ["studio-dashboard-services", household?.id],
+    ...serviceOptions(household?.id ?? ""),
     enabled: Boolean(household?.id) && !isVisitor,
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("studio_services")
-        .select("id")
-        .eq("household_id", household!.id)
-        .eq("active", true);
-
-      if (error) throw error;
-
-      return data ?? [];
-    },
   });
 
-  const { data: birthdayClients = [] } = useQuery({
-    queryKey: ["studio-birthdays", household?.id],
+  const { data: allClients = [] } = useQuery({
+    ...clientOptions(household?.id ?? ""),
     enabled: Boolean(household?.id) && !isVisitor,
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("studio_clients")
-        .select("id, name, phone, birth_date")
-        .eq("household_id", household?.id ?? "")
-        .not("birth_date", "is", null);
-
-      if (error) throw error;
-
-      return (data ?? []) as BirthdayClient[];
-    },
   });
+  const birthdayClients = allClients.filter((client): client is typeof client & { birth_date: string } => Boolean(client.birth_date));
 
   const birthdays = birthdayClients
     .flatMap((client) => {
