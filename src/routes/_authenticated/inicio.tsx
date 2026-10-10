@@ -433,7 +433,9 @@ function InicioPage() {
         </p>
 
         <p className="mt-2 text-3xl font-semibold tracking-tight">
-          {loadingFinance
+          {!online
+            ? "Disponível online"
+            : loadingFinance
             ? "—"
             : `R$ ${money(balance)}`}
         </p>
@@ -445,7 +447,7 @@ function InicioPage() {
             </p>
 
             <p className="mt-1 text-sm font-semibold">
-              R$ {money(received)}
+              {online ? `R$ ${money(received)}` : "—"}
             </p>
           </div>
 
@@ -455,7 +457,7 @@ function InicioPage() {
             </p>
 
             <p className="mt-1 text-sm font-semibold">
-              R$ {money(expenses)}
+              {online ? `R$ ${money(expenses)}` : "—"}
             </p>
           </div>
 
