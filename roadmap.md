@@ -1,6 +1,8 @@
 - [x] Corrigir acesso visitante para usar somente as telas reais, sem dados fictícios ou persistência
 # Roadmap
 
+- [x] Corrigir acesso à edição de horários fora da grade, inválidos e sobrepostos; validar rejeição de conflitos
+
 - [x] Acelerar abertura no celular e compartilhar consultas compatíveis
 - [x] Preparar consulta offline de Agenda, Clientes e Serviços com separação por conta
 - [x] Validar cópias locais, reconexão, bloqueio de salvamentos e limpeza ao sair com testes de navegador
