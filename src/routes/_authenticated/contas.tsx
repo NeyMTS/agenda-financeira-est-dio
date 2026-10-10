@@ -43,18 +43,14 @@ const KINDS = ["conta", "carteira", "poupança", "cartão"];
 const emptyForm = { name: "", kind: "conta", initial_balance: "" };
 
 export const Route = createFileRoute("/_authenticated/contas")({
-  head: () => ({
-    meta: [
-      { title: "Contas — Duo Finanças" },
-      {
-        name: "description",
-        content:
-          "Cadastre as contas, carteiras e cartões usados pelo casal e convide a outra pessoa.",
-      },
-      { property: "og:title", content: "Contas — Duo Finanças" },
-      { property: "og:description", content: "Contas financeiras compartilhadas do casal." },
-    ],
-  }),
+  head: () => ({ meta: [
+    { title: "Contas | Nuvie" },
+    { name: "description", content: "Contas financeiras do seu negócio no Nuvie." },
+    { property: "og:title", content: "Contas | Nuvie" },
+    { property: "og:description", content: "Contas financeiras do seu negócio no Nuvie." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: ContasPage,
 });
 

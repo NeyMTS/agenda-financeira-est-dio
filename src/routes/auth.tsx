@@ -22,7 +22,9 @@ export const Route = createFileRoute("/auth")({
   },
   head: () => ({
     meta: [
-      { title: "Nuvie — Gestão para profissionais da beleza" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+      { title: "Entrar ou criar conta | Nuvie" },
       {
         name: "description",
         content:
@@ -30,7 +32,7 @@ export const Route = createFileRoute("/auth")({
       },
       {
         property: "og:title",
-        content: "Nuvie — Gestão para profissionais da beleza",
+        content: "Entrar ou criar conta | Nuvie",
       },
       {
         property: "og:description",

@@ -28,6 +28,14 @@ const colorOptions = [
 ];
 
 export const Route = createFileRoute("/_authenticated/configuracoes")({
+  head: () => ({ meta: [
+    { title: "Configurações | Nuvie" },
+    { name: "description", content: "Personalização do seu negócio e mensagens no Nuvie." },
+    { property: "og:title", content: "Configurações | Nuvie" },
+    { property: "og:description", content: "Personalização do seu negócio e mensagens no Nuvie." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: ConfiguracoesPage,
 });
 
