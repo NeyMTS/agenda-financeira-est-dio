@@ -3750,12 +3750,17 @@ function DaySchedule({
     );
   }
 
+  // Include arbitrary appointment times too, including legacy out-of-grid times.
+  appointments.forEach((appointment) => {
+    const start = timeToMinutes(appointment.scheduled_time);
+    if (start !== null && Number.isFinite(start) && !slots.includes(start)) slots.push(start);
+  });
   // Keep a row at the exact start of every block, even between grid slots.
   blocks.forEach((block) => {
     const start = block.all_day
       ? DAY_START_HOUR * 60
       : timeToMinutes(block.start_time);
-    if (start !== null && !slots.includes(start)) {
+    if (start !== null && Number.isFinite(start) && !slots.includes(start)) {
       slots.push(start);
     }
   });
@@ -3782,6 +3787,11 @@ function DaySchedule({
   function blockAt(
     minute: number
   ) {
+    // A covering block must not hide another block's own edit row.
+    const startingBlock = blocks.find((block) =>
+      (block.all_day ? DAY_START_HOUR * 60 : timeToMinutes(block.start_time)) === minute
+    );
+    if (startingBlock) return startingBlock;
     return blocks.find(
       (block) => {
         const start =
@@ -3815,6 +3825,15 @@ function DaySchedule({
       }
     );
   }
+
+  const hiddenAppointments = appointments.filter((appointment) => {
+    const start = timeToMinutes(appointment.scheduled_time);
+    return start === null || !Number.isFinite(start) || appointmentAt(start)?.id !== appointment.id;
+  });
+  const hiddenBlocks = blocks.filter((block) => {
+    const start = block.all_day ? DAY_START_HOUR * 60 : timeToMinutes(block.start_time);
+    return start === null || !Number.isFinite(start) || Boolean(appointmentAt(start)) || blockAt(start)?.id !== block.id;
+  });
 
   return (
     <div>
@@ -3894,6 +3913,33 @@ function DaySchedule({
               neste dia
             </p>
           </div>
+        </div>
+      )}
+
+      {(hiddenAppointments.length > 0 || hiddenBlocks.length > 0) && (
+        <div className="mb-3 divide-y divide-border rounded-xl border border-border bg-card">
+          {hiddenAppointments.map((appointment) => (
+            <div key={appointment.id} className="flex items-center justify-between gap-3 p-3">
+              <div className="min-w-0 text-sm text-foreground">
+                <p className="truncate">{getClient(appointment)?.name ?? "Cliente"}</p>
+                <p className="text-xs text-muted-foreground">{appointment.scheduled_time?.slice(0, 5) || "Horário não informado"}</p>
+              </div>
+              <button type="button" onClick={() => onEdit(appointment)} aria-label={`Editar atendimento de ${getClient(appointment)?.name ?? "Cliente"}`} className="flex shrink-0 items-center gap-1 rounded-lg p-2 text-xs text-foreground">
+                <Pencil className="size-3.5" strokeWidth={1.7} /> Editar
+              </button>
+            </div>
+          ))}
+          {hiddenBlocks.map((block) => (
+            <div key={block.id} className="flex items-center justify-between gap-3 p-3">
+              <div className="min-w-0 text-sm text-foreground">
+                <p className="truncate">{block.title}</p>
+                <p className="text-xs text-muted-foreground">{block.all_day ? "Dia inteiro bloqueado" : block.start_time?.slice(0, 5) || "Horário não informado"}</p>
+              </div>
+              <button type="button" onClick={() => onEditBlock(block)} aria-label={`Editar ${block.title}`} className="flex shrink-0 items-center gap-1 rounded-lg p-2 text-xs text-foreground">
+                <Pencil className="size-3.5" strokeWidth={1.7} /> Editar
+              </button>
+            </div>
+          ))}
         </div>
       )}
 
