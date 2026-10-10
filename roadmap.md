@@ -1,9 +1,10 @@
 - [x] Corrigir acesso visitante para usar somente as telas reais, sem dados fictícios ou persistência
 # Roadmap
 
-- [ ] Acelerar abertura no celular e compartilhar consultas compatíveis
-- [ ] Preparar consulta offline de Agenda, Clientes e Serviços com separação por conta
-- [ ] Validar consulta offline, reconexão e proteções; abertura instalada depende de teste publicado
+- [x] Acelerar abertura no celular e compartilhar consultas compatíveis
+- [x] Preparar consulta offline de Agenda, Clientes e Serviços com separação por conta
+- [x] Validar cópias locais, reconexão, bloqueio de salvamentos e limpeza ao sair com testes de navegador
+- [ ] Validar abertura offline instalada em Android/iPhone — aguarda publicação e aparelhos reais
 
 - [x] Corrigir nomes e contagem mensal na aba Serviços dos relatórios
 - [x] Abrir WhatsApp pelo card de aniversariantes com a mensagem existente e aviso sem telefone

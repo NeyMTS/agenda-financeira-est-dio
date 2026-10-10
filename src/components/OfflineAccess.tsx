@@ -21,6 +21,11 @@ export function OfflineAccess({ userId, children }: { userId: string | undefined
   const [ready, setReady] = useState(false);
   const [revision, setRevision] = useState(0);
   const [storageFailed, setStorageFailed] = useState(false);
+  const [clock, setClock] = useState(Date.now());
+  useEffect(() => {
+    const interval = setInterval(() => setClock(Date.now()), 30_000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const sync = () => { setOnline(navigator.onLine); onlineManager.setOnline(navigator.onLine); };
@@ -83,7 +88,7 @@ export function OfflineAccess({ userId, children }: { userId: string | undefined
 
   const allowed = ["/", "/inicio", "/agenda", "/clientes", "/servicos"].includes(location.pathname);
   const sub = client.getQueryData<Subscription>(["subscription", "current-user"]);
-  const valid = offlineAccessValid(sub);
+  const valid = offlineAccessValid(sub, clock);
   const entries = collectOfflineEntries(client).filter((entry) => {
     const name = entry.key[0];
     return location.pathname === "/clientes" ? name === "studio-clients" :

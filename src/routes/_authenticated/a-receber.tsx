@@ -22,6 +22,14 @@ import { AppShell, EmptyState } from "@/components/AppShell";
 import { takePendingVisitorAction, useVisitorAccess } from "@/components/VisitorAccess";
 
 export const Route = createFileRoute("/_authenticated/a-receber")({
+  head: () => ({ meta: [
+    { title: "Cadastro de clientes | Nuvie" },
+    { name: "description", content: "Dados de contato das suas clientes no Nuvie." },
+    { property: "og:title", content: "Cadastro de clientes | Nuvie" },
+    { property: "og:description", content: "Dados de contato das suas clientes no Nuvie." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: ClientesPage,
 });
 

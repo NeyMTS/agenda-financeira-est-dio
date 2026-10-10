@@ -45,16 +45,14 @@ import {
 } from "@/components/ui/alert-dialog";
 
 export const Route = createFileRoute("/_authenticated/metas")({
-  head: () => ({
-    meta: [
-      { title: "Metas — Duo Finanças" },
-      {
-        name: "description",
-        content:
-          "Defina e acompanhe metas financeiras compartilhadas do casal.",
-      },
-    ],
-  }),
+  head: () => ({ meta: [
+    { title: "Metas | Nuvie" },
+    { name: "description", content: "Acompanhe suas metas financeiras no Nuvie." },
+    { property: "og:title", content: "Metas | Nuvie" },
+    { property: "og:description", content: "Acompanhe suas metas financeiras no Nuvie." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: MetasPage,
 });
 

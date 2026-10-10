@@ -43,6 +43,7 @@ for (const plugin of pwa) {
 const finishOfflineBuild: Plugin = {
   name: "nuvie-offline-after-prerender",
   apply: "build",
+  enforce: "post",
   buildApp: { order: "post", async handler() {
     const shell = await readFile("dist/client/index.html", "utf8");
     await writeFile("dist/client/offline-shell.html", shell);

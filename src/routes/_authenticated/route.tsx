@@ -30,7 +30,7 @@ function AuthenticatedLayout() {
   const location = useLocation();
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || !navigator.onLine) return;
     void supabase.rpc("touch_last_access");
   }, [location.pathname, user]);
 

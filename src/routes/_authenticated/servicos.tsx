@@ -23,6 +23,14 @@ import { MONEY_MASK, useMoneyHidden } from "@/lib/money-privacy";
 import { takePendingVisitorAction, useVisitorAccess } from "@/components/VisitorAccess";
 
 export const Route = createFileRoute("/_authenticated/servicos")({
+  head: () => ({ meta: [
+    { title: "Serviços | Nuvie" },
+    { name: "description", content: "Seus serviços cadastrados no Nuvie." },
+    { property: "og:title", content: "Serviços | Nuvie" },
+    { property: "og:description", content: "Seus serviços cadastrados no Nuvie." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: ServicosPage,
 });
 

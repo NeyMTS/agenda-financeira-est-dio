@@ -24,6 +24,14 @@ import { useEffect } from "react";
 export const Route = createFileRoute(
   "/_authenticated/movimentacoes"
 )({
+  head: () => ({ meta: [
+    { title: "Movimentações | Nuvie" },
+    { name: "description", content: "Entradas e despesas do seu negócio no Nuvie." },
+    { property: "og:title", content: "Movimentações | Nuvie" },
+    { property: "og:description", content: "Entradas e despesas do seu negócio no Nuvie." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: MovimentacoesPage,
 });
 

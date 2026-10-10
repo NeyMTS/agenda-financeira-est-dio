@@ -18,6 +18,14 @@ import { effectiveStatus, trialDaysLeft, type SubscriptionPlan } from "@/lib/sub
 import { useVisitorAccess } from "@/components/VisitorAccess";
 
 export const Route = createFileRoute("/_authenticated/planos")({
+  head: () => ({ meta: [
+    { title: "Planos | Nuvie" },
+    { name: "description", content: "Planos e situação do seu acesso ao Nuvie." },
+    { property: "og:title", content: "Planos | Nuvie" },
+    { property: "og:description", content: "Planos e situação do seu acesso ao Nuvie." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: PlanosPage,
 });
 
