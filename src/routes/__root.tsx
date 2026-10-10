@@ -10,6 +10,8 @@ import {
 import { useEffect, type ReactNode } from "react";
 import { Toaster } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { purgeOfflineData } from "@/components/OfflineAccess";
+import { registerOfflineApp } from "@/lib/pwa-registration";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -141,20 +143,6 @@ export const Route = createRootRouteWithContext<{
         href: appCss,
       },
       {
-        rel: "preconnect",
-        href: "https://fonts.googleapis.com",
-      },
-      {
-        rel: "preconnect",
-        href: "https://fonts.gstatic.com",
-        crossOrigin: "anonymous",
-      },
-      {
-        rel: "stylesheet",
-        href:
-          "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap",
-      },
-      {
         rel: "icon",
         href: "/app-icon-512.png",
         type: "image/png",
@@ -200,12 +188,14 @@ function RootComponent() {
   const router = useRouter();
 
   useEffect(() => {
+    void registerOfflineApp().catch(() => {});
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event) => {
       if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
       router.invalidate();
       if (event === "SIGNED_OUT" || event === "SIGNED_IN") {
+        void purgeOfflineData().catch(() => {});
         queryClient.clear();
       } else {
         queryClient.invalidateQueries();

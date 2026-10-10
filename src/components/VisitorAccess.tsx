@@ -1,6 +1,7 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import type { User } from "@supabase/supabase-js";
+import { OfflineAccess } from "./OfflineAccess";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -36,7 +37,13 @@ export function VisitorAccessProvider({ user, children }: { user: User | null; c
     user,
     isVisitor: !user,
     requestAuthentication: (action) => {
-      if (user) return false;
+      if (user) {
+        if (!navigator.onLine) {
+          window.alert("Conecte-se à internet para salvar. Nenhuma alteração foi enviada.");
+          return true;
+        }
+        return false;
+      }
       const pending: PendingVisitorAction = {
         path: location.pathname,
         ...action,
@@ -61,7 +68,7 @@ export function VisitorAccessProvider({ user, children }: { user: User | null; c
 
   return (
     <VisitorAccessContext.Provider value={value}>
-      {children}
+      <OfflineAccess key={user?.id ?? "visitor"} userId={user?.id}>{children}</OfflineAccess>
       <Dialog open={promptOpen} onOpenChange={setPromptOpen}>
         <DialogContent className="max-w-xs rounded-2xl">
           <DialogHeader>
