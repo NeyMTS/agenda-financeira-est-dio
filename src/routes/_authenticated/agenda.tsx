@@ -20,6 +20,7 @@ import {
   useState,
 } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
 import { useHousehold } from "@/hooks/use-household";
 import {
   applyMessageTemplate,
@@ -319,7 +320,9 @@ function timeToMinutes(
     hours === undefined ||
     minutes === undefined ||
     Number.isNaN(hours) ||
-    Number.isNaN(minutes)
+    Number.isNaN(minutes) ||
+    !Number.isInteger(hours) || !Number.isInteger(minutes) ||
+    hours < 0 || hours > 23 || minutes < 0 || minutes > 59
   ) {
     return null;
   }
@@ -3924,9 +3927,9 @@ function DaySchedule({
                 <p className="truncate">{getClient(appointment)?.name ?? "Cliente"}</p>
                 <p className="text-xs text-muted-foreground">{appointment.scheduled_time?.slice(0, 5) || "Horário não informado"}</p>
               </div>
-              <button type="button" onClick={() => onEdit(appointment)} aria-label={`Editar atendimento de ${getClient(appointment)?.name ?? "Cliente"}`} className="flex shrink-0 items-center gap-1 rounded-lg p-2 text-xs text-foreground">
+              <Button type="button" variant="ghost" size="sm" onClick={() => onEdit(appointment)} aria-label={`Editar atendimento de ${getClient(appointment)?.name ?? "Cliente"}`} className="shrink-0">
                 <Pencil className="size-3.5" strokeWidth={1.7} /> Editar
-              </button>
+              </Button>
             </div>
           ))}
           {hiddenBlocks.map((block) => (
@@ -3935,9 +3938,9 @@ function DaySchedule({
                 <p className="truncate">{block.title}</p>
                 <p className="text-xs text-muted-foreground">{block.all_day ? "Dia inteiro bloqueado" : block.start_time?.slice(0, 5) || "Horário não informado"}</p>
               </div>
-              <button type="button" onClick={() => onEditBlock(block)} aria-label={`Editar ${block.title}`} className="flex shrink-0 items-center gap-1 rounded-lg p-2 text-xs text-foreground">
+              <Button type="button" variant="ghost" size="sm" onClick={() => onEditBlock(block)} aria-label={`Editar ${block.title}`} className="shrink-0">
                 <Pencil className="size-3.5" strokeWidth={1.7} /> Editar
-              </button>
+              </Button>
             </div>
           ))}
         </div>
