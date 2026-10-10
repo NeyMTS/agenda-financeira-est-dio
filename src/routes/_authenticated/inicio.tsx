@@ -467,7 +467,7 @@ function InicioPage() {
             </p>
 
             <p className="mt-1 text-sm font-semibold">
-              R$ {money(totalPending)}
+              {online ? `R$ ${money(totalPending)}` : "—"}
             </p>
           </div>
         </div>
